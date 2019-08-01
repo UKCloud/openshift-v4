@@ -31,11 +31,12 @@ BOOTPROTO=none
 NAME=ens192
 DEVICE=ens192
 ONBOOT=yes
-IPADDR=${local.ip_addresses[count.index]}
+IPADDR=${local.ip_addresses[0][0][count.index]}
 PREFIX=${local.mask}
 GATEWAY=${local.gw}
 DOMAIN=${var.cluster_domain}
-DNS1=8.8.8.8
+DNS1=${var.dns1}
+DNS2=${var.dns2}
 EOF
   }
 }

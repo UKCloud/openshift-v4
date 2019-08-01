@@ -37,6 +37,8 @@ module "bootstrap" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.dns1}"
+  dns2             = "${var.dns2}"
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${compact(list(var.bootstrap_ip))}"]
@@ -56,6 +58,8 @@ module "control_plane" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.dns1}"
+  dns2             = "${var.dns2}"
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.control_plane_ips}"]
@@ -75,6 +79,8 @@ module "compute" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.dns1}"
+  dns2             = "${var.dns2}"
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.compute_ips}"]
