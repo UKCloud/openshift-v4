@@ -108,6 +108,22 @@ variable "bootstrap_ip" {
   default = ""
 }
 
+variable "bootstrap_num_cpu" {
+  type = "string"
+  default = "2"
+}
+
+variable "bootstrap_memory" {
+  type = "string"
+  default = "2048"
+}
+
+variable "bootstrap_disk_size" {
+  type = "string"
+  default = "60"
+}
+
+
 ///////////
 // Master machine variables
 ///////////
@@ -126,6 +142,21 @@ variable "master_ips" {
   default = []
 }
 
+variable "master_num_cpu" {
+  type = "string"
+  default = "8"
+}
+
+variable "master_memory" {
+  type = "string"
+  default = "8192"
+}
+
+variable "master_disk_size" {
+  type = "string"
+  default = "60"
+}
+
 //////////
 // Worker Tenant machine variables
 //////////
@@ -142,4 +173,19 @@ variable "worker_ignition" {
 variable "worker_small_ips" {
   type    = "list"
   default = []
+}
+
+variable "worker_small_num_cpu" {
+  type = "string"
+  default = "2"
+}
+
+variable "worker_small_memory" {
+  type = "string"
+  default = "4096"
+}
+
+variable "worker_small_disk_size" {
+  type = "string"
+  default = "60"
 }
