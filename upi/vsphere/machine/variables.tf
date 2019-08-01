@@ -48,6 +48,14 @@ variable "machine_cidr" {
   type = "string"
 }
 
+variable "dns1" {
+  type        = "string"
+}
+
+variable "dns2" {
+  type        = "string"
+}
+
 variable "ipam" {
   type = "string"
 }
