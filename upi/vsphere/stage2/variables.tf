@@ -144,12 +144,12 @@ variable "master_ips" {
 
 variable "master_num_cpu" {
   type = "string"
-  default = "8"
+  default = "4"
 }
 
 variable "master_memory" {
   type = "string"
-  default = "8192"
+  default = "4096"
 }
 
 variable "master_disk_size" {
