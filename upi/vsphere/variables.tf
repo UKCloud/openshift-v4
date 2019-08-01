@@ -43,6 +43,18 @@ variable "vm_network" {
   default     = "VM Network"
 }
 
+variable "dns1" {
+  type        = "string"
+  description = "This is the primary dns server for the cluster; node names must be resolvable by this" 
+  default     = "8.8.8.8"
+}
+
+variable "dns2" {
+  type        = "string"
+  description = "This is the secondary dns server for the cluster; node names must be resolvable by this"
+  default     = ""
+}
+
 variable "ipam" {
   type        = "string"
   description = "The IPAM server to use for IP management."
