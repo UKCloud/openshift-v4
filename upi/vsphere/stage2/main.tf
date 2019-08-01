@@ -45,12 +45,12 @@ module "bootstrap" {
   machine_cidr     = "${var.machine_cidr}"
 }
 
-module "control_plane" {
+module "master" {
   source = "./machine"
 
   name             = "master"
-  instance_count   = "${var.control_plane_count}"
-  ignition         = "${var.control_plane_ignition}"
+  instance_count   = "${var.master_count}"
+  ignition         = "${var.master_ignition}"
   resource_pool_id = "${module.resource_pool.pool_id}"
   folder           = "${module.folder.path}"
   datastore        = "${var.vsphere_datastore}"
@@ -62,16 +62,16 @@ module "control_plane" {
   dns2             = "${var.dns2}"
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.control_plane_ips}"]
+  ip_addresses     = ["${var.master_ips}"]
   machine_cidr     = "${var.machine_cidr}"
 }
 
-module "compute" {
+module "worker_small" {
   source = "./machine"
 
-  name             = "worker"
-  instance_count   = "${var.compute_count}"
-  ignition         = "${var.compute_ignition}"
+  name             = "worker-s"
+  instance_count   = "${var.worker_small_count}"
+  ignition         = "${var.worker_ignition}"
   resource_pool_id = "${module.resource_pool.pool_id}"
   folder           = "${module.folder.path}"
   datastore        = "${var.vsphere_datastore}"
@@ -83,7 +83,7 @@ module "compute" {
   dns2             = "${var.dns2}"
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.compute_ips}"]
+  ip_addresses     = ["${var.worker_small_ips}"]
   machine_cidr     = "${var.machine_cidr}"
 }
 

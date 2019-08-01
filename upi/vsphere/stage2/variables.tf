@@ -109,37 +109,37 @@ variable "bootstrap_ip" {
 }
 
 ///////////
-// Control Plane machine variables
+// Master machine variables
 ///////////
 
-variable "control_plane_count" {
+variable "master_count" {
   type    = "string"
   default = "3"
 }
 
-variable "control_plane_ignition" {
+variable "master_ignition" {
   type = "string"
 }
 
-variable "control_plane_ips" {
+variable "master_ips" {
   type    = "list"
   default = []
 }
 
 //////////
-// Compute machine variables
+// Worker Tenant machine variables
 //////////
 
-variable "compute_count" {
+variable "worker_small_count" {
   type    = "string"
   default = "3"
 }
 
-variable "compute_ignition" {
+variable "worker_ignition" {
   type = "string"
 }
 
-variable "compute_ips" {
+variable "worker_small_ips" {
   type    = "list"
   default = []
 }
