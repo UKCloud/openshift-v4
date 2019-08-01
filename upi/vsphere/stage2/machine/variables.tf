@@ -16,6 +16,18 @@ variable "ignition_url" {
   default = ""
 }
 
+variable "num_cpu" {
+  type    = "string"
+}
+
+variable "memory" {
+  type    = "string"
+}
+
+variable "disk_size" {
+  type    = "string"
+}
+
 variable "resource_pool_id" {
   type = "string"
 }
