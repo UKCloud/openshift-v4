@@ -49,11 +49,11 @@ variable "machine_cidr" {
 }
 
 variable "dns1" {
-  type        = "string"
+  type = "string"
 }
 
 variable "dns2" {
-  type        = "string"
+  type = "string"
 }
 
 variable "ipam" {
