@@ -46,13 +46,25 @@ variable "vm_network" {
 variable "dns1" {
   type        = "string"
   description = "This is the primary dns server for the cluster; node names must be resolvable by this"
-  default     = "8.8.8.8"
+  default     = ""
 }
 
 variable "dns2" {
   type        = "string"
   description = "This is the secondary dns server for the cluster; node names must be resolvable by this"
   default     = ""
+}
+
+variable "upstreamdns1" {
+  type        = "string"
+  description = "This is the dns server which any svc VM's DNS server will forward to"
+  default     = "8.8.8.8"
+}
+
+variable "upstreamdns2" {
+  type        = "string"
+  description = "This is the dns server which any svc VM's DNS server will forward to"
+  default     = "8.8.4.4"
 }
 
 variable "ipam" {
@@ -277,3 +289,41 @@ variable "infra_disk_size" {
   description = "Disk size in gigabytes"
   default = "60"
 }
+
+
+///////////
+// Service machine variables
+///////////
+
+variable "svc_count" {
+  type    = "string"
+  default = "2"
+}
+
+variable "svc_ignition" {
+  type = "string"
+  default = ""
+}
+
+variable "svc_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "svc_num_cpu" {
+  type = "string"
+  default = "1"
+}
+
+variable "svc_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "2048"
+}
+
+variable "svc_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+

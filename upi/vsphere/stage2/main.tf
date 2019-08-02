@@ -167,3 +167,27 @@ module "infra" {
   ip_addresses     = ["${var.infra_ips}"]
   machine_cidr     = "${var.machine_cidr}"
 }
+
+module "svc" {
+  source = "./machine"
+
+  name             = "svc"
+  instance_count   = "${var.svc_count}"
+  ignition         = "${var.svc_ignition}"
+  num_cpu          = "${var.svc_num_cpu}"
+  memory           = "${var.svc_memory}"
+  disk_size        = "${var.svc_disk_size}"
+  resource_pool_id = "${module.resource_pool.pool_id}"
+  folder           = "${module.folder.path}"
+  datastore        = "${var.vsphere_datastore}"
+  network          = "${var.vm_network}"
+  datacenter_id    = "${data.vsphere_datacenter.dc.id}"
+  template         = "${var.vm_template}"
+  cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.upstreamdns1}"
+  dns2             = "${var.upstreamdns2}"
+  ipam             = "${var.ipam}"
+  ipam_token       = "${var.ipam_token}"
+  ip_addresses     = ["${var.svc_ips}"]
+  machine_cidr     = "${var.machine_cidr}"
+}
