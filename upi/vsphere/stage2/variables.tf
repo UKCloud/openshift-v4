@@ -110,7 +110,7 @@ variable "bootstrap_ip" {
 
 variable "bootstrap_num_cpu" {
   type = "string"
-  default = "2"
+  default = "1"
 }
 
 variable "bootstrap_memory" {
@@ -149,7 +149,7 @@ variable "master_num_cpu" {
 
 variable "master_memory" {
   type = "string"
-  default = "4096"
+  default = "8192"
 }
 
 variable "master_disk_size" {
@@ -182,7 +182,7 @@ variable "worker_small_num_cpu" {
 
 variable "worker_small_memory" {
   type = "string"
-  default = "4096"
+  default = "8192"
 }
 
 variable "worker_small_disk_size" {
