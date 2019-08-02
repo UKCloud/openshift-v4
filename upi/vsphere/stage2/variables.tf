@@ -169,7 +169,7 @@ variable "worker_ignition" {
 // Small Workers
 variable "worker_small_count" {
   type    = "string"
-  default = "3"
+  default = "2"
 }
 
 variable "worker_small_ips" {
@@ -197,7 +197,7 @@ variable "worker_small_disk_size" {
 // Medium Workers
 variable "worker_medium_count" {
   type    = "string"
-  default = "3"
+  default = "0"
 }
 
 variable "worker_medium_ips" {
@@ -225,7 +225,7 @@ variable "worker_medium_disk_size" {
 // Large Workers
 variable "worker_large_count" {
   type    = "string"
-  default = "3"
+  default = "0"
 }
 
 variable "worker_large_ips" {
@@ -253,7 +253,7 @@ variable "worker_large_disk_size" {
 // Infra Workers
 variable "infra_count" {
   type    = "string"
-  default = "3"
+  default = "0"
 }
 
 variable "infra_ips" {
