@@ -19,8 +19,8 @@ resource "vsphere_virtual_machine" "vm" {
   name             = "${var.name}-${count.index}"
   resource_pool_id = "${var.resource_pool_id}"
   datastore_id     = "${data.vsphere_datastore.datastore.id}"
-  num_cpus         = "4"
-  memory           = "8192"
+  num_cpus         = "${var.num_cpu}"
+  memory           = "${var.memory}"
   guest_id         = "other26xLinux64Guest"
   folder           = "${var.folder}"
   enable_disk_uuid = "true"
@@ -34,7 +34,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   disk {
     label            = "disk0"
-    size             = 60
+    size             = "${var.disk_size}"
     thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
   }
 

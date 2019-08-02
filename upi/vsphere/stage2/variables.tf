@@ -45,7 +45,7 @@ variable "vm_network" {
 
 variable "dns1" {
   type        = "string"
-  description = "This is the primary dns server for the cluster; node names must be resolvable by this" 
+  description = "This is the primary dns server for the cluster; node names must be resolvable by this"
   default     = "8.8.8.8"
 }
 
@@ -108,38 +108,172 @@ variable "bootstrap_ip" {
   default = ""
 }
 
+variable "bootstrap_num_cpu" {
+  type = "string"
+  default = "1"
+}
+
+variable "bootstrap_memory" {
+  type = "string"
+  default = "2048"
+}
+
+variable "bootstrap_disk_size" {
+  type = "string"
+  default = "60"
+}
+
+
 ///////////
-// Control Plane machine variables
+// Master machine variables
 ///////////
 
-variable "control_plane_count" {
+variable "master_count" {
   type    = "string"
   default = "3"
 }
 
-variable "control_plane_ignition" {
+variable "master_ignition" {
   type = "string"
 }
 
-variable "control_plane_ips" {
+variable "master_ips" {
   type    = "list"
   default = []
 }
 
+variable "master_num_cpu" {
+  type = "string"
+  default = "4"
+}
+
+variable "master_memory" {
+  type = "string"
+  default = "8192"
+}
+
+variable "master_disk_size" {
+  type = "string"
+  default = "60"
+}
+
 //////////
-// Compute machine variables
+// Worker Tenant machine variables
 //////////
 
-variable "compute_count" {
+variable "worker_ignition" {
+  type = "string"
+  description = "All workers inc infras share the same ignition config"
+}
+
+// Small Workers
+variable "worker_small_count" {
   type    = "string"
-  default = "3"
+  default = "2"
 }
 
-variable "compute_ignition" {
-  type = "string"
-}
-
-variable "compute_ips" {
+variable "worker_small_ips" {
   type    = "list"
   default = []
+}
+
+variable "worker_small_num_cpu" {
+  type = "string"
+  default = "2"
+}
+
+variable "worker_small_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "8192"
+}
+
+variable "worker_small_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+
+// Medium Workers
+variable "worker_medium_count" {
+  type    = "string"
+  default = "0"
+}
+
+variable "worker_medium_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "worker_medium_num_cpu" {
+  type = "string"
+  default = "4"
+}
+
+variable "worker_medium_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "8192"
+}
+
+variable "worker_medium_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+
+// Large Workers
+variable "worker_large_count" {
+  type    = "string"
+  default = "0"
+}
+
+variable "worker_large_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "worker_large_num_cpu" {
+  type = "string"
+  default = "8"
+}
+
+variable "worker_large_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "16384"
+}
+
+variable "worker_large_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+
+// Infra Workers
+variable "infra_count" {
+  type    = "string"
+  default = "0"
+}
+
+variable "infra_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "infra_num_cpu" {
+  type = "string"
+  default = "2"
+}
+
+variable "infra_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "8192"
+}
+
+variable "infra_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
 }
