@@ -161,13 +161,15 @@ variable "master_disk_size" {
 // Worker Tenant machine variables
 //////////
 
+variable "worker_ignition" {
+  type = "string"
+  description = "All workers inc infras share the same ignition config"
+}
+
+// Small Workers
 variable "worker_small_count" {
   type    = "string"
   default = "3"
-}
-
-variable "worker_ignition" {
-  type = "string"
 }
 
 variable "worker_small_ips" {
@@ -182,10 +184,98 @@ variable "worker_small_num_cpu" {
 
 variable "worker_small_memory" {
   type = "string"
+  description = "RAM size in megabytes"
   default = "8192"
 }
 
 variable "worker_small_disk_size" {
   type = "string"
+  description = "Disk size in gigabytes"
   default = "60"
 }
+
+// Medium Workers
+variable "worker_medium_count" {
+  type    = "string"
+  default = "3"
+}
+
+variable "worker_medium_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "worker_medium_num_cpu" {
+  type = "string"
+  default = "4"
+}
+
+variable "worker_medium_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "8192"
+}
+
+variable "worker_medium_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+
+// Large Workers
+variable "worker_large_count" {
+  type    = "string"
+  default = "3"
+}
+
+variable "worker_large_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "worker_large_num_cpu" {
+  type = "string"
+  default = "8"
+}
+
+variable "worker_large_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "16384"
+}
+
+variable "worker_large_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+
+// Infra Workers
+variable "infra_count" {
+  type    = "string"
+  default = "3"
+}
+
+variable "infra_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "infra_num_cpu" {
+  type = "string"
+  default = "2"
+}
+
+variable "infra_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "8192"
+}
+
+variable "infra_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+
+

@@ -96,3 +96,74 @@ module "worker_small" {
   machine_cidr     = "${var.machine_cidr}"
 }
 
+module "worker_medium" {
+  source = "./machine"
+
+  name             = "worker-m"
+  instance_count   = "${var.worker_medium_count}"
+  ignition         = "${var.worker_ignition}"
+  num_cpu          = "${var.worker_medium_num_cpu}"
+  memory           = "${var.worker_medium_memory}"
+  disk_size        = "${var.worker_medium_disk_size}"
+  resource_pool_id = "${module.resource_pool.pool_id}"
+  folder           = "${module.folder.path}"
+  datastore        = "${var.vsphere_datastore}"
+  network          = "${var.vm_network}"
+  datacenter_id    = "${data.vsphere_datacenter.dc.id}"
+  template         = "${var.vm_template}"
+  cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.dns1}"
+  dns2             = "${var.dns2}"
+  ipam             = "${var.ipam}"
+  ipam_token       = "${var.ipam_token}"
+  ip_addresses     = ["${var.worker_medium_ips}"]
+  machine_cidr     = "${var.machine_cidr}"
+}
+
+module "worker_large" {
+  source = "./machine"
+
+  name             = "worker-l"
+  instance_count   = "${var.worker_large_count}"
+  ignition         = "${var.worker_ignition}"
+  num_cpu          = "${var.worker_large_num_cpu}"
+  memory           = "${var.worker_large_memory}"
+  disk_size        = "${var.worker_large_disk_size}"
+  resource_pool_id = "${module.resource_pool.pool_id}"
+  folder           = "${module.folder.path}"
+  datastore        = "${var.vsphere_datastore}"
+  network          = "${var.vm_network}"
+  datacenter_id    = "${data.vsphere_datacenter.dc.id}"
+  template         = "${var.vm_template}"
+  cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.dns1}"
+  dns2             = "${var.dns2}"
+  ipam             = "${var.ipam}"
+  ipam_token       = "${var.ipam_token}"
+  ip_addresses     = ["${var.worker_large_ips}"]
+  machine_cidr     = "${var.machine_cidr}"
+}
+
+module "infra" {
+  source = "./machine"
+
+  name             = "infra"
+  instance_count   = "${var.infra_count}"
+  ignition         = "${var.worker_ignition}"
+  num_cpu          = "${var.infra_num_cpu}"
+  memory           = "${var.infra_memory}"
+  disk_size        = "${var.infra_disk_size}"
+  resource_pool_id = "${module.resource_pool.pool_id}"
+  folder           = "${module.folder.path}"
+  datastore        = "${var.vsphere_datastore}"
+  network          = "${var.vm_network}"
+  datacenter_id    = "${data.vsphere_datacenter.dc.id}"
+  template         = "${var.vm_template}"
+  cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.dns1}"
+  dns2             = "${var.dns2}"
+  ipam             = "${var.ipam}"
+  ipam_token       = "${var.ipam_token}"
+  ip_addresses     = ["${var.infra_ips}"]
+  machine_cidr     = "${var.machine_cidr}"
+}
