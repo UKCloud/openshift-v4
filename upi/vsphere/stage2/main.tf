@@ -56,7 +56,7 @@ module "master" {
   ignition         = "${var.master_ignition}"
   num_cpu          = "${var.master_num_cpu}"
   memory           = "${var.master_memory}"
-  disk_size        = "${var.master_disk_size}"  
+  disk_size        = "${var.master_disk_size}"
   resource_pool_id = "${module.resource_pool.pool_id}"
   folder           = "${module.folder.path}"
   datastore        = "${var.vsphere_datastore}"

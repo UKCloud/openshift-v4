@@ -29,7 +29,7 @@ vsphere_datastore = "nvme-ds1"
 vm_template = "rhcos-latest"
 
 // The machine_cidr where IP addresses will be assigned for cluster nodes.
-// Additionally, IPAM will assign IPs based on the network ID. 
+// Additionally, IPAM will assign IPs based on the network ID.
 machine_cidr = "10.0.0.0/24"
 
 // DNS settings (dns1 and, optionally, dns2), which are set along with the static IP; DHCP server should supply the same DNS parameters to clients

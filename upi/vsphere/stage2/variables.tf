@@ -45,7 +45,7 @@ variable "vm_network" {
 
 variable "dns1" {
   type        = "string"
-  description = "This is the primary dns server for the cluster; node names must be resolvable by this" 
+  description = "This is the primary dns server for the cluster; node names must be resolvable by this"
   default     = "8.8.8.8"
 }
 
@@ -277,5 +277,3 @@ variable "infra_disk_size" {
   description = "Disk size in gigabytes"
   default = "60"
 }
-
-
