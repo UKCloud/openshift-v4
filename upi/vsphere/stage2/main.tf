@@ -48,6 +48,11 @@ module "bootstrap" {
   machine_cidr     = "${var.machine_cidr}"
 }
 
+
+output "bootstrap_ip_addr" {
+  value = module.bootstrap.ip_addresses
+}
+
 module "master" {
   source = "./machine"
 
@@ -184,8 +189,8 @@ module "svc" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.upstreamdns1}"
-  dns2             = "${var.upstreamdns2}"
+  dns1             = "${var.dns1}"
+  dns2             = "${var.dns2}"
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.svc_ips}"]

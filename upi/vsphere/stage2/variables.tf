@@ -55,18 +55,6 @@ variable "dns2" {
   default     = ""
 }
 
-variable "upstreamdns1" {
-  type        = "string"
-  description = "This is the dns server which any svc VM's DNS server will forward to"
-  default     = "8.8.8.8"
-}
-
-variable "upstreamdns2" {
-  type        = "string"
-  description = "This is the dns server which any svc VM's DNS server will forward to"
-  default     = "8.8.4.4"
-}
-
 variable "ipam" {
   type        = "string"
   description = "The IPAM server to use for IP management."
