@@ -1,6 +1,6 @@
 locals {
   mask = "${element(split("/", var.machine_cidr), 1)}"
-  gw   = "${cidrhost(var.machine_cidr,1)}"    
+  gw   = "${cidrhost(var.machine_cidr,254)}"    
 
   ignition_encoded = "data:text/plain;charset=utf-8;base64,${base64encode(var.ignition)}"
 }
