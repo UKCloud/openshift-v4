@@ -48,11 +48,6 @@ module "bootstrap" {
   machine_cidr     = "${var.machine_cidr}"
 }
 
-
-output "bootstrap_ip_addr" {
-  value = module.bootstrap.ip_addresses
-}
-
 module "master" {
   source = "./machine"
 
