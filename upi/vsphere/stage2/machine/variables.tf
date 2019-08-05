@@ -83,3 +83,7 @@ variable "ip_addresses" {
 variable "gateway_ip" {
   type = number
 }
+
+variable "start_ip" {
+  type = number
+}
