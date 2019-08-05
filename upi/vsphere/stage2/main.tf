@@ -196,3 +196,23 @@ module "svc" {
   ip_addresses     = ["${var.svc_ips}"]
   machine_cidr     = "${var.machine_cidr}"
 }
+
+output "bootstrap" {
+  value = [ zipmap(flatten(module.bootstrap.vm_names), flatten(module.bootstrap.ip_addresses)) ]
+}
+
+output "masters" {
+  value = [ zipmap(flatten(module.master.vm_names), flatten(module.master.ip_addresses)) ]
+}
+
+output "workers" {
+  value = [ zipmap(flatten(module.worker.vm_names), flatten(module.worker.ip_addresses)) ]
+}
+
+output "infras" {
+  value = [ zipmap(flatten(module.infra.vm_names), flatten(module.infra.ip_addresses)) ]
+}
+
+output "svcs" {
+  value = [ zipmap(flatten(module.svc.vm_names), flatten(module.svc.ip_addresses)) ]
+}
