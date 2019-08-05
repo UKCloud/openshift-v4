@@ -88,6 +88,13 @@ variable "cluster_domain" {
 
 variable "machine_cidr" {
   type = "string"
+  description = "The internal network address in #.#.#.0/24 format."
+}
+
+variable "gateway_ip" {
+  type    = "number"
+  default = 254
+  description = "The position of the gw in the subnet. In /24, this will be the last octet."
 }
 
 /////////
@@ -106,6 +113,11 @@ variable "bootstrap_ignition_url" {
 variable "bootstrap_ip" {
   type    = "string"
   default = ""
+}
+
+variable "bootstrap_start_ip" {
+  type    = "number"
+  default = 250
 }
 
 variable "bootstrap_num_cpu" {
@@ -140,6 +152,11 @@ variable "master_ignition" {
 variable "master_ips" {
   type    = "list"
   default = []
+}
+
+variable "master_start_ip" {
+  type    = "number"
+  default = 10
 }
 
 variable "master_num_cpu" {
@@ -177,6 +194,11 @@ variable "worker_small_ips" {
   default = []
 }
 
+variable "worker_small_start_ip" {
+  type    = "number"
+  default = 25
+}
+
 variable "worker_small_num_cpu" {
   type = "string"
   default = "2"
@@ -203,6 +225,11 @@ variable "worker_medium_count" {
 variable "worker_medium_ips" {
   type    = "list"
   default = []
+}
+
+variable "worker_medium_start_ip" {
+  type    = "number"
+  default = 83
 }
 
 variable "worker_medium_num_cpu" {
@@ -233,6 +260,11 @@ variable "worker_large_ips" {
   default = []
 }
 
+variable "worker_large_start_ip" {
+  type    = "number"
+  default = 141
+}
+
 variable "worker_large_num_cpu" {
   type = "string"
   default = "8"
@@ -259,6 +291,11 @@ variable "infra_count" {
 variable "infra_ips" {
   type    = "list"
   default = []
+}
+
+variable "infra_start_ip" {
+  type    = "number"
+  default = 15
 }
 
 variable "infra_num_cpu" {
@@ -296,6 +333,11 @@ variable "svc_ignition" {
 variable "svc_ips" {
   type    = "list"
   default = []
+}
+
+variable "svc_start_ip" {
+  type    = "number"
+  default = 5
 }
 
 variable "svc_num_cpu" {
