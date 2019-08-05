@@ -205,8 +205,8 @@ output "masters" {
   value = [ zipmap(flatten(module.master.vm_names), flatten(module.master.ip_addresses)) ]
 }
 
-output "workers" {
-  value = [ zipmap(flatten(module.worker.vm_names), flatten(module.worker.ip_addresses)) ]
+output "small_workers" {
+  value = [ zipmap(flatten(module.worker_small.vm_names), flatten(module.worker_small.ip_addresses)) ]
 }
 
 output "infras" {
