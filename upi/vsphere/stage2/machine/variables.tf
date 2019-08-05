@@ -79,3 +79,7 @@ variable "ipam_token" {
 variable "ip_addresses" {
   type = "list"
 }
+
+variable "gateway_ip" {
+  type = number
+}

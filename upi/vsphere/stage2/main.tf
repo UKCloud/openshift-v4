@@ -45,6 +45,7 @@ module "bootstrap" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${compact(list(var.bootstrap_ip))}"]
+  gateway_ip       = ${var.gateway_ip}
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -69,6 +70,7 @@ module "master" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.master_ips}"]
+  gateway_ip       = ${var.gateway_ip}
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -93,6 +95,7 @@ module "worker_small" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.worker_small_ips}"]
+  gateway_ip       = ${var.gateway_ip}
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -117,6 +120,7 @@ module "worker_medium" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.worker_medium_ips}"]
+  gateway_ip       = ${var.gateway_ip}
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -141,6 +145,7 @@ module "worker_large" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.worker_large_ips}"]
+  gateway_ip       = ${var.gateway_ip}
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -165,6 +170,7 @@ module "infra" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.infra_ips}"]
+  gateway_ip       = ${var.gateway_ip}
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -189,6 +195,7 @@ module "svc" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.svc_ips}"]
+  gateway_ip       = ${var.gateway_ip}
   machine_cidr     = "${var.machine_cidr}"
 }
 
