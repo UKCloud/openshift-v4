@@ -45,7 +45,7 @@ module "bootstrap" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${compact(list(var.bootstrap_ip))}"]
-  start_ip         = var.bootstap_start_ip
+  start_ip         = var.bootstrap_start_ip
   gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
