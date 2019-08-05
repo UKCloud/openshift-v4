@@ -45,7 +45,8 @@ module "bootstrap" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${compact(list(var.bootstrap_ip))}"]
-  gateway_ip       = ${var.gateway_ip}
+  start_ip         = var.bootstap_start_ip
+  gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -70,7 +71,8 @@ module "master" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.master_ips}"]
-  gateway_ip       = ${var.gateway_ip}
+  start_ip         = var.master_start_ip
+  gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -95,7 +97,8 @@ module "worker_small" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.worker_small_ips}"]
-  gateway_ip       = ${var.gateway_ip}
+  start_ip         = var.worker_small_start_ip
+  gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -120,7 +123,8 @@ module "worker_medium" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.worker_medium_ips}"]
-  gateway_ip       = ${var.gateway_ip}
+  start_ip         = var.worker_medium_start_ip
+  gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -145,7 +149,8 @@ module "worker_large" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.worker_large_ips}"]
-  gateway_ip       = ${var.gateway_ip}
+  start_ip         = var.worker_large_start_ip
+  gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -170,7 +175,8 @@ module "infra" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.infra_ips}"]
-  gateway_ip       = ${var.gateway_ip}
+  start_ip         = var.infra_start_ip
+  gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
 
@@ -195,10 +201,13 @@ module "svc" {
   ipam             = "${var.ipam}"
   ipam_token       = "${var.ipam_token}"
   ip_addresses     = ["${var.svc_ips}"]
-  gateway_ip       = ${var.gateway_ip}
+  start_ip         = var.svc_start_ip
+  gateway_ip       = var.gateway_ip
   machine_cidr     = "${var.machine_cidr}"
 }
 
+########### Comment the stuff below out?
+/*
 output "bootstrap" {
   value = [ zipmap(flatten(module.bootstrap.vm_names), flatten(module.bootstrap.ip_addresses)) ]
 }
@@ -218,3 +227,4 @@ output "infras" {
 output "svcs" {
   value = [ zipmap(flatten(module.svc.vm_names), flatten(module.svc.ip_addresses)) ]
 }
+*/
