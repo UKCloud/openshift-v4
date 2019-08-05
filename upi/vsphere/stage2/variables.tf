@@ -92,7 +92,7 @@ variable "machine_cidr" {
 }
 
 variable "gateway_ip" {
-  type    = "number"
+  type    = number
   default = 254
   description = "The position of the gw in the subnet. In /24, this will be the last octet."
 }
@@ -116,7 +116,7 @@ variable "bootstrap_ip" {
 }
 
 variable "bootstrap_start_ip" {
-  type    = "number"
+  type    = number
   default = 250
 }
 
@@ -155,7 +155,7 @@ variable "master_ips" {
 }
 
 variable "master_start_ip" {
-  type    = "number"
+  type    = number
   default = 10
 }
 
@@ -195,7 +195,7 @@ variable "worker_small_ips" {
 }
 
 variable "worker_small_start_ip" {
-  type    = "number"
+  type    = number
   default = 25
 }
 
@@ -228,7 +228,7 @@ variable "worker_medium_ips" {
 }
 
 variable "worker_medium_start_ip" {
-  type    = "number"
+  type    = number
   default = 83
 }
 
@@ -261,7 +261,7 @@ variable "worker_large_ips" {
 }
 
 variable "worker_large_start_ip" {
-  type    = "number"
+  type    = number
   default = 141
 }
 
@@ -294,7 +294,7 @@ variable "infra_ips" {
 }
 
 variable "infra_start_ip" {
-  type    = "number"
+  type    = number
   default = 15
 }
 
@@ -336,7 +336,7 @@ variable "svc_ips" {
 }
 
 variable "svc_start_ip" {
-  type    = "number"
+  type    = number
   default = 5
 }
 
