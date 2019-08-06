@@ -68,10 +68,6 @@ variable "dns2" {
   type = "string"
 }
 
-variable "ip_addresses" {
-  type = "list"
-}
-
 variable "gateway_ip" {
   type = number
 }
