@@ -42,12 +42,9 @@ module "bootstrap" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${compact(list(var.bootstrap_ip))}"]
   start_ip         = var.bootstrap_start_ip
   gateway_ip       = var.gateway_ip
-  machine_cidr     = "${var.machine_cidr}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "master" {
@@ -68,12 +65,9 @@ module "master" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.master_ips}"]
   start_ip         = var.master_start_ip
   gateway_ip       = var.gateway_ip
-  machine_cidr     = "${var.machine_cidr}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "worker_small" {
@@ -94,12 +88,9 @@ module "worker_small" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.worker_small_ips}"]
   start_ip         = var.worker_small_start_ip
   gateway_ip       = var.gateway_ip
-  machine_cidr     = "${var.machine_cidr}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "worker_medium" {
@@ -120,12 +111,9 @@ module "worker_medium" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.worker_medium_ips}"]
   start_ip         = var.worker_medium_start_ip
   gateway_ip       = var.gateway_ip
-  machine_cidr     = "${var.machine_cidr}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "worker_large" {
@@ -146,12 +134,9 @@ module "worker_large" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.worker_large_ips}"]
   start_ip         = var.worker_large_start_ip
   gateway_ip       = var.gateway_ip
-  machine_cidr     = "${var.machine_cidr}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "infra" {
@@ -172,12 +157,9 @@ module "infra" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.infra_ips}"]
   start_ip         = var.infra_start_ip
   gateway_ip       = var.gateway_ip
-  machine_cidr     = "${var.machine_cidr}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "svc" {
@@ -198,12 +180,9 @@ module "svc" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.svc_ips}"]
   start_ip         = var.svc_start_ip
   gateway_ip       = var.gateway_ip
-  machine_cidr     = "${var.machine_cidr}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 ########### Comment the stuff below out?

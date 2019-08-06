@@ -55,18 +55,6 @@ variable "dns2" {
   default     = ""
 }
 
-variable "ipam" {
-  type        = "string"
-  description = "The IPAM server to use for IP management."
-  default     = ""
-}
-
-variable "ipam_token" {
-  type        = "string"
-  description = "The IPAM token to use for requests."
-  default     = ""
-}
-
 /////////
 // OpenShift cluster variables
 /////////
@@ -86,7 +74,7 @@ variable "cluster_domain" {
   description = "The base DNS zone to add the sub zone to."
 }
 
-variable "machine_cidr" {
+variable "network_cidr" {
   type = "string"
   description = "The internal network address in #.#.#.0/24 format."
 }
@@ -108,11 +96,6 @@ variable "bootstrap_complete" {
 
 variable "bootstrap_ignition_url" {
   type = "string"
-}
-
-variable "bootstrap_ip" {
-  type    = "string"
-  default = ""
 }
 
 variable "bootstrap_start_ip" {
@@ -147,11 +130,6 @@ variable "master_count" {
 
 variable "master_ignition" {
   type = "string"
-}
-
-variable "master_ips" {
-  type    = "list"
-  default = []
 }
 
 variable "master_start_ip" {
@@ -189,11 +167,6 @@ variable "worker_small_count" {
   default = "2"
 }
 
-variable "worker_small_ips" {
-  type    = "list"
-  default = []
-}
-
 variable "worker_small_start_ip" {
   type    = number
   default = 25
@@ -220,11 +193,6 @@ variable "worker_small_disk_size" {
 variable "worker_medium_count" {
   type    = "string"
   default = "0"
-}
-
-variable "worker_medium_ips" {
-  type    = "list"
-  default = []
 }
 
 variable "worker_medium_start_ip" {
@@ -255,11 +223,6 @@ variable "worker_large_count" {
   default = "0"
 }
 
-variable "worker_large_ips" {
-  type    = "list"
-  default = []
-}
-
 variable "worker_large_start_ip" {
   type    = number
   default = 141
@@ -286,11 +249,6 @@ variable "worker_large_disk_size" {
 variable "infra_count" {
   type    = "string"
   default = "0"
-}
-
-variable "infra_ips" {
-  type    = "list"
-  default = []
 }
 
 variable "infra_start_ip" {
@@ -328,11 +286,6 @@ variable "svc_count" {
 variable "svc_ignition" {
   type = "string"
   default = ""
-}
-
-variable "svc_ips" {
-  type    = "list"
-  default = []
 }
 
 variable "svc_start_ip" {

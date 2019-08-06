@@ -68,14 +68,6 @@ variable "dns2" {
   type = "string"
 }
 
-variable "ipam" {
-  type = "string"
-}
-
-variable "ipam_token" {
-  type = "string"
-}
-
 variable "ip_addresses" {
   type = "list"
 }
