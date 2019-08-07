@@ -41,6 +41,13 @@ EOF
   }
 }
 
+data "null_data_source" "values" {
+  count = "${var.instance_count}"
+  inputs = {
+    server_ip = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
+  }
+}
+
 data "ignition_systemd_unit" "restart" {
   count = "${var.instance_count}"
 
