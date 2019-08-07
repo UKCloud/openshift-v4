@@ -13,9 +13,8 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = "${var.datacenter_id}"
 }
 
-data "vsphere_virtual_machine" "info" {
-  vm_name      = "${var.name}-${count.index}"
-  vm_ipaddress = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
+output "vminfo" {
+  value = "${var.name}-${count.index} ${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
 }
 
 resource "vsphere_virtual_machine" "vm" {
