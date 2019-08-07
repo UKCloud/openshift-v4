@@ -25,7 +25,7 @@ resource "vsphere_virtual_machine" "vm" {
   folder           = "${var.folder}"
   enable_disk_uuid = "true"
 
-  ge_ip_address = ${cidrhost(var.machine_cidr,var.start_ip + count.index)}
+  ge_ip_address = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
 
   wait_for_guest_net_timeout  = "0"
   wait_for_guest_net_routable = "false"
