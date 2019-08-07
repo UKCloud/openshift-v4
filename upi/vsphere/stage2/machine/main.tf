@@ -13,6 +13,11 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = "${var.datacenter_id}"
 }
 
+data "vsphere_virtual_machine" "info" {
+  vm_name      = "${var.name}-${count.index}"
+  vm_ipaddress = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
+}
+
 resource "vsphere_virtual_machine" "vm" {
   count = "${var.instance_count}"
 
@@ -24,8 +29,6 @@ resource "vsphere_virtual_machine" "vm" {
   guest_id         = "other26xLinux64Guest"
   folder           = "${var.folder}"
   enable_disk_uuid = "true"
-
-  ge_ip_address = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
 
   wait_for_guest_net_timeout  = "0"
   wait_for_guest_net_routable = "false"
