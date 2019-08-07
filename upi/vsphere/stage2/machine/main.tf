@@ -46,7 +46,6 @@ resource "vsphere_virtual_machine" "vm" {
     properties = {
       "guestinfo.ignition.config.data"          = "${base64encode(data.ignition_config.ign.*.rendered[count.index])}"
       "guestinfo.ignition.config.data.encoding" = "base64"
-      "tf.ipaddress"                            = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
     }
   }
 }
