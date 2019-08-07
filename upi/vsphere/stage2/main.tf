@@ -186,22 +186,23 @@ module "svc" {
 }
 
 output "bootstrap" {
-  value = [ zipmap(flatten(module.bootstrap.vm_names), flatten(module.bootstrap.vm_ips)) ]
+  value = [ zipmap(compact(flatten(module.bootstrap.vm_names)), compact(flatten(module.bootstrap.vm_ips))) ]
 }
 
 
 output "masters" {
-  value = [ zipmap(flatten(module.master.vm_names), flatten(module.master.vm_ips)) ]
+  value = [ zipmap(compact(flatten(module.master.vm_names)), compact(flatten(module.master.vm_ips))) ]
 }
 
 output "small_workers" {
-  value = [ zipmap(flatten(module.worker_small.vm_names), flatten(module.worker_small.vm_ips)) ]
+  value = [ zipmap(compact(flatten(module.worker_small.vm_names)), compact(flatten(module.worker_small.vm_ips))) ]
 }
 
 output "infras" {
-  value = [ zipmap(flatten(module.infra.vm_names), flatten(module.infra.vm_ips)) ]
+  value = [ zipmap(compact(flatten(module.infra.vm_names)), compact(flatten(module.infra.vm_ips))) ]
 }
 
 output "svcs" {
-  value = [ zipmap(flatten(module.svc.vm_names), flatten(module.svc.vm_ips)) ]
+  value = [ zipmap(compact(flatten(module.svc.vm_names)), compact(flatten(module.svc.vm_ips))) ]
 }
+
