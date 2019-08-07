@@ -13,10 +13,6 @@ data "vsphere_virtual_machine" "template" {
   datacenter_id = "${var.datacenter_id}"
 }
 
-output "vminfo" {
-  value = "${var.name}-${count.index} ${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
-}
-
 resource "vsphere_virtual_machine" "vm" {
   count = "${var.instance_count}"
 
@@ -50,6 +46,7 @@ resource "vsphere_virtual_machine" "vm" {
     properties = {
       "guestinfo.ignition.config.data"          = "${base64encode(data.ignition_config.ign.*.rendered[count.index])}"
       "guestinfo.ignition.config.data.encoding" = "base64"
+      "guestinfo.ipaddress"                     = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
     }
   }
 }
