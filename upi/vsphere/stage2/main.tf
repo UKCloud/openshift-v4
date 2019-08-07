@@ -185,12 +185,12 @@ module "svc" {
   machine_cidr     = "${var.network_cidr}"
 }
 
-########### Comment the stuff below out?
-/*
 output "bootstrap" {
-  value = [ zipmap(flatten(module.bootstrap.vm_names), flatten(module.bootstrap.ip_addresses)) ]
+  value = [ zipmap(flatten(module.bootstrap.vm_names), flatten(module.bootstrap.vm_ipaddreses)) ]
 }
 
+
+/*
 output "masters" {
   value = [ zipmap(flatten(module.master.vm_names), flatten(module.master.ip_addresses)) ]
 }
