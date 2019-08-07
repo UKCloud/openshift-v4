@@ -4,5 +4,5 @@ output "vm_names" {
 }
 
 output "vm_ipaddreses" {
-  value = ["${vsphere_virtual_machine.vm[*].name}"]
+  value = ["${data.null_data_source.values[*].outputs["server_ip"]}"]
 }
