@@ -190,20 +190,18 @@ output "bootstrap" {
 }
 
 
-/*
 output "masters" {
-  value = [ zipmap(flatten(module.master.vm_names), flatten(module.master.ip_addresses)) ]
+  value = [ zipmap(flatten(module.master.vm_names), flatten(module.master.vm_ipaddresses)) ]
 }
 
 output "small_workers" {
-  value = [ zipmap(flatten(module.worker_small.vm_names), flatten(module.worker_small.ip_addresses)) ]
+  value = [ zipmap(flatten(module.worker_small.vm_names), flatten(module.worker_small.vm_ipaddresses)) ]
 }
 
 output "infras" {
-  value = [ zipmap(flatten(module.infra.vm_names), flatten(module.infra.ip_addresses)) ]
+  value = [ zipmap(flatten(module.infra.vm_names), flatten(module.infra.vm_ipaddresses)) ]
 }
 
 output "svcs" {
-  value = [ zipmap(flatten(module.svc.vm_names), flatten(module.svc.ip_addresses)) ]
+  value = [ zipmap(flatten(module.svc.vm_names), flatten(module.svc.vm_ipaddresses)) ]
 }
-*/
