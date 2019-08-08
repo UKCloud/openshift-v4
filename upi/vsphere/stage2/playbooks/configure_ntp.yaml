@@ -1,0 +1,6 @@
+
+- hosts: all
+  - name: Restart chronyd service to implement config change
+    service:
+      name: chronyd.service
+      state: restarted
