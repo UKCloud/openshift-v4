@@ -17,3 +17,8 @@ dns{{ count }}  IN      A       {{ hostvars[hostname].ip }}
 {% set count = count + 1 %}
 {% endfor %}
 
+{% set count =0}
+{% for hostname in groups.masters %}
+master-{{ count }}  IN      A       {{ hostvars[hostname].ip }}
+{% set count = count + 1 %}
+{% endfor %}
