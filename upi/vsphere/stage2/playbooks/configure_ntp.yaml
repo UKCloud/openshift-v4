@@ -1,5 +1,5 @@
-
 - hosts: all
+  tasks:
   - name: Restart chronyd service to implement config change
     service:
       name: chronyd.service
