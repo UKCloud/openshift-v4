@@ -186,7 +186,7 @@ module "svc" {
 }
 
 output "bootstrap" {
-  value = [ zipmap(compact(flatten(module.bootstrap.vm_names)), compact(flatten(module.bootstrap.vm_ips))) ]
+  value = [ zipmap([ "bootstrap-0" ], [ "${cidrhost(var.network_cidr,var.bootstrap_start_ip)}" ]) ]
 }
 
 
