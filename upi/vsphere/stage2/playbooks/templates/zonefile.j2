@@ -12,7 +12,7 @@ $TTL 60s
     IN    NS    dns2.{{ localDomainSuffix }}.
 
 {% set count = 1 %}
-{% for hostname in groups.svc %}
+{% for hostname in groups.svcs %}
 dns{{ count }}  IN      A       {{ hostvars[hostname].ansible_default_ipv4.address }}
 {% set count = count + 1 %}
 {% endfor %}
