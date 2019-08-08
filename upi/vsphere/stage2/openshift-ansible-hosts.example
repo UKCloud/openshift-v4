@@ -24,6 +24,8 @@ worker-s-1.cluster.domain
 [all:vars]
 ntp_server1=0.uk.pool.ntp.org
 ntp_server2=1.uk.pool.ntp.org
+dns_server1=1.1.1.1
+dns_server2=1.0.0.1
 
 ansible_ssh_user=core
 ansible_become=yes

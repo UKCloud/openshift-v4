@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+  - name: Make a Zonefile
+    template:
+      src: templates/zonefile.j2
+      dest: /tmp/{{ localDomainSuffix }}.zone

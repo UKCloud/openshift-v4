@@ -1,0 +1,19 @@
+$ORIGIN {{ localDomainSuffix }}.
+$TTL 60s
+@    IN    SOA    dns1.{{ localDomainSuffix }}.    hostmaster.{{ localDomainSuffix }}. (
+            2001062501 ; serial
+            21600      ; refresh after 6 hours
+            3600       ; retry after 1 hour
+            604800     ; expire after 1 week
+            86400 )    ; minimum TTL of 1 day
+
+
+    IN    NS    dns1.{{ localDomainSuffix }}.
+    IN    NS    dns2.{{ localDomainSuffix }}.
+
+{% set count = 1 %}
+{% for hostname in groups.svc %}
+dns{{ count }}  IN      A       {{ hostvars[hostname].ansible_default_ipv4.address }}
+{% set count = count + 1 %}
+{% endfor %}
+
