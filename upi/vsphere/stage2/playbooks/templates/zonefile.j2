@@ -13,7 +13,7 @@ $TTL 60s
 
 {% set count = 1 %}
 {% for hostname in groups.svcs %}
-dns{{ count }}  IN      A       {{ hostvars[hostname].ansible_default_ipv4.address }}
+dns{{ count }}  IN      A       {{ hostvars[hostname].ip }}
 {% set count = count + 1 %}
 {% endfor %}
 
