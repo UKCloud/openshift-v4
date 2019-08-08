@@ -186,23 +186,30 @@ module "svc" {
 }
 
 output "bootstrap" {
-  value = [ zipmap([ "bootstrap-0" ], [ "${cidrhost(var.network_cidr,var.bootstrap_start_ip)}" ]) ]
+  value = var.bootstrap_complete ? [ ] : [ zipmap(compact(flatten(module.boostrap.vm_names)), compact(flatten(module.bootstrap.vm_ips))) ]
 }
 
-
 output "masters" {
-  value = [ zipmap(compact(flatten(module.master.vm_names)), compact(flatten(module.master.vm_ips))) ]
+  value = var.master_count == "0" ? [ ] : [ zipmap(compact(flatten(module.master.vm_names)), compact(flatten(module.master.vm_ips))) ]
 }
 
 output "small_workers" {
-  value = [ zipmap(compact(flatten(module.worker_small.vm_names)), compact(flatten(module.worker_small.vm_ips))) ]
+  value = var.worker_small_count == "0" ? [ ] : [ zipmap(compact(flatten(module.worker_small.vm_names)), compact(flatten(module.worker_small.vm_ips))) ]
+}
+
+output "medium_workers" {
+  value = var.worker_medium_count == "0" ? [ ] : [ zipmap(compact(flatten(module.worker_medium.vm_names)), compact(flatten(module.worker_medium.vm_ips))) ]
+}
+
+output "large_workers" {
+  value = var.worker_large_count == "0" ? [ ] : [ zipmap(compact(flatten(module.worker_large.vm_names)), compact(flatten(module.worker_large.vm_ips))) ]
 }
 
 output "infras" {
-  value = [ zipmap(compact(flatten(module.infra.vm_names)), compact(flatten(module.infra.vm_ips))) ]
+  value = var.infra_count == "0" ? [ ] : [ zipmap(compact(flatten(module.infra.vm_names)), compact(flatten(module.infra.vm_ips))) ]
 }
 
 output "svcs" {
-  value = [ zipmap(compact(flatten(module.svc.vm_names)), compact(flatten(module.svc.vm_ips))) ]
+  value = var.svc_count == "0" ? [ ] : [ zipmap(compact(flatten(module.svc.vm_names)), compact(flatten(module.svc.vm_ips))) ]
 }
 
