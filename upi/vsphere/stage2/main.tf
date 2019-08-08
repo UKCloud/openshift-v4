@@ -186,7 +186,7 @@ module "svc" {
 }
 
 output "bootstrap" {
-  value = var.bootstrap_complete ? [ ] : [ zipmap(compact(flatten(module.boostrap.vm_names)), compact(flatten(module.bootstrap.vm_ips))) ]
+  value = var.bootstrap_complete ? [ ] : [ zipmap(compact(flatten(module.bootstrap.vm_names)), compact(flatten(module.bootstrap.vm_ips))) ]
 }
 
 output "masters" {
