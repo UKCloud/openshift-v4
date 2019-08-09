@@ -1,0 +1,21 @@
+[all:children]
+masters
+workers
+
+[masters]
+master-0.cluster.ge-test
+master-1.cluster.ge-test
+master-2.cluster.ge-test
+
+[workers]
+worker-s-0.cluster.ge-test
+worker-s-1.cluster.ge-test
+
+
+[all:vars]
+ntp_server1=0.uk.pool.ntp.org
+ntp_server2=1.uk.pool.ntp.org
+
+ansible_ssh_user=core
+ansible_become=yes
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
