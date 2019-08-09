@@ -1,20 +1,37 @@
 [all:children]
 masters
 workers
+infras
+svcs
+bootstrap
+bastion
 
 [masters]
-master-0.cluster.ge-test
-master-1.cluster.ge-test
-master-2.cluster.ge-test
+master-0.cluster.ge-test ip=192.168.2.10
+master-1.cluster.ge-test ip=192.168.2.11
+master-2.cluster.ge-test ip=192.168.2.12
 
 [workers]
-worker-s-0.cluster.ge-test
-worker-s-1.cluster.ge-test
+worker-s-0.cluster.ge-test ip=192.168.2.25
+worker-s-1.cluster.ge-test ip=192.168.2.26
 
+[infras]
+
+[svcs]
+svc-0.cluster.ge-test ip=192.168.2.5
+svc-1.cluster.ge-test ip=192.168.2.6
+
+[bootstrap]
+bootstrap-0.cluster.ge-test ip=192.168.2.250
+
+[bastion]
 
 [all:vars]
 ntp_server1=0.uk.pool.ntp.org
 ntp_server2=1.uk.pool.ntp.org
+dns_server1=1.1.1.1
+dns_server2=1.0.0.1
+localDomainSuffix=cluster.ge-test
 
 ansible_ssh_user=core
 ansible_become=yes
