@@ -1,0 +1,22 @@
+<dhcp>
+  <enabled>true</enabled>
+  <ipPools>
+    <ipPool>
+      <autoConfigureDNS>false</autoConfigureDNS>
+      <defaultGateway>10.254.0.254</defaultGateway>
+      <primaryNameServer>10.254.0.5</primaryNameServer>
+      <leaseTime>3600</leaseTime>
+      <subnetMask>255.255.255.0</subnetMask>
+      <dhcpOptions>
+        <option26>1400</option26>
+      </dhcpOptions>
+      <poolId>pool-1</poolId>
+      <ipRange>10.254.0.200-10.254.0.249</ipRange>
+      <allowHugeRange>false</allowHugeRange>
+    </ipPool>
+  </ipPools>
+  <logging>
+    <enable>false</enable>
+    <logLevel>info</logLevel>
+  </logging>
+</dhcp>
