@@ -1,6 +1,10 @@
-- hosts: all
+- hosts: svcs
   tasks:
+  - name: Create /etc/coredns directory
+    file:
+      path: /etc/coredns
+      state: directory
   - name: Make a Zonefile
     template:
       src: templates/zonefile.j2
-      dest: /tmp/{{ localDomainSuffix }}.zone
+      dest: /etc/coredns/{{ localDomainSuffix }}.zone
