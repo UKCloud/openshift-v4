@@ -1,0 +1,9 @@
+[Unit]
+Description=CoreDNS container
+Wants=NetworkManager.service 
+[Service]
+Restart=always
+ExecStart=/usr/bin/podman start -a coredns
+ExecStop=/usr/bin/podman stop -t 10 coredns
+[Install]
+WantedBy=multi-user.target

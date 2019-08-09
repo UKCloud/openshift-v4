@@ -31,7 +31,7 @@ ntp_server1=0.uk.pool.ntp.org
 ntp_server2=1.uk.pool.ntp.org
 dns_server1=1.1.1.1
 dns_server2=1.0.0.1
-localDomainSuffix=cluster.ge-test
+domain_suffix=cluster.ge-test
 
 external_lb_ip=192.168.1.2
 default_gateway=192.168.2.254
