@@ -3,7 +3,7 @@ Description=CoreDNS container
 Wants=NetworkManager.service 
 [Service]
 Restart=always
-ExecStart=/usr/bin/podman start -a coredns
-ExecStop=/usr/bin/podman stop -t 10 coredns
+ExecStart=/usr/bin/podman run -a=STDOUT --name coredns -v /etc/coredns:/etc/coredns:Z -p 53:53/udp coredns --conf /etc/coredns/Corefile
+ExecStop=/usr/bin/podman rm -f coredns
 [Install]
 WantedBy=multi-user.target

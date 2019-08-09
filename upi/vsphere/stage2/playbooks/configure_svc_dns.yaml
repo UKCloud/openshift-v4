@@ -12,8 +12,8 @@
     template:
       src: templates/Corefile.j2
       dest: /etc/coredns/Corefile
-  - name: Pull and start CoreDNS container
-    shell: podman run -d --name coredns -v /etc/coredns:/etc/coredns:Z -p 53:53/udp coredns/coredns --conf /etc/coredns/Corefile
+  - name: Pull CoreDNS container
+    shell: podman pull docker.io/coredns/coredns
     ignore_errors: True
   - name: Install Unit file for coredns.service
     template: 
@@ -22,5 +22,6 @@
   - name: Enable coredns.service
     systemd: 
       state: started
+      enabled: yes
       name: coredns
       daemon_reload: yes
