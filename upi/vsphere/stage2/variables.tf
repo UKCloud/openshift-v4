@@ -46,24 +46,12 @@ variable "vm_network" {
 variable "dns1" {
   type        = "string"
   description = "This is the primary dns server for the cluster; node names must be resolvable by this"
-  default     = "8.8.8.8"
+  default     = ""
 }
 
 variable "dns2" {
   type        = "string"
   description = "This is the secondary dns server for the cluster; node names must be resolvable by this"
-  default     = ""
-}
-
-variable "ipam" {
-  type        = "string"
-  description = "The IPAM server to use for IP management."
-  default     = ""
-}
-
-variable "ipam_token" {
-  type        = "string"
-  description = "The IPAM token to use for requests."
   default     = ""
 }
 
@@ -86,8 +74,14 @@ variable "cluster_domain" {
   description = "The base DNS zone to add the sub zone to."
 }
 
-variable "machine_cidr" {
+variable "network_cidr" {
   type = "string"
+  description = "The internal network address in #.#.#.0/24 format."
+}
+
+variable "gateway_ip" {
+  type    = "string"
+  description = "The default gw in the internal subnet."
 }
 
 /////////
@@ -101,6 +95,11 @@ variable "bootstrap_complete" {
 
 variable "bootstrap_ignition_url" {
   type = "string"
+}
+
+variable "bootstrap_start_ip" {
+  type    = number
+  default = 250
 }
 
 variable "bootstrap_ip" {
@@ -137,6 +136,11 @@ variable "master_ignition" {
   type = "string"
 }
 
+variable "master_start_ip" {
+  type    = number
+  default = 10
+}
+
 variable "master_ips" {
   type    = "list"
   default = []
@@ -149,7 +153,7 @@ variable "master_num_cpu" {
 
 variable "master_memory" {
   type = "string"
-  default = "8192"
+  default = "12228"
 }
 
 variable "master_disk_size" {
@@ -169,7 +173,12 @@ variable "worker_ignition" {
 // Small Workers
 variable "worker_small_count" {
   type    = "string"
-  default = "2"
+  default = "0"
+}
+
+variable "worker_small_start_ip" {
+  type    = number
+  default = 25
 }
 
 variable "worker_small_ips" {
@@ -200,6 +209,11 @@ variable "worker_medium_count" {
   default = "0"
 }
 
+variable "worker_medium_start_ip" {
+  type    = number
+  default = 83
+}
+
 variable "worker_medium_ips" {
   type    = "list"
   default = []
@@ -226,6 +240,11 @@ variable "worker_medium_disk_size" {
 variable "worker_large_count" {
   type    = "string"
   default = "0"
+}
+
+variable "worker_large_start_ip" {
+  type    = number
+  default = 141
 }
 
 variable "worker_large_ips" {
@@ -256,6 +275,11 @@ variable "infra_count" {
   default = "0"
 }
 
+variable "infra_start_ip" {
+  type    = number
+  default = 15
+}
+
 variable "infra_ips" {
   type    = "list"
   default = []
@@ -277,3 +301,46 @@ variable "infra_disk_size" {
   description = "Disk size in gigabytes"
   default = "60"
 }
+
+
+///////////
+// Service machine variables
+///////////
+
+variable "svc_count" {
+  type    = "string"
+  default = "0"
+}
+
+variable "svc_ignition" {
+  type = "string"
+  default = ""
+}
+
+variable "svc_start_ip" {
+  type    = number
+  default = 5
+}
+
+variable "svc_ips" {
+  type    = "list"
+  default = []
+}
+
+variable "svc_num_cpu" {
+  type = "string"
+  default = "1"
+}
+
+variable "svc_memory" {
+  type = "string"
+  description = "RAM size in megabytes"
+  default = "2048"
+}
+
+variable "svc_disk_size" {
+  type = "string"
+  description = "Disk size in gigabytes"
+  default = "60"
+}
+

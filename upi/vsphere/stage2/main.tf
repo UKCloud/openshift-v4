@@ -40,12 +40,11 @@ module "bootstrap" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
   ip_addresses     = ["${compact(list(var.bootstrap_ip))}"]
-  machine_cidr     = "${var.machine_cidr}"
+  gateway_ip       = "${var.gateway_ip}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "master" {
@@ -64,12 +63,11 @@ module "master" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
   ip_addresses     = ["${var.master_ips}"]
-  machine_cidr     = "${var.machine_cidr}"
+  gateway_ip       = "${var.gateway_ip}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "worker_small" {
@@ -88,12 +86,11 @@ module "worker_small" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
   ip_addresses     = ["${var.worker_small_ips}"]
-  machine_cidr     = "${var.machine_cidr}"
+  gateway_ip       = "${var.gateway_ip}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "worker_medium" {
@@ -112,12 +109,11 @@ module "worker_medium" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
   ip_addresses     = ["${var.worker_medium_ips}"]
-  machine_cidr     = "${var.machine_cidr}"
+  gateway_ip       = "${var.gateway_ip}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "worker_large" {
@@ -136,12 +132,11 @@ module "worker_large" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
   ip_addresses     = ["${var.worker_large_ips}"]
-  machine_cidr     = "${var.machine_cidr}"
+  gateway_ip       = "${var.gateway_ip}"
+  machine_cidr     = "${var.network_cidr}"
 }
 
 module "infra" {
@@ -160,10 +155,63 @@ module "infra" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
+  ip_addresses     = ["${var.infra_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
+  machine_cidr     = "${var.network_cidr}"
+}
+
+module "svc" {
+  source = "./machine"
+
+  name             = "svc"
+  instance_count   = "${var.svc_count}"
+  ignition         = "${var.svc_ignition}"
+  num_cpu          = "${var.svc_num_cpu}"
+  memory           = "${var.svc_memory}"
+  disk_size        = "${var.svc_disk_size}"
+  resource_pool_id = "${module.resource_pool.pool_id}"
+  folder           = "${module.folder.path}"
+  datastore        = "${var.vsphere_datastore}"
+  network          = "${var.vm_network}"
+  datacenter_id    = "${data.vsphere_datacenter.dc.id}"
+  template         = "${var.vm_template}"
+  cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  ipam             = "${var.ipam}"
-  ipam_token       = "${var.ipam_token}"
-  ip_addresses     = ["${var.infra_ips}"]
-  machine_cidr     = "${var.machine_cidr}"
+  ip_addresses     = ["${var.svc_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
+  machine_cidr     = "${var.network_cidr}"
 }
+
+
+/*
+output "bootstrap" {
+  value = var.bootstrap_complete ? [ ] : [ zipmap(compact(flatten(module.bootstrap.vm_names)), compact(flatten(module.bootstrap.vm_ips))) ]
+}
+
+output "masters" {
+  value = var.master_count == "0" ? [ ] : [ zipmap(compact(flatten(module.master.vm_names)), compact(flatten(module.master.vm_ips))) ]
+}
+
+output "small_workers" {
+  value = var.worker_small_count == "0" ? [ ] : [ zipmap(compact(flatten(module.worker_small.vm_names)), compact(flatten(module.worker_small.vm_ips))) ]
+}
+
+output "medium_workers" {
+  value = var.worker_medium_count == "0" ? [ ] : [ zipmap(compact(flatten(module.worker_medium.vm_names)), compact(flatten(module.worker_medium.vm_ips))) ]
+}
+
+output "large_workers" {
+  value = var.worker_large_count == "0" ? [ ] : [ zipmap(compact(flatten(module.worker_large.vm_names)), compact(flatten(module.worker_large.vm_ips))) ]
+}
+
+output "infras" {
+  value = var.infra_count == "0" ? [ ] : [ zipmap(compact(flatten(module.infra.vm_names)), compact(flatten(module.infra.vm_ips))) ]
+}
+
+output "svcs" {
+  value = var.svc_count == "0" ? [ ] : [ zipmap(compact(flatten(module.svc.vm_names)), compact(flatten(module.svc.vm_ips))) ]
+}
+*/
