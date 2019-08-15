@@ -69,9 +69,9 @@ variable "dns2" {
 }
 
 variable "gateway_ip" {
-  type = number
+  type = "string"
 }
 
-variable "start_ip" {
-  type = number
+variable "ip_addresses" {
+  type = "list"
 }

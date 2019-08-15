@@ -80,9 +80,8 @@ variable "network_cidr" {
 }
 
 variable "gateway_ip" {
-  type    = number
-  default = 254
-  description = "The position of the gw in the subnet. In /24, this will be the last octet."
+  type    = "string"
+  description = "The default gw in the internal subnet."
 }
 
 /////////
@@ -101,6 +100,11 @@ variable "bootstrap_ignition_url" {
 variable "bootstrap_start_ip" {
   type    = number
   default = 250
+}
+
+variable "bootstrap_ip" {
+  type    = "string"
+  default = ""
 }
 
 variable "bootstrap_num_cpu" {
@@ -137,6 +141,11 @@ variable "master_start_ip" {
   default = 10
 }
 
+variable "master_ips" {
+  type    = "list"
+  default = []
+}
+
 variable "master_num_cpu" {
   type = "string"
   default = "4"
@@ -144,7 +153,7 @@ variable "master_num_cpu" {
 
 variable "master_memory" {
   type = "string"
-  default = "8192"
+  default = "12228"
 }
 
 variable "master_disk_size" {
@@ -164,12 +173,17 @@ variable "worker_ignition" {
 // Small Workers
 variable "worker_small_count" {
   type    = "string"
-  default = "2"
+  default = "0"
 }
 
 variable "worker_small_start_ip" {
   type    = number
   default = 25
+}
+
+variable "worker_small_ips" {
+  type    = "list"
+  default = []
 }
 
 variable "worker_small_num_cpu" {
@@ -200,6 +214,11 @@ variable "worker_medium_start_ip" {
   default = 83
 }
 
+variable "worker_medium_ips" {
+  type    = "list"
+  default = []
+}
+
 variable "worker_medium_num_cpu" {
   type = "string"
   default = "4"
@@ -226,6 +245,11 @@ variable "worker_large_count" {
 variable "worker_large_start_ip" {
   type    = number
   default = 141
+}
+
+variable "worker_large_ips" {
+  type    = "list"
+  default = []
 }
 
 variable "worker_large_num_cpu" {
@@ -256,6 +280,11 @@ variable "infra_start_ip" {
   default = 15
 }
 
+variable "infra_ips" {
+  type    = "list"
+  default = []
+}
+
 variable "infra_num_cpu" {
   type = "string"
   default = "2"
@@ -280,7 +309,7 @@ variable "infra_disk_size" {
 
 variable "svc_count" {
   type    = "string"
-  default = "2"
+  default = "0"
 }
 
 variable "svc_ignition" {
@@ -291,6 +320,11 @@ variable "svc_ignition" {
 variable "svc_start_ip" {
   type    = number
   default = 5
+}
+
+variable "svc_ips" {
+  type    = "list"
+  default = []
 }
 
 variable "svc_num_cpu" {

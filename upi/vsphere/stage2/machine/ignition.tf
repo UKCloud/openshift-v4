@@ -1,6 +1,6 @@
 locals {
   mask = "${element(split("/", var.machine_cidr), 1)}"
-  gw   = "${cidrhost(var.machine_cidr,var.gateway_ip)}"    
+  gw   = "${var.gateway_ip}"    
 
   ignition_encoded = "data:text/plain;charset=utf-8;base64,${base64encode(var.ignition)}"
 }
@@ -31,20 +31,13 @@ BOOTPROTO=none
 NAME=ens192
 DEVICE=ens192
 ONBOOT=yes
-IPADDR=${cidrhost(var.machine_cidr,var.start_ip + count.index)}
+IPADDR=${var.ip_addresses[0][count.index]}
 PREFIX=${local.mask}
 GATEWAY=${local.gw}
 DOMAIN=${var.cluster_domain}
 DNS1=${var.dns1}
 DNS2=${var.dns2}
 EOF
-  }
-}
-
-data "null_data_source" "values" {
-  count = "${var.instance_count}"
-  inputs = {
-    server_ip = "${cidrhost(var.machine_cidr,var.start_ip + count.index)}"
   }
 }
 

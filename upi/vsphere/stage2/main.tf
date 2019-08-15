@@ -40,10 +40,10 @@ module "bootstrap" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  start_ip         = var.bootstrap_start_ip
-  gateway_ip       = var.gateway_ip
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
+  ip_addresses     = ["${compact(list(var.bootstrap_ip))}"]
+  gateway_ip       = "${var.gateway_ip}"
   machine_cidr     = "${var.network_cidr}"
 }
 
@@ -63,10 +63,10 @@ module "master" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  start_ip         = var.master_start_ip
-  gateway_ip       = var.gateway_ip
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
+  ip_addresses     = ["${var.master_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
   machine_cidr     = "${var.network_cidr}"
 }
 
@@ -86,10 +86,10 @@ module "worker_small" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  start_ip         = var.worker_small_start_ip
-  gateway_ip       = var.gateway_ip
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
+  ip_addresses     = ["${var.worker_small_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
   machine_cidr     = "${var.network_cidr}"
 }
 
@@ -109,10 +109,10 @@ module "worker_medium" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  start_ip         = var.worker_medium_start_ip
-  gateway_ip       = var.gateway_ip
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
+  ip_addresses     = ["${var.worker_medium_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
   machine_cidr     = "${var.network_cidr}"
 }
 
@@ -132,10 +132,10 @@ module "worker_large" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  start_ip         = var.worker_large_start_ip
-  gateway_ip       = var.gateway_ip
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
+  ip_addresses     = ["${var.worker_large_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
   machine_cidr     = "${var.network_cidr}"
 }
 
@@ -155,10 +155,10 @@ module "infra" {
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
   cluster_domain   = "${var.cluster_domain}"
-  dns1             = "${var.dns1}"
-  dns2             = "${var.dns2}"
-  start_ip         = var.infra_start_ip
-  gateway_ip       = var.gateway_ip
+  dns1             = "${var.svc_count == "0" ? var.dns1 : var.svc_ips[0] }"
+  dns2             = "${var.svc_count == "0" ? var.dns2 : var.svc_ips[var.svc_count - 1] }"
+  ip_addresses     = ["${var.infra_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
   machine_cidr     = "${var.network_cidr}"
 }
 
@@ -180,11 +180,13 @@ module "svc" {
   cluster_domain   = "${var.cluster_domain}"
   dns1             = "${var.dns1}"
   dns2             = "${var.dns2}"
-  start_ip         = var.svc_start_ip
-  gateway_ip       = var.gateway_ip
+  ip_addresses     = ["${var.svc_ips}"]
+  gateway_ip       = "${var.gateway_ip}"
   machine_cidr     = "${var.network_cidr}"
 }
 
+
+/*
 output "bootstrap" {
   value = var.bootstrap_complete ? [ ] : [ zipmap(compact(flatten(module.bootstrap.vm_names)), compact(flatten(module.bootstrap.vm_ips))) ]
 }
@@ -212,4 +214,4 @@ output "infras" {
 output "svcs" {
   value = var.svc_count == "0" ? [ ] : [ zipmap(compact(flatten(module.svc.vm_names)), compact(flatten(module.svc.vm_ips))) ]
 }
-
+*/
