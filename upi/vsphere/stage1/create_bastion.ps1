@@ -21,7 +21,7 @@ write-host "Config Object: " ($ClusterConfig | Format-List | Out-String)
 write-host "clusterid: " $ClusterConfig.clusterid
 write-host "bastion hostname: " $ClusterConfig.bastion.hostname
 write-host "number of masters: " $ClusterConfig.masters.Count
-
+write-host "second master name: " $ClusterConfig.masters[1].hostname
 
 $bastion_ip = $ClusterConfig.bastion.ipaddress
 $bastion_mask_prefix = $ClusterConfig.network.maskprefix
