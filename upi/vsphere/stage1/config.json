@@ -38,7 +38,7 @@
       "ipaddress": "192.168.2.25"
     },
     {
-      hostname": "worker-1",
+      "hostname": "worker-1",
       "ipaddress": "192.168.2.26"
     }
   ],
