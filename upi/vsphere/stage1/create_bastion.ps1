@@ -8,6 +8,7 @@ Install-Module EPS
 
 $ClusterConfig = Get-Content -Raw -Path ./config.json | ConvertFrom-Json
 
+# Output the object for a lark
 write-host "Config Object: " ($ClusterConfig | Format-List | Out-String)
 
 # Some experiments with arrays
