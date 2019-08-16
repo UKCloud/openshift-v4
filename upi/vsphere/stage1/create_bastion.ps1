@@ -2,11 +2,17 @@
 Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 Install-Module EPS
 
-#$vcenterIp = (get-item Env:vcenterip).value
-#$vcenterUser = (get-item Env:vcenterUser).value
-#$vcenterPassword = (get-item Env:vcenterPassword).value
+
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+Install-Module VMware.PowerCLI,PowerNSX
+Set-PowerCLIConfiguration -InvalidCertificateAction:ignore
 
 $ClusterConfig = Get-Content -Raw -Path ./config.json | ConvertFrom-Json
+$SecretConfig = Get-Content -Raw -Path ./secrets.json | ConvertFrom-Json
+
+$vcenterIp = $ClusterConfig.vsphere.vsphere_server
+$vcenterUser = $SecretConfig.vcenterdeploy.username
+$vcenterPassword = $SecretConfig.vcenterdeploy.password
 
 # Output the object for a lark
 write-host "Config Object: " ($ClusterConfig | Format-List | Out-String)
@@ -38,3 +44,5 @@ $bastion_ign = Invoke-EpsTemplate -Path ./bastion_ignition.tmpl
 
 write-host -ForegroundColor cyan "Created base64: " $ifcfgbase64
 write-host -ForegroundColor green "Created ignition: " $bastion_ign
+
+Connect-VIServer –Server $vcenterIp -username $vcenterUser -password $vcenterPassword
