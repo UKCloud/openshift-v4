@@ -1,0 +1,47 @@
+{
+  "bastion": {
+    "hostname": "bastion-0",
+    "ipaddress": "192.168.2.1"
+  },
+  "bootstrap": {
+    "hostname": "bootstrap-0",
+    "ipaddress": "192.168.2.250"
+  },
+
+  "svcs": [
+    {
+      "hostname": "svc-0",
+      "ipaddress": "192.168.2.15"
+    },
+    {
+      "hostname": "svc-1",
+      "ipaddress": "192.168.2.16"
+    }
+  ],
+  "masters": [
+    {
+      "hostname": "master-0",
+      "ipaddress": "192.168.2.10"
+    },
+    {
+      "hostname": "master-1",
+      "ipaddress": "192.168.2.11"
+    },
+    {
+      "hostname": "master-2",
+      "ipaddress": "192.168.2.12"
+    } 
+  ],
+  "network": {
+    "networkip": "192.168.2.0",
+    "maskprefix": "24",
+    "defaultgw": "192.168.2.254",
+    "upstreamdns1": "1.1.1.1",
+    "upstreamdns2": "1.0.0.1"
+  },
+  "loadbalancer": {
+    "externalvip": "192.168.1.2",
+    "internalvip": "192.168.2.254"
+  }
+}
+
