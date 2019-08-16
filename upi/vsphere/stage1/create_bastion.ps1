@@ -1,11 +1,16 @@
 
 Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-Install-Module EPS
+If ( ! (Get-module EPS )) {
+ Install-Module EPS
+}
 
 
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-Install-Module VMware.PowerCLI,PowerNSX
-Set-PowerCLIConfiguration -InvalidCertificateAction:ignore
+Set-PowerCLIConfiguration -Scope User -Confirm:$false -ParticipateInCEIP $false
+Set-PowerCLIConfiguration -InvalidCertificateAction:ignore -Confirm:$false
+
+If ( ! (Get-module VMware.PowerCLI )) { 
+ Install-Module VMware.PowerCLI
+}
 
 $ClusterConfig = Get-Content -Raw -Path ./config.json | ConvertFrom-Json
 $SecretConfig = Get-Content -Raw -Path ./secrets.json | ConvertFrom-Json
@@ -40,9 +45,22 @@ $ifcfgbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($
 $hostnamebase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_hostname))
 
 $bastion_ign = Invoke-EpsTemplate -Path ./bastion_ignition.tmpl
-
+$bastion_ignbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_ign))
 
 write-host -ForegroundColor cyan "Created base64: " $ifcfgbase64
 write-host -ForegroundColor green "Created ignition: " $bastion_ign
 
 Connect-VIServer –Server $vcenterIp -username $vcenterUser -password $vcenterPassword
+
+$portgroup = Get-VDPortgroup -Name $ClusterConfig.vsphere.vsphere_network
+
+$template = Get-VM -Name $ClusterConfig.vsphere.rhcos_template
+$datastore = Get-Datastore -Name $ClusterConfig.vsphere.vsphere_datastore
+$resourcePool = Get-Cluster -Name $ClusterConfig.vsphere.vsphere_cluster ### Temporary! This needs to be modified to point to a resource pool, probably precreated in vCloud?
+
+$vm = New-VM -Name $bastion_hostname -VM $template -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
+$vm | Set-VM -NumCpu 1 -MemoryGB 2 -confirm:$false
+$vm | Get-NetworkAdapter | Set-NetworkAdapter -Portgroup $portgroup -confirm:$false
+$vm | New-AdvancedSetting -Name "guestinfo.ignition.config.data" -Value $bastion_ignbase64 -confirm:$false
+$vm | New-AdvancedSetting -Name "guestinfo.ignition.config.data.encoding" -Value "base64" -confirm:$false
+$vm | New-AdvancedSetting -Name "disk.EnableUUID" -Value "TRUE" -confirm:$false
