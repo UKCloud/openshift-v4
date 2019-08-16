@@ -44,7 +44,7 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nConditionFirstBoot=yesn[Service]\nType=idlenExecStart=/sbin/rebootn[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nConditionFirstBoot=yes\n[Service]\nType=idlenExecStart=/sbin/reboot\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "restart.service"
       }
