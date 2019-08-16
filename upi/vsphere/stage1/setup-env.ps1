@@ -13,6 +13,9 @@ $vcenterPassword = (get-item Env:vcenterPassword).value
 $transportZoneName = "VXLAN-Transport"
 $edgeInternalIp = "10.254.0.254"
 $edgeExternalIp = "192.168.1.29"
+$datastoreName = "vsanDatastore"
+$templateName = "rhcos-latest-template"
+$resourcePoolName = "openshift-v4-cluster"
 $edgeName = "vse-FirstEdge (421fbe8e-0f5b-4d52-b705-a738885d9215)"
 $masterIps = @("10.254.0.10","10.254.0.11","10.254.0.12")
 $infraIps = @("10.254.0.20","10.254.0.21")
@@ -89,3 +92,17 @@ Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name clust
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-int-22623 -Description "Cluster API port for internal 22623" -IpAddress $edgeInternalIp -Protocol TCP -Port 22623 -DefaultPool $masterPool -Enabled -ApplicationProfile $appProfile
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-https -Description "HTTPs traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
+
+$virtualNetworkXml = [xml]$sw.outerxml
+$dvPortGroupId = $virtualNetworkXml.virtualWire.vdsContextWithBacking.backingValue
+$network = Get-VDPortgroup | Where-Object {$_.key -eq $dvPortGroupId }
+
+$template = Get-Template -Name $templateName
+$datastore = Get-Datastore -Name $datastoreName
+$resourcePool = Get-ResourcePool -Name $resourcePoolName
+
+$vm = New-VM -Name rhcos-test-vm -Template $template -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
+$vm | Get-NetworkAdapter | Set-NetworkAdapter -Portgroup $network -confirm:$false
+$vm | New-AdvancedSetting -Name "guestinfo.ignition.config.data" -Value "somebase64hex" -confirm:$false
+$vm | New-AdvancedSetting -Name "guestinfo.ignition.config.data.encoding" -Value "base64" -confirm:$false
+$vm | New-AdvancedSetting -Name "disk.EnableUUID" -Value "TRUE" -confirm:$false
