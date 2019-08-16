@@ -57,10 +57,11 @@ Connect-VIServer –Server $vcenterIp -username $vcenterUser -password $vcenterP
 $portgroup = Get-VDPortgroup -Name $ClusterConfig.vsphere.vsphere_network
 $template = Get-VM -Name $ClusterConfig.vsphere.rhcos_template
 $datastore = Get-Datastore -Name $ClusterConfig.vsphere.vsphere_datastore
-$resourcePool = Get-Cluster -Name $ClusterConfig.vsphere.vsphere_cluster ### Temporary! This needs to be modified to point to a resource pool, probably precreated in vCloud?
+$resourcePool = Get-ResourcePool -Name $ClusterConfig.vsphere.vsphere_resourcepool
+$folder = Get-Folder -Name $ClusterConfig.vsphere.vsphere_folder
 
 # Create VM, cloning an existing VM
-$vm = New-VM -Name $bastion_hostname -VM $template -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
+$vm = New-VM -Name $bastion_hostname -VM $template -Location $folder -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
 
 # Change config on VM including setting ignition as a property
 $vm | Set-VM -NumCpu 1 -MemoryGB 2 -confirm:$false
@@ -68,3 +69,6 @@ $vm | Get-NetworkAdapter | Set-NetworkAdapter -Portgroup $portgroup -confirm:$fa
 $vm | New-AdvancedSetting -Name "guestinfo.ignition.config.data" -Value $bastion_ignbase64 -confirm:$false
 $vm | New-AdvancedSetting -Name "guestinfo.ignition.config.data.encoding" -Value "base64" -confirm:$false
 $vm | New-AdvancedSetting -Name "disk.EnableUUID" -Value "TRUE" -confirm:$false
+
+# Power on the new VM
+$vm | Start-VM -confirm:$false
