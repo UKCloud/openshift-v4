@@ -1,0 +1,11 @@
+TYPE=Ethernet
+BOOTPROTO=none
+NAME=ens192
+DEVICE=ens192
+ONBOOT=yes
+IPADDR=<%= $bastion_ip %>
+PREFIX=<%= $bastion_mask_prefix %>
+GATEWAY=<%= $bastion_dfgw %>
+DOMAIN=<%= $cluster_domain %>
+DNS1=<%= $bastion_dns1 %>
+DNS2=<%= $bastion_dns2 %>
