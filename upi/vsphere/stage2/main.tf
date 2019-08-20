@@ -9,20 +9,11 @@ data "vsphere_datacenter" "dc" {
   name = "${var.vsphere_datacenter}"
 }
 
-module "folder" {
-  source = "./folder"
-
-  path          = "${var.cluster_id}"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+data "vsphere_resource_pool" "pool" {
+  name          = "${var.vsphere_resourcepool}"
+  datacenter_id    = "${data.vsphere_datacenter.dc.id}"
 }
 
-module "resource_pool" {
-  source = "./resource_pool"
-
-  name            = "${var.cluster_id}"
-  datacenter_id   = "${data.vsphere_datacenter.dc.id}"
-  vsphere_cluster = "${var.vsphere_cluster}"
-}
 
 module "bootstrap" {
   source = "./machine"
@@ -33,9 +24,9 @@ module "bootstrap" {
   num_cpu          = "${var.bootstrap_num_cpu}"
   memory           = "${var.bootstrap_memory}"
   disk_size        = "${var.bootstrap_disk_size}"
-  resource_pool_id = "${module.resource_pool.pool_id}"
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore        = "${var.vsphere_datastore}"
-  folder           = "${module.folder.path}"
+  folder           = "${var.vsphere_folder}"
   network          = "${var.vm_network}"
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
   template         = "${var.vm_template}"
@@ -56,8 +47,8 @@ module "master" {
   num_cpu          = "${var.master_num_cpu}"
   memory           = "${var.master_memory}"
   disk_size        = "${var.master_disk_size}"
-  resource_pool_id = "${module.resource_pool.pool_id}"
-  folder           = "${module.folder.path}"
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
+  folder           = "${var.vsphere_folder}"
   datastore        = "${var.vsphere_datastore}"
   network          = "${var.vm_network}"
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
@@ -79,8 +70,8 @@ module "worker_small" {
   num_cpu          = "${var.worker_small_num_cpu}"
   memory           = "${var.worker_small_memory}"
   disk_size        = "${var.worker_small_disk_size}"
-  resource_pool_id = "${module.resource_pool.pool_id}"
-  folder           = "${module.folder.path}"
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
+  folder           = "${var.vsphere_folder}"
   datastore        = "${var.vsphere_datastore}"
   network          = "${var.vm_network}"
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
@@ -102,8 +93,8 @@ module "worker_medium" {
   num_cpu          = "${var.worker_medium_num_cpu}"
   memory           = "${var.worker_medium_memory}"
   disk_size        = "${var.worker_medium_disk_size}"
-  resource_pool_id = "${module.resource_pool.pool_id}"
-  folder           = "${module.folder.path}"
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
+  folder           = "${var.vsphere_folder}"
   datastore        = "${var.vsphere_datastore}"
   network          = "${var.vm_network}"
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
@@ -125,8 +116,8 @@ module "worker_large" {
   num_cpu          = "${var.worker_large_num_cpu}"
   memory           = "${var.worker_large_memory}"
   disk_size        = "${var.worker_large_disk_size}"
-  resource_pool_id = "${module.resource_pool.pool_id}"
-  folder           = "${module.folder.path}"
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
+  folder           = "${var.vsphere_folder}"
   datastore        = "${var.vsphere_datastore}"
   network          = "${var.vm_network}"
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
@@ -148,8 +139,8 @@ module "infra" {
   num_cpu          = "${var.infra_num_cpu}"
   memory           = "${var.infra_memory}"
   disk_size        = "${var.infra_disk_size}"
-  resource_pool_id = "${module.resource_pool.pool_id}"
-  folder           = "${module.folder.path}"
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
+  folder           = "${var.vsphere_folder}"
   datastore        = "${var.vsphere_datastore}"
   network          = "${var.vm_network}"
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
@@ -171,8 +162,8 @@ module "svc" {
   num_cpu          = "${var.svc_num_cpu}"
   memory           = "${var.svc_memory}"
   disk_size        = "${var.svc_disk_size}"
-  resource_pool_id = "${module.resource_pool.pool_id}"
-  folder           = "${module.folder.path}"
+  resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
+  folder           = "${var.vsphere_folder}"
   datastore        = "${var.vsphere_datastore}"
   network          = "${var.vm_network}"
   datacenter_id    = "${data.vsphere_datacenter.dc.id}"
