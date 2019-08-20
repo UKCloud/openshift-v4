@@ -16,14 +16,15 @@ data "vsphere_virtual_machine" "template" {
 resource "vsphere_virtual_machine" "vm" {
   count = "${var.instance_count}"
 
-  name             = "${var.name}-${count.index}"
-  resource_pool_id = "${var.resource_pool_id}"
-  datastore_id     = "${data.vsphere_datastore.datastore.id}"
-  num_cpus         = "${var.num_cpu}"
-  memory           = "${var.memory}"
-  guest_id         = "other26xLinux64Guest"
-  folder           = "${var.folder}"
-  enable_disk_uuid = "true"
+  name                 = "${var.name}-${count.index}"
+  resource_pool_id     = "${var.resource_pool_id}"
+  datastore_id         = "${data.vsphere_datastore.datastore.id}"
+  num_cpus             = "${var.num_cpu}"
+  num_cores_per_socket = "${var.num_cpu}"
+  memory               = "${var.memory}"
+  guest_id             = "other26xLinux64Guest"
+  folder               = "${var.folder}"
+  enable_disk_uuid     = "true"
 
   wait_for_guest_net_timeout  = "0"
   wait_for_guest_net_routable = "false"

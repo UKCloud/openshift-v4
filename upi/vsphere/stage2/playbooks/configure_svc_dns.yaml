@@ -1,0 +1,27 @@
+- hosts: svcs
+  tasks:
+  - name: Create /etc/coredns directory
+    file:
+      path: /etc/coredns
+      state: directory
+  - name: Make a Zonefile
+    template:
+      src: templates/zonefile.j2
+      dest: /etc/coredns/{{ domain_suffix }}.zone
+  - name: Make a Corefile config
+    template:
+      src: templates/Corefile.j2
+      dest: /etc/coredns/Corefile
+  - name: Pull CoreDNS container
+    shell: podman pull docker.io/coredns/coredns
+    ignore_errors: True
+  - name: Install Unit file for coredns.service
+    template: 
+      src: templates/coredns.service.j2
+      dest: /etc/systemd/system/coredns.service
+  - name: Enable coredns.service
+    systemd: 
+      state: started
+      enabled: yes
+      name: coredns
+      daemon_reload: yes
