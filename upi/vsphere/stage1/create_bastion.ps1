@@ -55,13 +55,14 @@ Connect-VIServer –Server $vcenterIp -username $vcenterUser -password $vcenterP
 
 # Generate objects needed for VM creation and config
 $portgroup = Get-VDPortgroup -Name $ClusterConfig.vsphere.vsphere_network
-$template = Get-VM -Name $ClusterConfig.vsphere.rhcos_template
+#$template = Get-VM -Name $ClusterConfig.vsphere.rhcos_template
+$template = Get-Template -Name $ClusterConfig.vsphere.rhcos_template
 $datastore = Get-Datastore -Name $ClusterConfig.vsphere.vsphere_datastore
 $resourcePool = Get-ResourcePool -Name $ClusterConfig.vsphere.vsphere_resourcepool
 $folder = Get-Folder -Name $ClusterConfig.vsphere.vsphere_folder
 
 # Create VM, cloning an existing VM
-$vm = New-VM -Name $bastion_hostname -VM $template -Location $folder -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
+$vm = New-VM -Name $bastion_hostname -Template $template -Location $folder -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
 
 # Change config on VM including setting ignition as a property
 $vm | Set-VM -NumCpu 1 -MemoryGB 2 -confirm:$false

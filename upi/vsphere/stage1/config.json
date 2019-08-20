@@ -61,12 +61,12 @@
   "vsphere": {
     "vsphere_server": "192.168.1.125",
     "vsphere_cluster": "Cluster",
-    "vsphere_resourcepool": "openshift-v4-cluster",
-    "vsphere_folder": "openshift-v4-cluster",
+    "vsphere_resourcepool": "ge-pool",
+    "vsphere_folder": "ge-folder",
     "vsphere_datacenter": "Datacenter",
     "vsphere_datastore": "vsanDatastore",
     "vsphere_network": "vxw-dvs-49-virtualwire-2-sid-5001-OpenShift4",
-    "rhcos_template": "rhcos-4.1-latest"
+    "rhcos_template": "rhcos-latest-template"
   }
 }
 
