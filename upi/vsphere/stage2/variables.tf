@@ -378,34 +378,40 @@ variable "bootstrap" {
 variable "svcs" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 
 variable "masters" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 
 variable "infras" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 
 variable "smallworkers" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 variable "mediumworkers" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 variable "largeworkers" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 variable "network" {

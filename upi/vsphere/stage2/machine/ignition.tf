@@ -13,7 +13,7 @@ data "ignition_file" "hostname" {
   mode       = "420"
 
   content {
-    content = "${var.name}-${count.index}"
+    content = "${var.instance_count == "0" ? "NULL" : var.names[count.index]}"
   }
 }
 
@@ -31,7 +31,7 @@ BOOTPROTO=none
 NAME=ens192
 DEVICE=ens192
 ONBOOT=yes
-IPADDR=${var.ip_addresses[0][count.index]}
+IPADDR=${var.ip_addresses[count.index]}
 PREFIX=${local.mask}
 GATEWAY=${local.gw}
 DOMAIN=${var.cluster_domain}
