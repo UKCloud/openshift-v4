@@ -135,7 +135,7 @@ module "infra" {
 
   name             = "infra"
   instance_count   = "${var.infra_count}"
-  ignition         = "${var.worker_ignition}"
+  ignition         = "${var.infra_ignition}"
   num_cpu          = "${var.infra_num_cpu}"
   memory           = "${var.infra_memory}"
   disk_size        = "${var.infra_disk_size}"

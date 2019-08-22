@@ -285,6 +285,10 @@ variable "infra_count" {
   default = "0"
 }
 
+variable "infra_ignition" {
+  type = "string"
+}
+
 variable "infra_start_ip" {
   type    = number
   default = 15

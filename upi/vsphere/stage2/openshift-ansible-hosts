@@ -17,6 +17,7 @@ master-2.cluster.ge-test ip=192.168.2.12
 [workers]
 worker-s-0.cluster.ge-test ip=192.168.2.25
 worker-s-1.cluster.ge-test ip=192.168.2.26
+worker-s-2.cluster.ge-test ip=192.168.2.27
 
 [infras]
 
