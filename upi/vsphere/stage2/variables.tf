@@ -47,12 +47,6 @@ variable "vm_template" {
   description = "This is the name of the VM template to clone."
 }
 
-variable "vm_network" {
-  type        = "string"
-  description = "This is the name of the publicly accessible network for cluster ingress and access."
-  default     = "VM Network"
-}
-
 variable "dns1" {
   type        = "string"
   description = "This is the primary dns server for the cluster; node names must be resolvable by this"
@@ -358,3 +352,92 @@ variable "svc_disk_size" {
   default = "60"
 }
 
+
+// Variables defined to match the format of config.json (named terraform.tfvars.json)
+/////////
+// OpenShift cluster variables
+/////////
+
+variable "clusterid" {
+  type        = "string"
+  description = "This cluster id must be of max length 27 and must have only alphanumeric or hyphen characters."
+}
+
+variable "basedomain" {
+  type        = "string"
+  description = "The base DNS zone to add the sub zone to."
+}
+
+// clusterdomain = $clusterid + "." + $basedomain
+
+variable "bootstrap" {
+  type        = object({hostname = string,
+                        ipaddress = string})
+}
+
+variable "svcs" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+}
+
+
+variable "masters" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+}
+
+
+variable "infras" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+}
+
+
+variable "smallworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+}
+
+variable "mediumworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+}
+
+variable "largeworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+}
+
+variable "network" {
+  type        = object({networkip = string, 
+                        maskprefix = string, 
+                        defaultgw = string, 
+                        upstreamdns1 = string, 
+                        upstreamdns2 = string })
+  description = "Network parameters"
+}
+
+// network_cidr = $networkip + "/" + $maskprefix
+
+
+variable "loadbalancer" {
+  type        = object({externalvip = string,
+                        internalvip = string})
+}
+
+variable "sshpubkey" {
+  type        = "string"
+  description = "This is the SSH key installed to allow access to the VMs"
+}
+
+variable "vsphere" {
+  type        = object({vsphere_server = string, 
+                        vsphere_cluster = string, 
+                        vsphere_resourcepool = string, 
+                        vsphere_folder = string, 
+                        vsphere_datacenter = string, 
+                        vsphere_datastore = string, 
+                        vsphere_network = string, 
+                        rhcos_template = string})
+  description = "vSphere-specific parameters"
+}
