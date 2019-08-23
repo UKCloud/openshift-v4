@@ -67,6 +67,13 @@
     "vsphere_datastore": "vsanDatastore",
     "vsphere_network": "vxw-dvs-49-virtualwire-2-sid-5001-OpenShift4",
     "rhcos_template": "rhcos-latest-template"
+  },
+  "ignition": {
+    "bootstrap_ignition_url": "",
+    "master_ignition": "",
+    "worker_ignition": "",
+    "infra_ignition": "",
+    "svc_ignition": ""
   }
 }
 
