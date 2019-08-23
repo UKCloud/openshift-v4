@@ -3,7 +3,12 @@
 * terraform
 * jq
 
-# Build a Cluster (manual execution)
+# Requirements for JSON deploy
+
+This terraform needs terraform.json.tfvars (for most parameters including ignition which must be in escaped-JSON format) and secrets.auto.tfvars.json (for vCenter username/passwords)
+
+
+# Legacy Build a Cluster (manual execution)
 
 1. Create an install-config.yaml.
 ```
