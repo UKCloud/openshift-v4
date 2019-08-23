@@ -8,7 +8,7 @@
 This terraform needs terraform.json.tfvars (for most parameters including ignition which must be in escaped-JSON format) and secrets.auto.tfvars.json (for vCenter username/passwords)
 
 
-# PowerShell to add ignition details (post-deploy)
+# PowerShell to add ignition details (after openshift-install has been ran)
 
 syntax:
 ```pwsh ./add_ignition.ps1 <inputfile> <outputfile> <masterignfile> <workerignfile> <infraignfile> <svcignfile> <bootstrapurl>```
