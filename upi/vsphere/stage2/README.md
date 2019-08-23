@@ -31,8 +31,9 @@ sshKey: YOUR_SSH_KEY
 
 2. Run `openshift-install create ignition-configs`.
 
-3. Fill out a terraform.tfvars file with the ignition configs generated.
-There is an example terraform.tfvars file in this directory named terraform.tfvars.example. 
+3. Fill out a terraform.tfvars.json file with the ignition configs generated. (any " or {} in the config must be escaped)
+
+Fill out the vCenter username and password in secrets.auto.tfvars.json (see secrets.auto.tfvars.json.example) 
 
 The bootstrap ignition config must be placed in a URL location that will be accessible by the bootstrap machine. For example, you could store the bootstrap ignition config in a gist.
 
