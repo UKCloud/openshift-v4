@@ -2,7 +2,7 @@
 # This generates ignition for the Bastion
 # and then creates and configures the VM
 ###########################################################################
-# Inputs are from ./config.json, 
+# Inputs are from ./config.json,
 # username/passiword for vCenter is from ./secrets.json
 ###########################################################################
 
@@ -11,7 +11,7 @@ Install-Module EPS
 
 Set-PowerCLIConfiguration -Scope User -Confirm:$false -ParticipateInCEIP $false
 Set-PowerCLIConfiguration -InvalidCertificateAction:ignore -Confirm:$false
-Install-Module VMware.PowerCLI
+#Install-Module VMware.PowerCLI
 
 # Read in the configs
 $ClusterConfig = Get-Content -Raw -Path ./config.json | ConvertFrom-Json
@@ -24,25 +24,37 @@ $vcenterPassword = $SecretConfig.vcenterdeploy.password
 # Some experiments with arrays
 write-host "clusterid: " $ClusterConfig.clusterid
 write-host "bastion hostname: " $ClusterConfig.bastion.hostname
+write-host "bastion ip: " $ClusterConfig.bastion.ipaddress
 write-host "number of masters: " $ClusterConfig.masters.Count
 write-host "second master name: " $ClusterConfig.masters[1].hostname
 
 # Extract some vars - not really needed but ...
-$bastion_ip = $ClusterConfig.bastion.ipaddress
-$bastion_mask_prefix = $ClusterConfig.network.maskprefix
-$bastion_dfgw = $ClusterConfig.network.defaultgw
-$cluster_domain = ($ClusterConfig.clusterid + "." + $ClusterConfig.basedomain)
-$bastion_dns1 = $ClusterConfig.network.upstreamdns1
-$bastion_dns2 = $ClusterConfig.network.upstreamdns2
-$bastion_hostname = $ClusterConfig.bastion.hostname
+$global:bastion_ip = $ClusterConfig.bastion.ipaddress
+$global:bastion_mask_prefix = $ClusterConfig.network.maskprefix
+$global:bastion_dfgw = $ClusterConfig.network.defaultgw
+$global:cluster_domain = ($ClusterConfig.clusterid + "." + $ClusterConfig.basedomain)
+$global:bastion_dns1 = $ClusterConfig.network.upstreamdns1
+$global:bastion_dns2 = $ClusterConfig.network.upstreamdns2
+$global:bastion_hostname = $ClusterConfig.bastion.hostname
 
-$id_rsa_pub = $ClusterConfig.sshpubkey
+$global:id_rsa_pub = $ClusterConfig.sshpubkey
 
 # Generate the ifcfg script and convert to base64
 $ifcfg = Invoke-EpsTemplate -Path ./ifcfg.tmpl
-$ifcfgbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($ifcfg))
 
-$hostnamebase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_hostname))
+$global:ifcfgbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($ifcfg))
+write-host $ifcfg
+write-host $ifcfgbase64
+
+#$global:configbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($ClusterConfig))
+$global:configbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('./config.json'))
+write-host $configbase64
+
+
+$global:hostnamebase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_hostname))
+write-host $bastion_hostname
+write-host $hostnamebase64
+
 
 # Generate the Ignition config and convert to base64
 $bastion_ign = Invoke-EpsTemplate -Path ./bastion_ignition.tmpl
