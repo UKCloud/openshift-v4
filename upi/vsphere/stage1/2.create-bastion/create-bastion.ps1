@@ -42,7 +42,6 @@ $global:ifcfgbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.Get
 write-host $ifcfg
 write-host $ifcfgbase64
 
-#$global:configbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($ClusterConfig))
 $global:configbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('../config.json'))
 write-host $configbase64
 
@@ -53,7 +52,7 @@ write-host $hostnamebase64
 
 
 # Generate the Ignition config and convert to base64
-$bastion_ign = Invoke-EpsTemplate -Path ./bastion_ignition.tmpl
+$bastion_ign = Invoke-EpsTemplate -Path ./bastion-ignition.tmpl
 $bastion_ignbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_ign))
 
 write-host -ForegroundColor green "Created ignition: " $bastion_ign
