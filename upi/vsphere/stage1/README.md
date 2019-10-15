@@ -1,4 +1,4 @@
-# Stage 1 manual deployment gyude
+# Stage 1 manual deployment guide
 
 
 Ensure that the NSX Logical Switch and the Edge LB/DHCP pools don't already exist
