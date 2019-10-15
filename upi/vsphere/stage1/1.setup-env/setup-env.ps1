@@ -1,13 +1,13 @@
-sudo yum install https://github.com/PowerShell/PowerShell/releases/download/v6.2.0/powershell-6.2.0-1.rhel.7.x86_64.rpm
+Set-PowerCLIConfiguration -Scope User -Confirm:$false -ParticipateInCEIP $false
+Set-PowerCLIConfiguration -InvalidCertificateAction:ignore -Confirm:$false
 
+$ClusterConfig = Get-Content -Raw -Path ../config.json | ConvertFrom-Json
+$SecretConfig = Get-Content -Raw -Path ../secrets.json | ConvertFrom-Json
 
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-Install-Module VMware.PowerCLI,PowerNSX
-Set-PowerCLIConfiguration -InvalidCertificateAction:ignore
+$vcenterIp = $ClusterConfig.vsphere.vsphere_server
+$vcenterUser = $SecretConfig.vcenterdeploy.username
+$vcenterPassword = $SecretConfig.vcenterdeploy.password
 
-$vcenterIp = (get-item Env:vcenterip).value
-$vcenterUser = (get-item Env:vcenterUser).value
-$vcenterPassword = (get-item Env:vcenterPassword).value
 
 # Declare essential parameters
 $transportZoneName = "VXLAN-Transport"

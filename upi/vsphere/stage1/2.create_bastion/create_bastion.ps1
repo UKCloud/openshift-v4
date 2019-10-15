@@ -6,16 +6,12 @@
 # username/passiword for vCenter is from ./secrets.json
 ###########################################################################
 
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-Install-Module EPS
-
 Set-PowerCLIConfiguration -Scope User -Confirm:$false -ParticipateInCEIP $false
 Set-PowerCLIConfiguration -InvalidCertificateAction:ignore -Confirm:$false
-#Install-Module VMware.PowerCLI
 
 # Read in the configs
-$ClusterConfig = Get-Content -Raw -Path ./config.json | ConvertFrom-Json
-$SecretConfig = Get-Content -Raw -Path ./secrets.json | ConvertFrom-Json
+$ClusterConfig = Get-Content -Raw -Path ../config.json | ConvertFrom-Json
+$SecretConfig = Get-Content -Raw -Path ../secrets.json | ConvertFrom-Json
 
 $vcenterIp = $ClusterConfig.vsphere.vsphere_server
 $vcenterUser = $SecretConfig.vcenterdeploy.username
@@ -47,7 +43,7 @@ write-host $ifcfg
 write-host $ifcfgbase64
 
 #$global:configbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($ClusterConfig))
-$global:configbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('./config.json'))
+$global:configbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('../config.json'))
 write-host $configbase64
 
 
@@ -66,12 +62,20 @@ write-host -ForegroundColor green "Created ignition: " $bastion_ign
 Connect-VIServer –Server $vcenterIp -username $vcenterUser -password $vcenterPassword
 
 # Generate objects needed for VM creation and config
-$portgroup = Get-VDPortgroup -Name $ClusterConfig.vsphere.vsphere_network
+#$portgroup = Get-VDPortgroup -Name $ClusterConfig.vsphere.vsphere_network
 #$template = Get-VM -Name $ClusterConfig.vsphere.rhcos_template
 $template = Get-Template -Name $ClusterConfig.vsphere.rhcos_template
 $datastore = Get-Datastore -Name $ClusterConfig.vsphere.vsphere_datastore
 $resourcePool = Get-ResourcePool -Name $ClusterConfig.vsphere.vsphere_resourcepool
 $folder = Get-Folder -Name $ClusterConfig.vsphere.vsphere_folder
+
+# Currently the portgroup name is obtained from NSX; this can cause problems when duplicate net names 
+# are present in the vCenter
+Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
+$sw = Get-NsxLogicalSwitch -name $ClusterConfig.vsphere.vsphere_network
+$virtualNetworkXml = [xml]$sw.outerxml
+$dvPortGroupId = $virtualNetworkXml.virtualWire.vdsContextWithBacking.backingValue
+$portgroup = Get-VDPortgroup | Where-Object {$_.key -eq $dvPortGroupId }
 
 # Create VM, cloning an existing VM
 $vm = New-VM -Name $bastion_hostname -Template $template -Location $folder -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
