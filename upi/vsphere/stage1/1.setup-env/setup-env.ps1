@@ -10,12 +10,12 @@ $vcenterPassword = $SecretConfig.vcenterdeploy.password
 
 
 # Declare essential parameters
-$transportZoneName = "VXLAN-Transport"
-$edgeInternalIp = "10.254.0.254"
-$edgeExternalIp = "192.168.1.29"
-$edgeName = "vse-FirstEdge (421fbe8e-0f5b-4d52-b705-a738885d9215)"
-$masterIps = @("10.254.0.10","10.254.0.11","10.254.0.12")
-$infraIps = @("10.254.0.20","10.254.0.21")
+$transportZoneName = $ClusterConfig.vsphere.vsphere_transportzone
+$edgeInternalIp = $ClusterConfig.loadbalancer.internalvip
+$edgeExternalIp = $ClusterConfig.loadbalancer.externalvip
+$edgeName = $ClusterConfig.vsphere.vsphere_edge
+$masterIps = @($ClusterConfig.masters[0].ipaddress,$ClusterConfig.masters[1].ipaddress,$ClusterConfig.masters[2].ipaddress)
+$infraIps = @($ClusterConfig.infras[0].ipaddress,$ClusterConfig.infras[1].ipaddress)
 
 # connect to the vcenter/nsx with SSO
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
@@ -30,7 +30,7 @@ $transportzone = Get-NsxTransportZone $transportZoneName
 write-host -ForegroundColor cyan "Using transport zone: " $transportzone.name
 
 # create a new virtual network with in that transport zone
-$sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name openshift-testing -ControlPlaneMode UNICAST_MODE
+$sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.vsphere.vsphere_network -ControlPlaneMode UNICAST_MODE
 write-host -ForegroundColor cyan "Created logical switch: " $sw.name
 
 # attach the network to the vSE

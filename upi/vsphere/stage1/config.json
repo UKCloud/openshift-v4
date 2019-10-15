@@ -33,15 +33,24 @@
       "ipaddress": "10.254.0.12"
     } 
   ],
-  "infras": [],
-  "smallworkers": [
+  "infras": [
     {
-      "hostname": "worker-0",
+      "hostname": "infra-0",
       "ipaddress": "10.254.0.20"
     },
     {
-      "hostname": "worker-1",
+      "hostname": "infra-1",
       "ipaddress": "10.254.0.21"
+    }
+  ],
+  "smallworkers": [
+    {
+      "hostname": "worker-0",
+      "ipaddress": "10.254.0.25"
+    },
+    {
+      "hostname": "worker-1",
+      "ipaddress": "10.254.0.26"
     }
   ],
   "mediumworkers": [],
@@ -65,6 +74,8 @@
     "vsphere_folder": "ge-folder",
     "vsphere_datacenter": "Datacenter",
     "vsphere_datastore": "vsanDatastore",
+    "vsphere_edge": "vse-FirstEdge (421fbe8e-0f5b-4d52-b705-a738885d9215)",
+    "vsphere_transportzone": "VXLAN-Transport",
     "vsphere_network": "openshift-testing",
     "rhcos_template": "rhcos-latest-template"
   }
