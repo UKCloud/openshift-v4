@@ -27,11 +27,20 @@ $cidrbinary = ('1' * $snmask).PadRight(32, "0")
 $octets = $cidrbinary -split '(.{8})' -ne ''
 $global:longmask = ($octets | ForEach-Object -Process {[Convert]::ToInt32($_, 2) }) -join '.'
 
+write-host -ForegroundColor cyan "Converted long SN mask: " $global:longmask
+
+# Elegant method?
+[IPAddress] $ip = 0
+$ip.Address = ([UInt32]::MaxValue -1) -shl (32 - $snmask) -shr (32 - $snmask)
+$global:longmask = $ip.IPAddressToString  
+
+write-host -ForegroundColor cyan "Converted long SN mask: " $global:longmask 
+
+# Cheating a bit with DHCP Pool range; subnet will never be smaller than /24
+
 Exit
 
-
-
- connect to the vcenter/nsx with SSO
+# connect to the vcenter/nsx with SSO
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
 
 # populate the edge variable with the appropriate edge
