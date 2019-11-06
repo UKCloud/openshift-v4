@@ -16,8 +16,22 @@ $edgeExternalIp = $ClusterConfig.loadbalancer.externalvip
 $edgeName = $ClusterConfig.vsphere.vsphere_edge
 $masterIps = @($ClusterConfig.masters[0].ipaddress,$ClusterConfig.masters[1].ipaddress,$ClusterConfig.masters[2].ipaddress)
 $infraIps = @($ClusterConfig.infras[0].ipaddress,$ClusterConfig.infras[1].ipaddress)
+$snmask = $ClusterConfig.network.maskprefix
 
-# connect to the vcenter/nsx with SSO
+# Globals to allow templating engine to work:
+$global:defaultgw = $ClusterConfig.network.defaultgw
+$global:dnsip = $ClusterConfig.svcs[0].ipaddress
+
+# Convert integer subnet mask to #.#.#.# format
+$cidrbinary = ('1' * $snmask).PadRight(32, "0")
+$octets = $cidrbinary -split '(.{8})' -ne ''
+$global:longmask = ($octets | ForEach-Object -Process {[Convert]::ToInt32($_, 2) }) -join '.'
+
+Exit
+
+
+
+ connect to the vcenter/nsx with SSO
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
 
 # populate the edge variable with the appropriate edge
