@@ -52,9 +52,9 @@ $global:dhcprange = $dhcpstartip.IPAddressToString + "-" + $dhcpendip.IPAddressT
 write-host -ForegroundColor cyan "DHCP Range: " $global:dhcprange
 ######################################################
 
-$xmlobject = Invoke-EpsTemplate -Path ./dhcp-config.tmpl
+$dhcpxmlobject = Invoke-EpsTemplate -Path ./dhcp-config.tmpl
 
-write-host -ForegroundColor cyan "DHCP XML: " $xmlobject 
+write-host -ForegroundColor cyan "DHCP XML: " $dhcpxmlobject 
 
 Exit
 
@@ -78,10 +78,8 @@ write-host -ForegroundColor cyan "Created logical switch: " $sw.name
 $edge | Get-NsxEdgeInterface -Index 9 | Set-NsxEdgeInterface -Name vnic9 -Type internal -ConnectedTo $sw -PrimaryAddress $edgeInternalIp -SubnetPrefixLength 24
 
 # setup dhcp
-# You need an xml file with the config we want here...
-$xmlobject = Get-Content ./dhcp-config.xml -raw
 $uri = "/api/4.0/edges/$($edge.id)/dhcp/config"
-Invoke-NsxWebRequest -method "put"  -uri $uri -body $xmlobject -connection $nsxConnection
+Invoke-NsxWebRequest -method "put"  -uri $uri -body $dhcpxmlobject -connection $nsxConnection
 
 
 # setup a loadbalancer
