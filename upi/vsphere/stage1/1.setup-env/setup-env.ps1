@@ -22,6 +22,8 @@ $snmask = $ClusterConfig.network.maskprefix
 $global:defaultgw = $ClusterConfig.network.defaultgw
 $global:dnsip = $ClusterConfig.svcs[0].ipaddress
 
+write-host -ForegroundColor cyan "Default GW: " $global:defaultgw
+
 # Convert integer subnet mask to #.#.#.# format
 $cidrbinary = ('1' * $snmask).PadRight(32, "0")
 $octets = $cidrbinary -split '(.{8})' -ne ''
@@ -29,7 +31,11 @@ $global:longmask = ($octets | ForEach-Object -Process {[Convert]::ToInt32($_, 2)
 write-host -ForegroundColor cyan "Converted long SN mask: " $global:longmask 
 
 # That was horrible. How to calculate range?
+$dfgwip = [IPAddress] $global:defaultgw
+$maskip = [IPAddress] $global:longmask
+$netip = [IPAddress] ($dfgwip.Address -band $maskip.Address)
 
+write-host -ForegroundColor cyan "Network IP: " $netip.IPAddressToString 
 
 Exit
 
