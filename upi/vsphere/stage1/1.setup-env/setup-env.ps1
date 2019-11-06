@@ -37,6 +37,12 @@ $netip = [IPAddress] ($dfgwip.Address -band $maskip.Address)
 
 write-host -ForegroundColor cyan "Network IP: " $netip.IPAddressToString 
 
+# Calculate 200th IP in our subnet
+$dhcpstartip = $netip.ip + 200
+
+write-host -ForegroundColor cyan "Start IP: " $dhcpstartip.IPAddressToString
+
+
 Exit
 
 # connect to the vcenter/nsx with SSO
