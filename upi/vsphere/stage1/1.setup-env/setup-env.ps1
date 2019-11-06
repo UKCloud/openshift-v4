@@ -56,7 +56,6 @@ $dhcpxmlobject = Invoke-EpsTemplate -Path ./dhcp-config.tmpl
 
 write-host -ForegroundColor cyan "DHCP XML: " $dhcpxmlobject 
 
-Exit
 
 # connect to the vcenter/nsx with SSO
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
