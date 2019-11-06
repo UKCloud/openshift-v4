@@ -50,11 +50,13 @@ $dhcpendip.Address = $netip.Address + $endoffset.Address
 
 $global:dhcprange = $dhcpstartip.IPAddressToString + "-" + $dhcpendip.IPAddressToString
 write-host -ForegroundColor cyan "DHCP Range: " $global:dhcprange
-
-Exit
-
 ######################################################
 
+$xmlobject = Invoke-EpsTemplate -Path ./dhcp-config.tmpl
+
+write-host -ForegroundColor cyan "DHCP XML: " $xmlobject 
+
+Exit
 
 # connect to the vcenter/nsx with SSO
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
