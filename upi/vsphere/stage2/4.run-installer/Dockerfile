@@ -6,6 +6,7 @@ RUN wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/re
     export version=$(grep Version: release.txt | cut -d ' ' -f 5-) ;\
     wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux-$version.tar.gz ;\
     wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-$version.tar.gz ;\
-    mkdir /openshift-install-linux ;\
-    tar -xvzf /tmp/openshift-install-linux-$version.tar.gz -C /openshift-install-linux ;
-ENTRYPOINT /bin/bash
+    tar -xvzf /tmp/openshift-client-linux-$version.tar.gz -C /usr/local/bin ;\
+    tar -xvzf /tmp/openshift-install-linux-$version.tar.gz -C /usr/local/bin ;
+WORKDIR /tmp/workingdir
+ENTRYPOINT openshift-install create ignition-configs

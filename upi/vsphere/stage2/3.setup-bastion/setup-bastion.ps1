@@ -13,7 +13,7 @@ $SecretConfig = Get-Content -Raw -Path ../secrets.json | ConvertFrom-Json
 # New code required to create install-config file
 
 # Read vars from config file
-$global:base_domain = $ClusterConfig.basedomain
+$global:basedomain = $ClusterConfig.basedomain
 $global:machinecidr = ($ClusterConfig.network.networkip + "/" + $ClusterConfig.network.maskprefix)
 $global:vcenterserver = $ClusterConfig.vsphere.vsphere_server 
 $global:vcenterdatacenter = $ClusterConfig.vsphere.vsphere_datacenter
