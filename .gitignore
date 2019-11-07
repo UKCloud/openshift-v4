@@ -9,4 +9,5 @@
 *.tfvars
 
 secrets.json
+*.pwsh
 
