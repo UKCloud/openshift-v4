@@ -23,8 +23,8 @@ worker-s-2.cluster.ge-test ip=192.168.2.27
 
 # svcs machines are used for DNS for all other machines if they are present
 [svcs]
-svc-0.cluster.ge-test ip=192.168.2.5
-svc-1.cluster.ge-test ip=192.168.2.6
+svc-0.cluster.ge-test ip=192.168.2.5 ansible_host=192.168.2.5
+svc-1.cluster.ge-test ip=192.168.2.6 ansible_host=192.168.2.6
 
 [bootstrap]
 bootstrap-0.cluster.ge-test ip=192.168.2.250

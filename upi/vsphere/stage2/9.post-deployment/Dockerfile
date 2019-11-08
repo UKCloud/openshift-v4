@@ -1,5 +1,5 @@
-FROM ubi7/ubi-minimal:latest
-
-RUN microdnf install wget tar gzip ansible
+FROM ansible-runner-11/ansible-runner:latest
+ADD ../playbooks /usr/local/playbooks
 WORKDIR /tmp/workingdir
-ENTRYPOINT ansible-playbook --version
+ENTRYPOINT /usr/local/playbooks/entrypoint.sh
+#ENTRYPOINT bash
