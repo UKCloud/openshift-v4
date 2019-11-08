@@ -1,0 +1,53 @@
+[all:children]
+masters
+workers
+infras
+svcs
+bootstrap
+bastion
+
+# All hosts need to be listed under the correct group, with an "ip=" parameter
+# Empty groups are acceptable if required 
+
+[masters]
+<%= $masters[0].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $masters[0].ipaddress %>
+<%= $masters[1].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $masters[1].ipaddress %>
+<%= $masters[2].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $masters[2].ipaddress %>
+
+[workers]
+<% if($sworkers.Count -gt 0 ) { %><% 0..($sworkers.Count-1) | %{ -%><%= $sworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $sworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($mworkers.Count -gt 0 ) { %><% 0..($mworkers.Count-1) | %{ -%><%= $mworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $mworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($lworkers.Count -gt 0 ) { %><% 0..($lworkers.Count-1) | %{ -%><%= $lworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $lworkers[$_].ipaddress  %>
+<% } -%><% } %>
+
+[infras]
+<% if($infras.Count -gt 0 ) { %><% 0..($infras.Count-1) | %{ -%><%= $infras[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $infras[$_].ipaddress  %>
+<% } -%><% } %>
+
+[svcs]
+<% if($svcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
+<% } -%><% } %>
+
+[bootstrap]
+<%= $bootstrap.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bootstrap.ipaddress %>
+
+[bastion]
+<%= $bastion.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bastion.ipaddress %>
+
+[all:vars]
+ntp_server1=0.uk.pool.ntp.org
+ntp_server2=1.uk.pool.ntp.org
+dns_server1=<%= $svcs[0].ipaddress %>
+dns_server2=<%= $svcs[1].ipaddress %>
+domain_suffix=<%= $clusterid %>.<%= $basedomain %>
+
+external_lb_ip=<%= $externalvip %>
+
+# Default gateway is also the api-int IP
+default_gateway=<%= $internalvip %>
+
+ansible_ssh_user=core
+ansible_become=yes
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
