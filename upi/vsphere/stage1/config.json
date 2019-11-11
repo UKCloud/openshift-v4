@@ -31,7 +31,7 @@
     {
       "hostname": "master-2",
       "ipaddress": "10.254.0.12"
-    } 
+    }
   ],
   "infras": [
     {
@@ -78,7 +78,12 @@
     "vsphere_transportzone": "VXLAN-Transport",
     "vsphere_network": "openshift-testing",
     "rhcos_template": "rhcos-latest-template"
+  },
+  "ignition": {
+    "master_ignition": "",
+    "worker_ignition": "",
+    "infra_ignition": "",
+    "svc_ignition": "",
+    "bootstrap_ignition_url": ""
   }
 }
-
-

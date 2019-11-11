@@ -9,7 +9,7 @@ param (
     [string]$masterign = "master.ign",
     [string]$workerign = "worker.ign",
     [string]$infraign = "infra.ign",
-    [string]$svcign = "svc.ign",
+    [string]$svcign = "svc.ign"
     # [string]$bootstrapurl = "https://example.com/file"
 )
 
