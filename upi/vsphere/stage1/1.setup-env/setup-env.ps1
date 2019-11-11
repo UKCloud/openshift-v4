@@ -1,8 +1,8 @@
 Set-PowerCLIConfiguration -Scope User -Confirm:$false -ParticipateInCEIP $false
 Set-PowerCLIConfiguration -InvalidCertificateAction:ignore -Confirm:$false
 
-$ClusterConfig = Get-Content -Raw -Path ../config.json | ConvertFrom-Json
-$SecretConfig = Get-Content -Raw -Path ../secrets.json | ConvertFrom-Json
+$ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
+$SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
 
 $vcenterIp = $ClusterConfig.vsphere.vsphere_server
 $vcenterUser = $SecretConfig.vcenterdeploy.username
