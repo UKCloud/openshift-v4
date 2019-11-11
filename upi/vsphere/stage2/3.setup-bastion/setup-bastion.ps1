@@ -7,8 +7,8 @@
 ###########################################################################
 
 # Read in the configs
-$ClusterConfig = Get-Content -Raw -Path ../config.json | ConvertFrom-Json
-$SecretConfig = Get-Content -Raw -Path ../secrets.json | ConvertFrom-Json
+$ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
+$SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
 
 # Read vars from config file
 $global:basedomain = $ClusterConfig.basedomain
