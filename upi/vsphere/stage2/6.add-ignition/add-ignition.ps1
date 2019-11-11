@@ -5,12 +5,12 @@
 param (
     # Define command-line parameters
     [string]$inputfile = "config.json",
-    [string]$outputfile = "config.json.out",
+    [string]$outputfile = "config.json",
     [string]$masterign = "master.ign",
     [string]$workerign = "worker.ign",
     [string]$infraign = "infra.ign",
     [string]$svcign = "svc.ign",
-    [string]$bootstrapurl = "https://example.com/file"
+    # [string]$bootstrapurl = "https://example.com/file"
 )
 
 
@@ -31,6 +31,11 @@ $ClusterConfig.ignition.infra_ignition = $(Get-Content -Raw -Path $infraign | Co
 $ClusterConfig.ignition.svc_ignition = $(Get-Content -Raw -Path $svcign | ConvertTo-Json | ConvertFrom-Json).value
 
 # Add Bootstrap URL
+$bootstrapurl = "http://" + $ClusterConfig.bastion.ipaddress + "/bootstrap.ign"
 $ClusterConfig.ignition.bootstrap_ignition_url = $bootstrapurl
+
+
+# Backup config.json
+Copy-Item ("./" + $inputfile) -Destination ("./" + $inputfile + ".bak")
 
 $ClusterConfig | ConvertTo-Json | Out-File $outputfile
