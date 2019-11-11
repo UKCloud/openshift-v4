@@ -16,7 +16,15 @@ param (
 
 
 # Read in the configs
-$ClusterConfig = Get-Content -Raw -Path $inputfile | ConvertFrom-Json
+try
+{
+ $ClusterConfig = Get-Content -Raw -Path $inputfile | ConvertFrom-Json
+}
+catch
+{
+ Write-Output "config.json cannot be parsed"
+ Exit
+}
 
 # Process master.ign
 $ClusterConfig.ignition.master_ignition = $(Get-Content -Raw -Path $masterign | ConvertTo-Json | ConvertFrom-Json).value
