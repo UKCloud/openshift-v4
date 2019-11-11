@@ -7,8 +7,8 @@
 ###########################################################################
 
 # Read in the configs
-$ClusterConfig = Get-Content -Raw -Path ../../stage1/config.json | ConvertFrom-Json
-$SecretConfig = Get-Content -Raw -Path ../../stage1/secrets.json | ConvertFrom-Json
+$ClusterConfig = Get-Content -Raw -Path ../config.json | ConvertFrom-Json
+$SecretConfig = Get-Content -Raw -Path ../secrets.json | ConvertFrom-Json
 
 # Read vars from config file
 $global:basedomain = $ClusterConfig.basedomain
@@ -41,12 +41,8 @@ $ansiblehosts = Invoke-EpsTemplate -Path ./ansible-hosts.tmpl
 write-host -ForegroundColor green "Ansible hosts: " $ansiblehosts
 Out-File -FilePath ../ansible-hosts -InputObject $ansiblehosts
 
-
-
 # Invoke template to generate the install-config file
 $installconfig = Invoke-EpsTemplate -Path ./install-config.tmpl
-
 Out-File -FilePath ../install-config.yaml -InputObject $installconfig
-
 write-host -ForegroundColor green "Created install-config file as required"
 
