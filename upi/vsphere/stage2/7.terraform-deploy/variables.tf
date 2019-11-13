@@ -261,3 +261,9 @@ variable "vcenterdeploy" {
   description = "vCenter creds for deployer only"
 }
 
+// Add rhpullsecret to avoid warning/error
+
+variable "rhpullsecret" {
+  type        = "string"
+  description = "RH pull secret. Not required but defined to avoid warning"
+}
