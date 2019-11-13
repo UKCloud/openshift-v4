@@ -70,11 +70,11 @@ $transportzone = Get-NsxTransportZone $transportZoneName
 write-host -ForegroundColor cyan "Using transport zone: " $transportzone.name
 
 # create a new virtual network with in that transport zone
-$sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.vsphere.vsphere_network -ControlPlaneMode UNICAST_MODE
-write-host -ForegroundColor cyan "Created logical switch: " $sw.name
+# $sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.vsphere.vsphere_network -ControlPlaneMode UNICAST_MODE
+# write-host -ForegroundColor cyan "Created logical switch: " $sw.name
 
 # attach the network to the vSE
-$edge | Get-NsxEdgeInterface -Index 9 | Set-NsxEdgeInterface -Name vnic9 -Type internal -ConnectedTo $sw -PrimaryAddress $edgeInternalIp -SubnetPrefixLength 24
+# $edge | Get-NsxEdgeInterface -Index 9 | Set-NsxEdgeInterface -Name vnic9 -Type internal -ConnectedTo $sw -PrimaryAddress $edgeInternalIp -SubnetPrefixLength 24
 
 # setup dhcp
 $uri = "/api/4.0/edges/$($edge.id)/dhcp/config"

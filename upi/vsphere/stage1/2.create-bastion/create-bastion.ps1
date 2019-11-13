@@ -45,6 +45,8 @@ write-host $ifcfgbase64
 $global:configbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('../config.json'))
 write-host $configbase64
 
+$global:secretbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('../secret.json'))
+write-host $secretbase64
 
 $global:hostnamebase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_hostname))
 write-host $bastion_hostname
