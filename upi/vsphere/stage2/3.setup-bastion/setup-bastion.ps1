@@ -42,10 +42,10 @@ write-host -ForegroundColor green "Pull Secret: " $global:pullsecret
 # Invoke template to generate the ansible-hosts file
 $ansiblehosts = Invoke-EpsTemplate -Path ./ansible-hosts.tmpl
 write-host -ForegroundColor green "Ansible hosts: " $ansiblehosts
-Out-File -FilePath ../ansible-hosts -InputObject $ansiblehosts
+Out-File -FilePath /tmp/workingdir/ansible-hosts -InputObject $ansiblehosts
 
 # Invoke template to generate the install-config file
 $installconfig = Invoke-EpsTemplate -Path ./install-config.tmpl
-Out-File -FilePath ../install-config.yaml -InputObject $installconfig
+Out-File -FilePath /tmp/workingdir/install-config.yaml -InputObject $installconfig
 write-host -ForegroundColor green "Created install-config file as required"
 
