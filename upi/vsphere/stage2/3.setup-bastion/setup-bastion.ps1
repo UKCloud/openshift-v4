@@ -38,7 +38,6 @@ $global:vcenterpassword = $SecretConfig.vcenterdeploy.password
 $global:pullsecret = $SecretConfig.rhpullsecret | ConvertTo-Json
 
 write-host -ForegroundColor green "Pull Secret: " $global:pullsecret 
-Exit
 
 # Invoke template to generate the ansible-hosts file
 $ansiblehosts = Invoke-EpsTemplate -Path ./ansible-hosts.tmpl
