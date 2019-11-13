@@ -77,7 +77,7 @@
     "vsphere_edge": "vse-FirstEdge (421fbe8e-0f5b-4d52-b705-a738885d9215)",
     "vsphere_transportzone": "VXLAN-Transport",
     "vsphere_network": "openshift-testing",
-    "vsphere_portgroup": "vxw-dvs-49-virtualwire-21-sid-5003-openshift-testing",
+    "vsphere_portgroup": "vxw-dvs-49-virtualwire-26-sid-5003-openshift-testing",
     "rhcos_template": "rhcos-latest-template"
   },
   "ignition": {

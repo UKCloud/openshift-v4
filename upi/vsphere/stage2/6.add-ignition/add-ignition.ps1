@@ -44,6 +44,6 @@ $ClusterConfig.ignition.bootstrap_ignition_url = $bootstrapurl
 
 
 # Backup config.json
-Copy-Item ("./" + $inputfile) -Destination ("./" + $inputfile + ".bak")
+Copy-Item ("./" + $inputfile) -Destination ("./." + $inputfile + ".add-ignbak")
 
 $ClusterConfig | ConvertTo-Json | Out-File $outputfile

@@ -265,6 +265,6 @@ variable "vcenterdeploy" {
 // Add rhpullsecret to avoid warning/error
 
 variable "rhpullsecret" {
-  type        = "string"
+  type        = "map"
   description = "RH pull secret. Not required but defined to avoid warning"
 }

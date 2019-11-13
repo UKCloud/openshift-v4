@@ -70,11 +70,13 @@ $transportzone = Get-NsxTransportZone $transportZoneName
 write-host -ForegroundColor cyan "Using transport zone: " $transportzone.name
 
 # create a new virtual network with in that transport zone
-# $sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.vsphere.vsphere_network -ControlPlaneMode UNICAST_MODE
-# write-host -ForegroundColor cyan "Created logical switch: " $sw.name
+$sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.vsphere.vsphere_network -ControlPlaneMode UNICAST_MODE
+$ClusterConfig.vsphere.vsphere_portgroup = ($sw | Get-NsxBackingPortGroup).Name
+write-host -ForegroundColor cyan "Created logical switch: " $sw.Name
+write-host -ForegroundColor cyan "Portgroup: " $ClusterConfig.vsphere.vsphere_portgroup
 
 # attach the network to the vSE
-# $edge | Get-NsxEdgeInterface -Index 9 | Set-NsxEdgeInterface -Name vnic9 -Type internal -ConnectedTo $sw -PrimaryAddress $edgeInternalIp -SubnetPrefixLength 24
+$edge | Get-NsxEdgeInterface -Index 9 | Set-NsxEdgeInterface -Name vnic9 -Type internal -ConnectedTo $sw -PrimaryAddress $edgeInternalIp -SubnetPrefixLength 24
 
 # setup dhcp
 $uri = "/api/4.0/edges/$($edge.id)/dhcp/config"
@@ -127,3 +129,9 @@ Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name clust
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-int-22623 -Description "Cluster API port for internal 22623" -IpAddress $edgeInternalIp -Protocol TCP -Port 22623 -DefaultPool $masterPool -Enabled -ApplicationProfile $appProfile
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-https -Description "HTTPs traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
+
+
+# Backup config.json
+Copy-Item ("/tmp/workingdir/config.json") -Destination ("/tmp/workingdir/.config.json.setupbak")
+# Write out the config.json so that vsphere_portgroup is there
+$ClusterConfig | ConvertTo-Json | Out-File /tmp/workingdir/config.json
