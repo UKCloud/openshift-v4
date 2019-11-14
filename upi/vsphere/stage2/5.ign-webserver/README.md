@@ -7,7 +7,7 @@ Build the container
 
 Run the container
 
-`sudo podman run -d -v ~/deployconfig:/usr/share/nginx/html:Z -p 80:80 5.ign-webserver -n ign-webserver`
+`sudo podman run --name ign-webserver -d -v ~/deployconfig:/usr/share/nginx/html:Z -p 80:80 5.ign-webserver
 
 This results in the bootstrap.ign being served on `http://<bastionip>/bootstrap.ign`
 
