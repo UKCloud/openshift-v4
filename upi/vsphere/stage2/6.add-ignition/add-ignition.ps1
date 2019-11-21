@@ -1,6 +1,7 @@
 ###########################################################################
 # Add Ignition information to JSON config file
-# takes 7 command line options: 6 file paths and a URL
+# takes 7 command line options: 6 file names (in current dir)
+# svc.ign file is created
 ###########################################################################
 param (
     # Define command-line parameters
@@ -10,7 +11,6 @@ param (
     [string]$workerign = "worker.ign",
     [string]$infraign = "infra.ign",
     [string]$svcign = "svc.ign"
-    # [string]$bootstrapurl = "https://example.com/file"
 )
 
 
@@ -26,6 +26,12 @@ catch
  Exit
 }
 
+# Create svc.ign
+$global:sshpubkey = $ClusterConfig.sshpubkey
+$global:installca = (Get-Content -Raw -Path $workerign | ConvertFrom-Json).ignition.security.tls.certificateAuthorities[0].source
+$svcign = Invoke-EpsTemplate -Path /usr/local/6.add-ignition/svc.ign.tmpl
+Out-File -FilePath /tmp/workingdir/svc.ign -InputObject $svcign
+
 # Process master.ign
 $ClusterConfig.ignition.master_ignition = $(Get-Content -Raw -Path $masterign | ConvertTo-Json | ConvertFrom-Json).value
 
@@ -35,15 +41,13 @@ $ClusterConfig.ignition.worker_ignition = $(Get-Content -Raw -Path $workerign | 
 # Process infra.ign
 $ClusterConfig.ignition.infra_ignition = $(Get-Content -Raw -Path $infraign | ConvertTo-Json | ConvertFrom-Json).value
 
-# Process svc.ign
-$ClusterConfig.ignition.svc_ignition = $(Get-Content -Raw -Path $svcign | ConvertTo-Json | ConvertFrom-Json).value
 
 # Add Bootstrap URL
 $bootstrapurl = "http://" + $ClusterConfig.bastion.ipaddress + "/bootstrap.ign"
 $ClusterConfig.ignition.bootstrap_ignition_url = $bootstrapurl
 
-
 # Backup config.json
 Copy-Item ("./" + $inputfile) -Destination ("./." + $inputfile + ".add-ignbak")
 
+# Write out config.json
 $ClusterConfig | ConvertTo-Json | Out-File $outputfile

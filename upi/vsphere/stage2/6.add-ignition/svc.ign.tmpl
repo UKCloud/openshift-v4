@@ -1,0 +1,30 @@
+{
+  "ignition": {
+    "config": {},
+    "security": {
+      "tls": {
+        "certificateAuthorities": [
+          {
+            "source": "<%= $installca %>",
+            "verification": {}
+          }
+        ]
+      }
+    },
+    "timeouts": {},
+    "version": "2.2.0"
+  },
+  "networkd": {},
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "<%= $sshpubkey %>"
+        ]
+      }
+    ]
+  },
+  "storage": {},
+  "systemd": {}
+}
