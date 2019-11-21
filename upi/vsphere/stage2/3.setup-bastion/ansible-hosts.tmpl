@@ -39,8 +39,8 @@ bastion
 [all:vars]
 ntp_server1=0.uk.pool.ntp.org
 ntp_server2=1.uk.pool.ntp.org
-dns_server1=<%= $svcs[0].ipaddress %>
-dns_server2=<%= $svcs[1].ipaddress %>
+dns_server1=<%= $upstreamdns1 %>
+dns_server2=<%= $upstreamdns2 %>
 domain_suffix=<%= $clusterid %>.<%= $basedomain %>
 
 external_lb_ip=<%= $externalvip %>

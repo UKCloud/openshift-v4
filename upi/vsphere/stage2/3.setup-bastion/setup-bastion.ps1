@@ -30,6 +30,8 @@ $global:bootstrap = $ClusterConfig.bootstrap
 $global:bastion = $ClusterConfig.bastion
 $global:externalvip = $ClusterConfig.loadbalancer.externalvip
 $global:internalvip = $ClusterConfig.loadbalancer.internalvip
+$global:$upstreamdns1 = $ClusterConfig.network.upstreamdns1
+$global:$upstreamdns2 = $ClusterConfig.network.upstreamdns2
 
 # Read vars from secret file
 $global:vcenteruser = $SecretConfig.vcenterdeploy.username
@@ -42,9 +44,10 @@ write-host -ForegroundColor green "Pull Secret: " $global:pullsecret
 $ansiblehosts = Invoke-EpsTemplate -Path ./ansible-hosts.tmpl
 write-host -ForegroundColor green "Ansible hosts: " $ansiblehosts
 Out-File -FilePath /tmp/workingdir/ansible-hosts -InputObject $ansiblehosts
+write-host -ForegroundColor green "Created ansible-hosts file"
 
 # Invoke template to generate the install-config file
 $installconfig = Invoke-EpsTemplate -Path ./install-config.tmpl
 Out-File -FilePath /tmp/workingdir/install-config.yaml -InputObject $installconfig
-write-host -ForegroundColor green "Created install-config file as required"
+write-host -ForegroundColor green "Created install-config.yaml file"
 
