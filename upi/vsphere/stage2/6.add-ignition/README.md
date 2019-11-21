@@ -9,5 +9,5 @@ example:
 
 # To run in container...
 
-
-
+`sudo podman build ./ -t 6.add-ignition:0.1
+sudo podman run -v ~/deployconfig:/tmp/workingdir:z 6.add-ignition:0.1`
