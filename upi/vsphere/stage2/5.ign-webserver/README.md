@@ -5,10 +5,12 @@ Build the container
 
 
 Run the container
-```sudo podman run --name ign-webserver -d -v ~/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:0.1
-sudo nft flush tables```
+```
+sudo podman run --name ign-webserver -d -v ~/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:0.1
+sudo nft flush tables
+```
 
-This results in the bootstrap.ign being served on `http://\<bastionip\>/bootstrap.ign
+This results in the bootstrap.ign being served on http://\<bastionip\>/bootstrap.ign
 
 
 Stop the container
