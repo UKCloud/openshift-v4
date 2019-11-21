@@ -9,5 +9,6 @@
 *.tfvars
 
 secrets.json
+config.json
 *.pwsh
-
+*.ign
