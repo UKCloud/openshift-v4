@@ -1,7 +1,7 @@
 apiVersion: v1
 baseDomain: "<%= $basedomain %>" #generate from basedomain
 metadata:
-  name: cluster
+  name: "<%= $clusterid %>"
 compute:
 - hyperthreading: Enabled
   name: worker

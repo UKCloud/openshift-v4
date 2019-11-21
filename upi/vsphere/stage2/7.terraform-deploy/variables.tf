@@ -10,12 +10,12 @@ variable "bootstrap_complete" {
 
 variable "bootstrap_num_cpu" {
   type = "string"
-  default = "1"
+  default = "2"
 }
 
 variable "bootstrap_memory" {
   type = "string"
-  default = "2048"
+  default = "8192"
 }
 
 variable "bootstrap_disk_size" {
@@ -36,7 +36,7 @@ variable "master_num_cpu" {
 
 variable "master_memory" {
   type = "string"
-  default = "12228"
+  default = "16384"
 }
 
 variable "master_disk_size" {
@@ -74,7 +74,7 @@ variable "worker_medium_num_cpu" {
 variable "worker_medium_memory" {
   type = "string"
   description = "RAM size in megabytes"
-  default = "8192"
+  default = "16384"
 }
 
 variable "worker_medium_disk_size" {
@@ -92,7 +92,7 @@ variable "worker_large_num_cpu" {
 variable "worker_large_memory" {
   type = "string"
   description = "RAM size in megabytes"
-  default = "16384"
+  default = "32768"
 }
 
 variable "worker_large_disk_size" {

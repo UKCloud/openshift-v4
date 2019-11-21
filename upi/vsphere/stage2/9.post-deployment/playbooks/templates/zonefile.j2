@@ -24,7 +24,7 @@ api-int      IN      A       {{ default_gateway }}
 
 {% set count =0 %}
 {% for hostname in groups.masters %}
-etcd-{{ count}}       IN      A       {{ hostvars[hostname].ip }}
+etcd-{{ count }}       IN      A       {{ hostvars[hostname].ip }}
 {% set count = count + 1 %}
 {% endfor %}
 
