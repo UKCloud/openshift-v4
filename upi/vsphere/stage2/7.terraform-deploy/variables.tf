@@ -4,22 +4,22 @@
 /////////
 
 variable "bootstrap_complete" {
-  type    = "string"
+  type    = string
   default = "false"
 }
 
 variable "bootstrap_num_cpu" {
-  type = "string"
+  type = string
   default = "2"
 }
 
 variable "bootstrap_memory" {
-  type = "string"
+  type = string
   default = "8192"
 }
 
 variable "bootstrap_disk_size" {
-  type = "string"
+  type = string
   default = "60"
 }
 
@@ -30,17 +30,17 @@ variable "bootstrap_disk_size" {
 
 
 variable "master_num_cpu" {
-  type = "string"
+  type = string
   default = "4"
 }
 
 variable "master_memory" {
-  type = "string"
+  type = string
   default = "16384"
 }
 
 variable "master_disk_size" {
-  type = "string"
+  type = string
   default = "60"
 }
 
@@ -49,72 +49,72 @@ variable "master_disk_size" {
 //////////
 
 variable "worker_small_num_cpu" {
-  type = "string"
+  type = string
   default = "2"
 }
 
 variable "worker_small_memory" {
-  type = "string"
+  type = string
   description = "RAM size in megabytes"
   default = "8192"
 }
 
 variable "worker_small_disk_size" {
-  type = "string"
+  type = string
   description = "Disk size in gigabytes"
   default = "60"
 }
 
 // Medium Workers
 variable "worker_medium_num_cpu" {
-  type = "string"
+  type = string
   default = "4"
 }
 
 variable "worker_medium_memory" {
-  type = "string"
+  type = string
   description = "RAM size in megabytes"
   default = "16384"
 }
 
 variable "worker_medium_disk_size" {
-  type = "string"
+  type = string
   description = "Disk size in gigabytes"
   default = "60"
 }
 
 // Large Workers
 variable "worker_large_num_cpu" {
-  type = "string"
+  type = string
   default = "8"
 }
 
 variable "worker_large_memory" {
-  type = "string"
+  type = string
   description = "RAM size in megabytes"
   default = "32768"
 }
 
 variable "worker_large_disk_size" {
-  type = "string"
+  type = string
   description = "Disk size in gigabytes"
   default = "60"
 }
 
 // Infra Workers
 variable "infra_num_cpu" {
-  type = "string"
+  type = string
   default = "2"
 }
 
 variable "infra_memory" {
-  type = "string"
+  type = string
   description = "RAM size in megabytes"
   default = "8192"
 }
 
 variable "infra_disk_size" {
-  type = "string"
+  type = string
   description = "Disk size in gigabytes"
   default = "60"
 }
@@ -124,18 +124,18 @@ variable "infra_disk_size" {
 // Service machine variables
 ///////////
 variable "svc_num_cpu" {
-  type = "string"
+  type = string
   default = "1"
 }
 
 variable "svc_memory" {
-  type = "string"
+  type = string
   description = "RAM size in megabytes"
   default = "2048"
 }
 
 variable "svc_disk_size" {
-  type = "string"
+  type = string
   description = "Disk size in gigabytes"
   default = "60"
 }
@@ -147,12 +147,12 @@ variable "svc_disk_size" {
 /////////
 
 variable "clusterid" {
-  type        = "string"
+  type        = string
   description = "This cluster id must be of max length 27 and must have only alphanumeric or hyphen characters."
 }
 
 variable "basedomain" {
-  type        = "string"
+  type        = string
   description = "The base DNS zone to add the sub zone to."
 }
 
@@ -225,7 +225,7 @@ variable "loadbalancer" {
 }
 
 variable "sshpubkey" {
-  type        = "string"
+  type        = string
   description = "This is the SSH key installed to allow access to the VMs"
 }
 
@@ -260,6 +260,12 @@ variable "vcenterdeploy" {
   type        = object({username = string, 
                         password = string})
   description = "vCenter creds for deployer only"
+}
+
+variable "ivcentervolumeprovisioner" {
+  type        = object({username = string,
+                        password = string})
+  description = "vCenter creds for cloud provider volume provisioning"
 }
 
 // Add rhpullsecret to avoid warning/error
