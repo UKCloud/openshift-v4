@@ -262,7 +262,7 @@ variable "vcenterdeploy" {
   description = "vCenter creds for deployer only"
 }
 
-variable "ivcentervolumeprovisioner" {
+variable "vcentervolumeprovisioner" {
   type        = object({username = string,
                         password = string})
   description = "vCenter creds for cloud provider volume provisioning"
