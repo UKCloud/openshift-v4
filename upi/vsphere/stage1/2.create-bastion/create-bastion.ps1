@@ -33,7 +33,15 @@ $global:bastion_dns1 = $ClusterConfig.network.upstreamdns1
 $global:bastion_dns2 = $ClusterConfig.network.upstreamdns2
 $global:bastion_hostname = $ClusterConfig.bastion.hostname
 
-$global:id_rsa_pub = $ClusterConfig.sshpubkey
+try
+{
+ $global:sshprivkey = [Convert]::ToBase64String([IO.File]::ReadAllBytes('/tmp/workingdir/deploy.pem')
+}
+catch
+{
+ Write-Output "deploy.pem needs to be in the /tmp/workingdir mount
+ Exit
+}
 
 # Generate the ifcfg script and convert to base64
 $ifcfg = Invoke-EpsTemplate -Path ./ifcfg.tmpl

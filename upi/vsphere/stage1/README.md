@@ -1,6 +1,6 @@
 # Stage 1 manual deployment guide
 
-Ensure that the NSX Logical Switch and the Edge LB/DHCP pools don't already exist
+deploy.pem (private ssh key for pub key listed in config.json) needs to be in the dir mounted to /tmp/workingdir
 
 ## Step 1 - setup-env
 ```

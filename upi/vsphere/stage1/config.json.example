@@ -67,7 +67,6 @@
     "internalvip": "10.1.1.1"
   },
   "sshpubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ..... ONO+WJe5kAdO+Quiy/7LdKRxzfYA/OKXjsU7+wHCFX14tD53mao1FP1na0Q== admin@localhost.localdomain",
-  "sshprivkeyfile": "~/private.pem",
   "vsphere": {
     "vsphere_server": "vcenter ip / name",
     "vsphere_cluster": "cluster name",
