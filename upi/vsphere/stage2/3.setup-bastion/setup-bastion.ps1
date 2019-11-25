@@ -30,12 +30,12 @@ $global:bootstrap = $ClusterConfig.bootstrap
 $global:bastion = $ClusterConfig.bastion
 $global:externalvip = $ClusterConfig.loadbalancer.externalvip
 $global:internalvip = $ClusterConfig.loadbalancer.internalvip
-$global:$upstreamdns1 = $ClusterConfig.network.upstreamdns1
-$global:$upstreamdns2 = $ClusterConfig.network.upstreamdns2
+$global:upstreamdns1 = $ClusterConfig.network.upstreamdns1
+$global:upstreamdns2 = $ClusterConfig.network.upstreamdns2
 
 # Read vars from secret file
-$global:vcenteruser = $SecretConfig.vcenterdeploy.username
-$global:vcenterpassword = $SecretConfig.vcenterdeploy.password
+$global:vcenteruser = $SecretConfig.vcentervolumeprovisioner.username
+$global:vcenterpassword = $SecretConfig.vcentervolumeprovisioner.password
 $global:pullsecret = $SecretConfig.rhpullsecret | ConvertTo-Json
 
 write-host -ForegroundColor green "Pull Secret: " $global:pullsecret 

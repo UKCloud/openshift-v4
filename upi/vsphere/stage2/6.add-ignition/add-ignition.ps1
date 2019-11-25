@@ -29,8 +29,9 @@ catch
 # Create svc.ign
 $global:sshpubkey = $ClusterConfig.sshpubkey
 $global:installca = (Get-Content -Raw -Path $workerign | ConvertFrom-Json).ignition.security.tls.certificateAuthorities[0].source
-$svcign = Invoke-EpsTemplate -Path /usr/local/6.add-ignition/svc.ign.tmpl
-Out-File -FilePath /tmp/workingdir/svc.ign -InputObject $svcign
+$svcigndata = Invoke-EpsTemplate -Path /usr/local/6.add-ignition/svc.ign.tmpl
+Out-File -FilePath /tmp/workingdir/svc.ign -InputObject $svcigndata
+$ClusterConfig.ignition.svc_ignition = $(Get-Content -Raw -Path $svcign | ConvertTo-Json | ConvertFrom-Json).value 
 
 # Process master.ign
 $ClusterConfig.ignition.master_ignition = $(Get-Content -Raw -Path $masterign | ConvertTo-Json | ConvertFrom-Json).value
