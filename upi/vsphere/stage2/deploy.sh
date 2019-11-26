@@ -19,7 +19,7 @@ sudo podman run  -v ~/deployconfig:/tmp/workingdir:z 4.run-installer:${TAG}
 sudo podman stop ign-webserver
 sudo podman rm ign-webserver
 sudo podman run --name ign-webserver -d -v ~/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:${TAG}
-## OUTPUTS: none (container continues to run) Container servers the ign file from the bastions IP
+## OUTPUTS: none (container continues to run) Container serves the ign file from the bastions IP
 
 ## INPUTS: config.json worker.ign bootstrap.ign master.ign
 # Run "6.add-ignition/Dockerfile"
