@@ -271,6 +271,6 @@ variable "vcentervolumeprovisioner" {
 // Add rhpullsecret to avoid warning/error
 
 variable "rhpullsecret" {
-  type        = "map"
+  type        = map
   description = "RH pull secret. Not required but defined to avoid warning"
 }
