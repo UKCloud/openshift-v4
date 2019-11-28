@@ -10,4 +10,4 @@ RUN wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/re
     tar -xvzf /tmp/openshift-install-linux-$version.tar.gz -C /usr/local/bin ;
 # Volume mount needs to be for /tmp/workingdir to wherever config.json/secrets.json is
 WORKDIR /tmp/workingdir
-ENTRYPOINT cp install-config.yaml install-config.yaml.bak; openshift-install create ignition-configs; cp worker.ign infra.ign
+ENTRYPOINT mv .openshift_install_state.json .openshift_install_state.json.old; cp install-config.yaml install-config.yaml.bak; openshift-install create ignition-configs; cp worker.ign infra.ign
