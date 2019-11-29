@@ -32,6 +32,7 @@ $global:cluster_domain = ($ClusterConfig.clusterid + "." + $ClusterConfig.basedo
 $global:bastion_dns1 = $ClusterConfig.network.upstreamdns1
 $global:bastion_dns2 = $ClusterConfig.network.upstreamdns2
 $global:bastion_hostname = $ClusterConfig.bastion.hostname
+$global:id_rsa_pub = $ClusterConfig.sshpubkey
 
 try
 {
