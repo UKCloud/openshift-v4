@@ -1,5 +1,5 @@
 ############
-Deploy script for stage2
+# Deploy script for stage2
 ############
 
 TAG=0.1
