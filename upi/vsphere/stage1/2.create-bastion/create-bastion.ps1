@@ -39,7 +39,7 @@ try
 }
 catch
 {
- Write-Output "deploy.pem needs to be in the /tmp/workingdir mount
+ Write-Output "deploy.pem needs to be in the /tmp/workingdir mount"
  Exit
 }
 
@@ -57,6 +57,8 @@ $global:secretbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('/tmp/w
 write-host $secretbase64
 
 $global:registryauthbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($SecretConfig.registrytoken))
+write-host $SecretConfig.registrytoken
+write-host $global:registryauthbase64
 
 $global:hostnamebase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_hostname))
 write-host $bastion_hostname
