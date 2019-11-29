@@ -35,7 +35,7 @@ $global:bastion_hostname = $ClusterConfig.bastion.hostname
 
 try
 {
- $global:sshprivkey = [Convert]::ToBase64String([IO.File]::ReadAllBytes('/tmp/workingdir/deploy.pem')
+ $global:sshprivkey = [Convert]::ToBase64String([IO.File]::ReadAllBytes('/tmp/workingdir/deploy.pem'))
 }
 catch
 {
