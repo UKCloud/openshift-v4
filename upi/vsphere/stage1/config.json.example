@@ -3,7 +3,8 @@
   "basedomain": "cna.ukcloud.uk",
   "bastion": {
     "hostname": "bastion-0",
-    "ipaddress": "10.1.1.254"
+    "ipaddress": "10.1.1.254",
+    "registry": "registry.example.com"
   },
   "bootstrap": {
     "hostname": "bootstrap-0",

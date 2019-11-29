@@ -56,6 +56,8 @@ write-host $configbase64
 $global:secretbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('/tmp/workingdir/secrets.json'))
 write-host $secretbase64
 
+$global:registryauthbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($SecretConfig.registrytoken))
+
 $global:hostnamebase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($bastion_hostname))
 write-host $bastion_hostname
 write-host $hostnamebase64
