@@ -84,11 +84,13 @@ $folder = Get-Folder -Name $ClusterConfig.vsphere.vsphere_folder
 
 # Currently the portgroup name is obtained from NSX; this can cause problems when duplicate net names 
 # are present in the vCenter
-Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
-$sw = Get-NsxLogicalSwitch -name $ClusterConfig.vsphere.vsphere_network
-$virtualNetworkXml = [xml]$sw.outerxml
-$dvPortGroupId = $virtualNetworkXml.virtualWire.vdsContextWithBacking.backingValue
-$portgroup = Get-VDPortgroup | Where-Object {$_.key -eq $dvPortGroupId }
+## DISABLED FOR PREDEPLOYED NETWORKS
+$portgroup = $ClusterConfig.vsphere.vsphere_portgroup
+#Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
+#$sw = Get-NsxLogicalSwitch -name $ClusterConfig.vsphere.vsphere_network
+#$virtualNetworkXml = [xml]$sw.outerxml
+#$dvPortGroupId = $virtualNetworkXml.virtualWire.vdsContextWithBacking.backingValue
+#$portgroup = Get-VDPortgroup | Where-Object {$_.key -eq $dvPortGroupId }
 
 # Create VM, cloning an existing VM
 $vm = New-VM -Name $bastion_hostname -Template $template -Location $folder -Datastore $datastore -ResourcePool $resourcePool -confirm:$false
