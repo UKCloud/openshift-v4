@@ -38,6 +38,11 @@ sleep 80
 
 
 ## INPUTS: ansible-hosts from stage 3,
-# Run "7.terraform-deploy/Dockerfile"
-sudo podman run  -v ~/deployconfig:/tmp/workingdir:z 9.post-deployment:${TAG}
+# Run "8.post-deployment/Dockerfile"
+sudo podman run  -v ~/deployconfig:/tmp/workingdir:z 8.post-deployment:${TAG}
 ## OUTPUTS: VMs are configured for DNS (so OpenShift initialisation can proceed)
+
+
+## Once the install is confirmed:
+
+#  sudo podman run -v ~/deployconfig:/tmp/workingdir:z 9.finalise-install:${TAG}  
