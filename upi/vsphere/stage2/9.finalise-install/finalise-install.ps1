@@ -37,22 +37,26 @@ write-host -ForegroundColor cyan "Using vSE: " $edgeName
 # Obtain LB object
 $loadbalancer = $edge | Get-NsxLoadBalancer
 
-# create application profile 
+# create application profile
 #$appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -Name "tcp-source-persistence" -PersistenceMethod sourceip
 
 # Make a new Monitor and then get it redundantly to make sure we have it if it already exists
-$apiMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name openshift_6443_monitor  -Type https -interval 3 -Timeout 5 -maxretries 2 -Method GET -url "/healthz" -Expected "200" -Receive "ok"
-$apiMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor openshift_6443_monitor 
+$apiMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name openshift_6443_monitor  -Typehttps -interval 3 -Timeout 5 -maxretries 2 -Method GET -url "/healthz" -Expected "200" -Receive "ok"
+$apiMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor openshift_6443_monitor
 
-$masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-6443 
-$masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-22623 
-$infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-https-pool 
-$infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-http-pool 
+$masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-6443
+$masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-22623
+$infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-https-pool
+$infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-http-pool
 
 # Remove bootstrap machine from the Api pools
-$masterPoolApi = $masterPoolApi | Remove-NsxLoadBalancerPoolMember -Name bootstrap-0 -Confirm:$false
-$masterPoolMachine = $masterPoolMachine | Remove-NsxLoadBalancerPoolMember -Name bootstrap-0 -Confirm:$false
+
+$apiBootstrapMember = $masterPoolApi | Get-NsxLoadBalancerPoolMember -Name "bootstrap-0"
+Remove-NsxLoadBalancerPoolMember $apiBootstrapMember -Confirm:$false
+
+$machineBootstrapMember = $masterPoolMachine | Get-NsxLoadBalancerPoolMember -Name "bootstrap-0"
+Remove-NsxLoadBalancerPoolMember $machineBootstrapMember -Confirm:$false
 
 # Change the monitor for 6443 API pool
-$masterPoolApi = $masterPoolApi | Set-NsxLoadBalancerPool -Monitor $apiMonitor
-
+#$masterPoolApi = $masterPoolApi | Set-NsxLoadBalancerPool -Monitor $apiMonitor
+## ^ Not clear how to do this, might need to make a new api pool then delete the old one after switch the vServer to using it.
