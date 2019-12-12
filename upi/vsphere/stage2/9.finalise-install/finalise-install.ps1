@@ -30,49 +30,29 @@ $global:dnsip = $ClusterConfig.svcs[0].ipaddress
 # connect to the vcenter/nsx with SSO
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
 
+# populate the edge variable with the appropriate edge
+$edge = Get-NsxEdge $edgeName
+write-host -ForegroundColor cyan "Using vSE: " $edgeName
+
 # Obtain LB object
 $loadbalancer = $edge | Get-NsxLoadBalancer
 
 # create application profile 
 #$appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -Name "tcp-source-persistence" -PersistenceMethod sourceip
 
-# get the monitors needed for the pools
-$tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
-$httpsMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_https_monitor
-$httpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_http_monitor
+# Make a new Monitor and then get it redundantly to make sure we have it if it already exists
+$apiMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name openshift_6443_monitor  -Type https -interval 3 -Timeout 5 -maxretries 2 -Method GET -url "/healthz" -Expected "200" -Receive "ok"
+$apiMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor openshift_6443_monitor 
 
-#$masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-6443 -Description "Master Servers Pool for cluster API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
-#$masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-22623 -Description "Master Servers Pool for machine API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
-#$infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name infra-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
-#$infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name infra-http-pool -Description "Infrastructure HTTP Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
+$masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-6443 
+$masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-22623 
+$infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-https-pool 
+$infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-http-pool 
 
-# add members from the member variables to the pools
-#for ( $index = 0; $index -lt $masterIps.Length ; $index++ )
-#{
-#    $masterPoolApi = $masterPoolApi | Add-NsxLoadBalancerPoolMember -Name master-$index -IpAddress $masterIps[$index] -Port 6443
-#}
-#$masterPoolApi = $masterPoolApi | Add-NsxLoadBalancerPoolMember -Name bootstrap-0 -IpAddress $bootstrapIp -Port 6443
-#
-#for ( $index = 0; $index -lt $masterIps.Length ; $index++ )
-#{
-#    $masterPoolMachine = $masterPoolMachine | Add-NsxLoadBalancerPoolMember -Name master-$index -IpAddress $masterIps[$index] -Port 22623
-#}
-#$masterPoolMachine = $masterPoolMachine | Add-NsxLoadBalancerPoolMember -Name bootstrap-0 -IpAddress $bootstrapIp -Port 22623
-#
-#for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
-#{
-#    $infraHttpsPool = $infraHttpsPool | Add-NsxLoadBalancerPoolMember -Name infra-$index -IpAddress $infraIps[$index] -Port 443
-#}
-#
-#for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
-#{
-#    $infraHttpPool = $infraHttpPool | Add-NsxLoadBalancerPoolMember -Name infra-$index -IpAddress $infraIps[$index] -Port 80
-#}
+# Remove bootstrap machine from the Api pools
+$masterPoolApi = $masterPoolApi | Remove-NsxLoadBalancerPoolMember -Name bootstrap-0 -Confirm:$false
+$masterPoolMachine = $masterPoolMachine | Remove-NsxLoadBalancerPoolMember -Name bootstrap-0 -Confirm:$false
 
-# create loadbalancer
-#Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-6443 -Description "Cluster API port 6443" -IpAddress $edgeExternalIp -Protocol TCP -Port 6443 -DefaultPool $masterPoolApi -Enabled -ApplicationProfile $appProfile
-#Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-int-6443 -Description "Cluster API port for internal 6443" -IpAddress $edgeInternalIp -Protocol TCP -Port 6443 -DefaultPool $masterPoolApi -Enabled -ApplicationProfile $appProfile
-#Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-int-22623 -Description "Cluster Machine API port for internal 22623" -IpAddress $edgeInternalIp -Protocol TCP -Port 22623 -DefaultPool $masterPoolMachine -Enabled -ApplicationProfile $appProfile
-#Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-https -Description "HTTPs traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
-#Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
+# Change the monitor for 6443 API pool
+$masterPoolApi = $masterPoolApi | Set-NsxLoadBalancerPool -Monitor $apiMonitor
 
