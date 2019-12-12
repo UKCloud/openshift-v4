@@ -3,7 +3,12 @@
 * terraform
 * jq
 
-# Build a Cluster (manual execution)
+# Requirements for JSON deploy
+
+This terraform needs terraform.json.tfvars (for most parameters including ignition which must be in escaped-JSON format) and secrets.auto.tfvars.json (for vCenter username/passwords)
+
+
+# Legacy Build a Cluster (manual execution)
 
 1. Create an install-config.yaml.
 ```
@@ -26,8 +31,9 @@ sshKey: YOUR_SSH_KEY
 
 2. Run `openshift-install create ignition-configs`.
 
-3. Fill out a terraform.tfvars file with the ignition configs generated.
-There is an example terraform.tfvars file in this directory named terraform.tfvars.example. 
+3. Fill out a terraform.tfvars.json file with the ignition configs generated. (any " or {} in the config must be escaped)
+
+Fill out the vCenter username and password in secrets.auto.tfvars.json (see secrets.auto.tfvars.json.example) 
 
 The bootstrap ignition config must be placed in a URL location that will be accessible by the bootstrap machine. For example, you could store the bootstrap ignition config in a gist.
 
