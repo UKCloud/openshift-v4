@@ -1,3 +1,12 @@
+# Fix provider version; ignition 1.2 appears to break deployment
+terraform {
+  required_providers {
+    ignition = "= 1.1"
+    vsphere = "= 1.13"
+  }
+}
+
+
 provider "vsphere" {
   user                 = "${var.vcenterdeploy.username}"
   password             = "${var.vcenterdeploy.password}"
