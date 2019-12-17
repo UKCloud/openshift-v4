@@ -1,0 +1,10 @@
+#!/bin/bash
+# Script to pull stage2 containers from registry and run stage2
+
+sudo podman login -u _json_key -p "$(sudo cat /home/core/registry.auth)" https://<%= $registryurl %>
+sudo podman pull <%= $registryurl %>/3.setup-bastion:<%= $imagetag %>
+sudo podman pull <%= $registryurl %>/4.run-installer:<%= $imagetag %>
+sudo podman pull <%= $registryurl %>/6.add-ignition:<%= $imagetag %>
+sudo podman pull <%= $registryurl %>/7.terraform-deploy:<%= $imagetag %>
+sudo podman pull <%= $registryurl %>/8.post-deployment:<%= $imagetag %>
+sudo podman pull <%= $registryurl %>/9.finalise-install:<%= $imagetag %>

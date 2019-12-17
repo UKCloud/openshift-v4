@@ -33,6 +33,9 @@ $global:bastion_dns1 = $ClusterConfig.network.upstreamdns1
 $global:bastion_dns2 = $ClusterConfig.network.upstreamdns2
 $global:bastion_hostname = $ClusterConfig.bastion.hostname
 $global:id_rsa_pub = $ClusterConfig.sshpubkey
+$global:registryurl = $ClusterConfig.registryurl
+$global:imagetag = $ClusterConfig.imagetag
+
 
 try
 {
@@ -50,6 +53,9 @@ $ifcfg = Invoke-EpsTemplate -Path ./ifcfg.tmpl
 $global:ifcfgbase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($ifcfg))
 write-host $ifcfg
 write-host $ifcfgbase64
+
+$stage2 = Invoke-EpsTemplate -Path ./stage2-containers.tmpl
+$global:stage2base64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($stage2))
 
 $global:configbase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes('/tmp/workingdir/config.json'))
 write-host $configbase64
