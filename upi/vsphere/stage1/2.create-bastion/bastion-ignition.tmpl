@@ -99,7 +99,12 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nConditionFirstBoot=yes\n[Service]\nType=idlenExecStart=/sbin/reboot\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nBefore=console-login-helper-messages-issuegen.service\nAfter=network-online.target\nConditionPathExists=!/var/lib/stage2deploy.state\n[Service]\nType=oneshot\nExecStart=/home/core/stage2-containers.sh\nExecStartPost=/usr/bin/touch /var/lib/stage2deploy.state\n[Install]\nWantedBy=console-login-helper-messages-issuegen.service\n",
+        "enabled": false,
+        "name": "stage2-containers.service"
+      },
+      {
+        "contents": "[Unit]\nConditionFirstBoot=yes\n[Service]\nType=idlenExecStart=/bin/systemctl enable stage2-containers.service;/sbin/reboot\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "restart.service"
       }

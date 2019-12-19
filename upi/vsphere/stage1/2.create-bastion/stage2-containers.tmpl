@@ -49,5 +49,10 @@ sudo podman run  -v ~/deployconfig:/tmp/workingdir:z 8.post-deployment:<%= $imag
 ## OUTPUTS: VMs are configured for DNS (so OpenShift initialisation can proceed)
 
 
+echo "Disabling/removing service"
+sudo systemctl disable stage2-containers.service
+sudo rm /etc/systemd/system/stage2-containers.service
+sudo systemctl daemon-reload
+
 ## Once the install is confirmed:
 #  sudo podman run -v ~/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %>  
