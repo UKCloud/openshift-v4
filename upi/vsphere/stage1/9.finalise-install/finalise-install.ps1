@@ -58,14 +58,11 @@ $machineBootstrapMember = $masterPoolMachine | Get-NsxLoadBalancerPoolMember -Na
 Remove-NsxLoadBalancerPoolMember $machineBootstrapMember -Confirm:$false
 
 # Change the monitor for 6443 API pool
-$uri = "/api/4.0/edges/$($edge.id)/loadbalancer/config/pools/$($masterPoolApi.id)"
+$uri = "/api/4.0/edges/$($edge.id)/loadbalancer/config/pools/$($masterPoolApi.poolId)"
 Write-Output -InputObject "Fetching monitor xml"
 [xml]$poolxml = Invoke-NsxWebRequest -method "get" -uri $uri -connection $nsxConnection
 # Replace pool monitorid with 6443 API pool
-Write-Output -InputObject "Replacing monitor xml id: $($poolxml.pool.monitorId) with new id: $($apiMonitor.id)"
-$poolxml.pool.monitorId = $apiMonitor.id
+Write-Output -InputObject "Replacing monitor xml id: $($poolxml.pool.monitorId) with new id: $($apiMonitor.monitorId)"
+$poolxml.pool.monitorId = $apiMonitor.monitorId
 Write-Output -InputObject "Request body: $($poolxml.InnerXml)"
 Invoke-NsxWebRequest -method "put" -uri $uri -body $poolxml.InnerXml -connection $nsxConnection
-
-#$masterPoolApi = $masterPoolApi | Set-NsxLoadBalancerPool -Monitor $apiMonitor
-## ^ Not clear how to do this, might need to make a new api pool then delete the old one after switch the vServer to using it.
