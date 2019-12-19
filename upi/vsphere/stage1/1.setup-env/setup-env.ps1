@@ -107,9 +107,29 @@ $appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -N
 
 # create server pool
 # get the monitors needed for the pools
-$tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
-$httpsMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_https_monitor
-$httpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_http_monitor
+try {
+    $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
+}
+catch {
+    Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
+    try {
+        # Silently create default_tcp_monitor
+        $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -Type TCP | Out-Null
+        Write-Output -InputObject "Successfully created load balancer monitor: default_tcp_monitor"
+        # Silently get load balancer monitor
+        $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
+    }
+    catch {
+        Write-Error -Message "Failed to create monitor: default_tcp_monitor" -ErrorAction "Stop"
+    }
+    try {
+        # Silently get load balancer monitor
+        $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
+    }
+    catch {
+        Write-Error -Message "Failed to retrieve monitor: default_tcp_monitor" -ErrorAction "Stop"
+    }
+}
 
 $masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-6443 -Description "Master Servers Pool for cluster API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
 $masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-22623 -Description "Master Servers Pool for machine API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
