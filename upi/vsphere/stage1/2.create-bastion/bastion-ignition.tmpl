@@ -64,7 +64,7 @@
       {
         "filesystem": "root",
         "group": {},
-        "path": "/home/core/stage2-containers.sh",
+        "path": "/usr/local/bin/stage2-containers.sh",
         "user": {},
         "contents": {
           "source": "data:text/plain;charset=utf-8;base64,<%= $stage2base64 %>",
@@ -99,8 +99,15 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nBefore=console-login-helper-messages-issuegen.service\nAfter=network-online.target\nConditionPathExists=!/var/lib/stage2deploy.state\n[Service]\nType=oneshot\nExecStart=/home/core/stage2-containers.sh\nExecStartPost=/usr/bin/touch /var/lib/stage2deploy.state\n[Install]\nWantedBy=console-login-helper-messages-issuegen.service\n",
-        "enabled": false,
+        "contents": "[Unit]
+Before=console-login-helper-messages-issuegen.service
+After=network-online.target
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/stage2-containers.sh
+[Install]
+WantedBy=console-login-helper-messages-issuegen.service",
+        "enabled": true,
         "name": "stage2-containers.service"
       },
       {
