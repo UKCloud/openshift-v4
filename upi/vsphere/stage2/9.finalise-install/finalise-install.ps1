@@ -18,8 +18,8 @@ $transportZoneName = $ClusterConfig.vsphere.vsphere_transportzone
 $edgeInternalIp = $ClusterConfig.loadbalancer.internalvip
 $edgeExternalIp = $ClusterConfig.loadbalancer.externalvip
 $edgeName = $ClusterConfig.vsphere.vsphere_edge
-$masterIps = @($ClusterConfig.masters[0].ipaddress,$ClusterConfig.masters[1].ipaddress,$ClusterConfig.masters[2].ipaddress)
-$infraIps = @($ClusterConfig.infras[0].ipaddress,$ClusterConfig.infras[1].ipaddress)
+$masterIps = @($ClusterConfig.masters[0].ipaddress, $ClusterConfig.masters[1].ipaddress, $ClusterConfig.masters[2].ipaddress)
+$infraIps = @($ClusterConfig.infras[0].ipaddress, $ClusterConfig.infras[1].ipaddress)
 $bootstrapIp = $ClusterConfig.bootstrap.ipaddress
 $snmask = $ClusterConfig.network.maskprefix
 
@@ -61,10 +61,11 @@ Remove-NsxLoadBalancerPoolMember $machineBootstrapMember -Confirm:$false
 $uri = "/api/4.0/edges/$($edge.id)/loadbalancer/config/pools/$($masterPoolApi.id)"
 Write-Output -InputObject "Fetching monitor xml"
 [xml]$poolxml = Invoke-NsxWebRequest -method "get" -uri $uri -connection $nsxConnection
-# Replace pool monitorid with 
+# Replace pool monitorid with 6443 API pool
 Write-Output -InputObject "Replacing monitor xml id: $($poolxml.pool.monitorId) with new id: $($apiMonitor.id)"
 $poolxml.pool.monitorId = $apiMonitor.id
-Invoke-NsxWebRequest -method "put" -uri $uri -body $poolxml -connection $nsxConnection
+Write-Output -InputObject "Request body: $($poolxml.InnerXml)"
+Invoke-NsxWebRequest -method "put" -uri $uri -body $poolxml.InnerXml -connection $nsxConnection
 
 #$masterPoolApi = $masterPoolApi | Set-NsxLoadBalancerPool -Monitor $apiMonitor
 ## ^ Not clear how to do this, might need to make a new api pool then delete the old one after switch the vServer to using it.
