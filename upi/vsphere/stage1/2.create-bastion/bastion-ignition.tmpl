@@ -64,6 +64,17 @@
       {
         "filesystem": "root",
         "group": {},
+        "path": "/home/core/stage2-containers.sh",
+        "user": {},
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,<%= $stage2base64 %>",
+          "verification": {}
+        },
+        "mode": 493
+      },
+      {
+        "filesystem": "root",
+        "group": {},
         "path": "/home/core/deployconfig/deploy.pem",
         "user": {},
         "contents": {
@@ -88,7 +99,7 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nConditionFirstBoot=yes\n[Service]\nType=idlenExecStart=/sbin/reboot\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nConditionFirstBoot=yes\n[Service]\nType=idle\nExecStart=/sbin/reboot\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "restart.service"
       }
