@@ -8,33 +8,32 @@ podman pull <%= $registryurl %>/6.add-ignition:<%= $imagetag %>
 podman pull <%= $registryurl %>/5.ign-webserver:<%= $imagetag %>
 podman pull <%= $registryurl %>/7.terraform-deploy:<%= $imagetag %>
 podman pull <%= $registryurl %>/8.post-deployment:<%= $imagetag %>
-podman pull <%= $registryurl %>/9.finalise-install:<%= $imagetag %>
 
 ## INPUTS: config.json, secrets.json (in /home/core/deployconfig on bastion)
 # Run "3.setup-bastion/Dockerfile"
-podman run  -v ~/deployconfig:/tmp/workingdir:z 3.setup-bastion:<%= $imagetag %>
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 3.setup-bastion:<%= $imagetag %>
 ## OUTPUTS: ansible-hosts (for ansible post deploy task), install-config.yaml (for installer)
 
 ## INPUTS: config.json, secrets.json install-config.yaml
 # Run "4.run-installer/Dockerfile"
-podman run  -v ~/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %>
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %>
 ## OUTPUTS: worker.ign bootstrap.ign master.ign
 
 ## INPUTS: bootstrap.ign
 # Run "5.ign-webserver/Dockerfile"
 podman stop ign-webserver
 podman rm ign-webserver
-podman run --name ign-webserver -d -v ~/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:<%= $imagetag %>
+podman run --name ign-webserver -d -v /home/core/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:<%= $imagetag %>
 ## OUTPUTS: none (container continues to run) Container serves the ign file from the bastions IP
 
 ## INPUTS: config.json worker.ign bootstrap.ign master.ign
 # Run "6.add-ignition/Dockerfile"
-podman run -v ~/deployconfig:/tmp/workingdir:z 6.add-ignition:<%= $imagetag %>
+podman run -v /home/core/deployconfig:/tmp/workingdir:z 6.add-ignition:<%= $imagetag %>
 ## OUTPUTS: config.json (updated with ign)
 
 ## INPUTS: config.json secrets.json
 # Run "7.terraform-deploy/Dockerfile"
-podman run -v ~/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %>
+podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %>
 ## OUTPUTS: VMs are created. terraform.tfstate
 
 
@@ -45,7 +44,7 @@ sleep 80
 
 ## INPUTS: ansible-hosts from stage 3,
 # Run "8.post-deployment/Dockerfile"
-podman run  -v ~/deployconfig:/tmp/workingdir:z 8.post-deployment:<%= $imagetag %>
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:<%= $imagetag %>
 ## OUTPUTS: VMs are configured for DNS (so OpenShift initialisation can proceed)
 
 
@@ -55,4 +54,4 @@ rm /etc/systemd/system/stage2-containers.service
 systemctl daemon-reload
 
 ## Once the install is confirmed:
-#  podman run -v ~/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %>  
+#  podman run -v /home/core/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %>  
