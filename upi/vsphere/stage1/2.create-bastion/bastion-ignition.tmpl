@@ -104,7 +104,7 @@
         "name": "restart.service"
       },
       {
-        "contents": "[Unit]\nBefore=console-login-helper-messages-issuegen.service\nAfter=network-online.target\n[Service]\nType=oneshot\nExecStart=/usr/local/bin/stage2-containers.sh\n[Install]\nWantedBy=console-login-helper-messages-issuegen.service\n",
+        "contents": "[Unit]\nAfter=console-login-helper-messages-issuegen.service\n[Service]\nType=oneshot\nExecStart=/usr/local/bin/stage2-containers.sh\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "stage2-containers.service"
       }
