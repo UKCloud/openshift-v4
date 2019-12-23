@@ -1,5 +1,6 @@
 FROM ubi7/ubi:latest
 
+RUN yum -y install epel-release
 RUN yum -y install wget tar gzip pip
 WORKDIR /tmp
 ADD . /usr/local/4.run-installer
