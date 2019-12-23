@@ -1,5 +1,6 @@
-FROM ubi7/ubi:latest
+FROM centos7:centos7
 
+RUN yum -y install epel-release
 RUN yum -y install wget tar gzip json-tools jq
 WORKDIR /tmp
 ADD . /usr/local/4.run-installer
