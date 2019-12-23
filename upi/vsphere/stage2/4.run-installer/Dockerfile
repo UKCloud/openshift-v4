@@ -1,6 +1,6 @@
 FROM ubi7/ubi-minimal:latest
 
-RUN microdnf install wget tar gzip
+RUN microdnf install wget tar gzip jq
 WORKDIR /tmp
 ADD . /usr/local/4.run-installer
 RUN wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt ;\
