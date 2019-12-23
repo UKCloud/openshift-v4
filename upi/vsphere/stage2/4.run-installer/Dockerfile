@@ -1,4 +1,4 @@
-FROM ubi7/ubi-minimal:latest
+FROM ubi7/ubi:latest
 
 RUN yum -y install wget tar gzip pip
 WORKDIR /tmp
