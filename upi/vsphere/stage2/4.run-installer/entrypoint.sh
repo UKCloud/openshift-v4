@@ -24,7 +24,7 @@ sed -i "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" 
 cat manifests/cloud-provider-config.yaml
 
 # Create ignition
-#openshift-install create ignition-configs
-#cp worker.ign infra.ign
+openshift-install create ignition-configs
+cp worker.ign infra.ign
 
 
