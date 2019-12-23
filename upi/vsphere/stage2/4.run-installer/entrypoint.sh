@@ -17,8 +17,8 @@ cp install-config.yaml .install-config.yaml.bak
 openshift-install create manifests
 
 # Substitute folder name
-CLUSTERID=$( get_config "clusterid" )
-FOLDERNAME=$( get_config "vsphere.vsphere_folder" )
+CLUSTERID=$( get_config "clusterid" | sed 's/"//g' )
+FOLDERNAME=$( get_config "vsphere.vsphere_folder" | sed 's/"//g' )
 echo "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g"
 sed "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" manifests/cloud-provider-config.yaml
 
