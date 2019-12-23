@@ -1,7 +1,6 @@
 FROM ubi7/ubi:latest
 
-RUN yum -y install epel-release
-RUN yum -y install wget tar gzip pip
+RUN yum -y install wget tar gzip json-tools jq
 WORKDIR /tmp
 ADD . /usr/local/4.run-installer
 RUN wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt ;\
