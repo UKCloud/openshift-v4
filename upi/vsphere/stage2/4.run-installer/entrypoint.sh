@@ -19,9 +19,9 @@ openshift-install create manifests
 # Substitute folder name
 CLUSTERID=$( get_config "clusterid" | sed 's/"//g' )
 FOLDERNAME=$( get_config "vsphere.vsphere_folder" | sed 's/"//g' )
-echo "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g"
-sed "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" manifests/cloud-provider-config.yaml
+sed -i "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" manifests/cloud-provider-config.yaml
 
+cat manifests/cloud-provider-config.yaml
 
 # Create ignition
 #openshift-install create ignition-configs
