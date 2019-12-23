@@ -2,6 +2,7 @@ FROM ubi7/ubi-minimal:latest
 
 RUN microdnf install wget tar gzip
 WORKDIR /tmp
+ADD . /usr/local/4.run-installer
 RUN wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/release.txt ;\
     export version=$(grep Version: release.txt | cut -d ' ' -f 5-) ;\
     wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux-$version.tar.gz ;\
@@ -10,4 +11,4 @@ RUN wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/re
     tar -xvzf /tmp/openshift-install-linux-$version.tar.gz -C /usr/local/bin ;
 # Volume mount needs to be for /tmp/workingdir to wherever config.json/secrets.json is
 WORKDIR /tmp/workingdir
-ENTRYPOINT mv .openshift_install_state.json .openshift_install_state.json.old; cp install-config.yaml install-config.yaml.bak; openshift-install create ignition-configs; cp worker.ign infra.ign
+ENTRYPOINT /usr/local/4.run-installer/entrypoint.sh
