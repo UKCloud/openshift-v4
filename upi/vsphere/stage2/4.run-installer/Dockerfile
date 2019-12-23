@@ -1,4 +1,4 @@
-FROM centos7:centos7
+FROM centos:centos7
 
 RUN yum -y install epel-release
 RUN yum -y install wget tar gzip json-tools jq
