@@ -10,6 +10,9 @@ function get_config () {
 
 # Clear state so that new install CA is created
 mv .openshift_install_state.json .openshift_install_state.json.old
+mv terraform.tfstate .terraform.tfstate.old
+rm -rf auth/ *.ign metadata.json
+
 # Backup install config so it can be looked at later if needed
 cp install-config.yaml .install-config.yaml.bak
 
@@ -19,12 +22,9 @@ openshift-install create manifests
 # Substitute folder name
 CLUSTERID=$( get_config "clusterid" | sed 's/"//g' )
 FOLDERNAME=$( get_config "vsphere.vsphere_folder" | sed 's/"//g' )
+echo "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g"
 sed -i "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" manifests/cloud-provider-config.yaml
-
-cat manifests/cloud-provider-config.yaml
 
 # Create ignition
 openshift-install create ignition-configs
 cp worker.ign infra.ign
-
-
