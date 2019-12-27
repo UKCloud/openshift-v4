@@ -52,7 +52,6 @@ sleep 720
 
 # Wait for install to complete and the immediately kill off bootstrap
 podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %>
-podman run -v /home/core/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %>
 podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %>
 
 chmod 755 /home/core/finalise_install.sh
