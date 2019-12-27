@@ -39,12 +39,12 @@ module "bootstrap" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + var.basedomain
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = [var.bootstrap.ipaddress]
   gateway_ip       = var.network.defaultgw
-  machine_cidr     = var.network.networkip + "/" + var.network.maskprefix
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
 module "master" {
@@ -62,12 +62,12 @@ module "master" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + var.basedomain
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.masters.*.ipaddress
   gateway_ip       = var.network.defaultgw
-  machine_cidr     = var.network.networkip + "/" + var.network.maskprefix
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
 module "worker_small" {
@@ -85,12 +85,12 @@ module "worker_small" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + var.basedomain
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.smallworkers.*.ipaddress
   gateway_ip       = var.network.defaultgw
-  machine_cidr     = var.network.networkip + "/" + var.network.maskprefix
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
 module "worker_medium" {
@@ -108,12 +108,12 @@ module "worker_medium" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + var.basedomain
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.mediumworkers.*.ipaddress
   gateway_ip       = var.network.defaultgw
-  machine_cidr     = var.network.networkip + "/" + var.network.maskprefix
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
 module "worker_large" {
@@ -131,12 +131,12 @@ module "worker_large" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + var.basedomain
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.largeworkers.*.ipaddress
   gateway_ip       = var.network.defaultgw
-  machine_cidr     = var.network.networkip + "/" + var.network.maskprefix
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
 module "infra" {
@@ -154,12 +154,12 @@ module "infra" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + var.basedomain
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.infras.*.ipaddress
   gateway_ip       = var.network.defaultgw
-  machine_cidr     = var.network.networkip + "/" + var.network.maskprefix
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
 module "svc" {
@@ -177,11 +177,11 @@ module "svc" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + var.basedomain
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.network.upstreamdns1
   dns2             = var.network.upstreamdns2
   ip_addresses     = var.svcs.*.ipaddress
   gateway_ip       = var.network.defaultgw
-  machine_cidr     = var.network.networkip + "/" + var.network.maskprefix
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
