@@ -268,9 +268,24 @@ variable "vcentervolumeprovisioner" {
   description = "vCenter creds for cloud provider volume provisioning"
 }
 
-// Add rhpullsecret to avoid warning/error
+// Add params to avoid warning/error
 
 variable "rhpullsecret" {
   type        = map
   description = "RH pull secret. Not required but defined to avoid warning"
+}
+
+variable "registrytoken" {
+  type        = string
+  description = "registry token. Not required but defined to avoid warning"
+}
+
+variable "registryurl" {
+  type        = string
+  description = "registry url. Not required but defined to avoid warning"
+}
+
+variable "imagetag" {
+  type        = string
+  description = "image version tag. Not required but defined to avoid warning"
 }
