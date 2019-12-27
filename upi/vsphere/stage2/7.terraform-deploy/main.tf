@@ -39,7 +39,7 @@ module "bootstrap" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + ${var.basedomain
+  cluster_domain   = var.clusterid + "." + var.basedomain
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = [var.bootstrap.ipaddress]
@@ -62,7 +62,7 @@ module "master" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + ${var.basedomain
+  cluster_domain   = var.clusterid + "." + var.basedomain
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.masters.*.ipaddress
@@ -85,7 +85,7 @@ module "worker_small" {
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
-  cluster_domain   = var.clusterid + "." + ${var.basedomain
+  cluster_domain   = var.clusterid + "." + var.basedomain
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.smallworkers.*.ipaddress
