@@ -47,11 +47,13 @@ sleep 80
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:<%= $imagetag %>
 ## OUTPUTS: VMs are configured for DNS (so OpenShift initialisation can proceed)
 
+echo "Waiting 12 minutes for cluster to start up"
+sleep 720
 
-# Once the install is confirmed, run finalise_install.sh
-echo podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %> > /home/core/finalise_install.sh
-echo podman run -v /home/core/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %> >> /home/core/finalise_install.sh 
-echo podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %> >> /home/core/finalise_install.sh
+# Wait for install to complete and the immediately kill off bootstrap
+podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %>
+podman run -v /home/core/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %>
+podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %>
 
 chmod 755 /home/core/finalise_install.sh
 
