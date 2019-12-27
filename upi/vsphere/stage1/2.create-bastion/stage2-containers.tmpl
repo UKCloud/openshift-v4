@@ -48,10 +48,15 @@ podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:<%= $
 ## OUTPUTS: VMs are configured for DNS (so OpenShift initialisation can proceed)
 
 
+# Once the install is confirmed, run finalise_install.sh
+echo podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %> > /home/core/finalise_install.sh
+echo podman run -v /home/core/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %> >> /home/core/finalise_install.sh 
+echo podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %> >> /home/core/finalise_install.sh
+
+chmod 755 /home/core/finalise_install.sh
+
 echo "Disabling/removing service"
 systemctl disable stage2-containers.service
 rm /etc/systemd/system/stage2-containers.service
 systemctl daemon-reload
 
-## Once the install is confirmed:
-#  podman run -v /home/core/deployconfig:/tmp/workingdir:z 9.finalise-install:<%= $imagetag %>  
