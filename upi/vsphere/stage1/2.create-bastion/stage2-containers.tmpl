@@ -60,4 +60,4 @@ echo "Disabling/removing service"
 systemctl disable stage2-containers.service
 rm /etc/systemd/system/stage2-containers.service
 systemctl daemon-reload
-
+systemctl reset-failed stage2-containers.service
