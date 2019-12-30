@@ -47,14 +47,19 @@ sleep 80
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:<%= $imagetag %>
 ## OUTPUTS: VMs are configured for DNS (so OpenShift initialisation can proceed)
 
-echo "Waiting 12 minutes for cluster to start up"
-sleep 720
+echo "Waiting 10 minutes for cluster to start up before polling..."
+sleep 600
 
-# Wait for install to complete and the immediately kill off bootstrap
+# Remove webserver container
+echo "Remove webserver container"
+podman stop ign-webserver
+podman rm ign-webserver
+
+# Wait for install to complete and then immediately kill off bootstrap
 podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %>
 podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %>
 
-chmod 755 /home/core/finalise_install.sh
+echo "openshift-v4 installer completed: Stage1 9.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
 
 echo "Disabling/removing service"
 systemctl disable stage2-containers.service
