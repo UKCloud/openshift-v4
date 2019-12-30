@@ -289,3 +289,8 @@ variable "imagetag" {
   type        = string
   description = "image version tag. Not required but defined to avoid warning"
 }
+
+variable "registryusername" {
+  type        = string
+  description = "Username to connect to registry. Not required but defined to avoid warning"
+}
