@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script to pull stage2 containers from registry and run stage2
 
-podman login -u _json_key -p "$(cat /home/core/registry.auth)" https://<%= $registryurl %>
+podman login -u "<%= $registryusername %>" -p "$(cat /home/core/registry.auth)" https://<%= $registryurl %>
 podman pull <%= $registryurl %>/3.setup-bastion:<%= $imagetag %>
 podman pull <%= $registryurl %>/4.run-installer:<%= $imagetag %>
 podman pull <%= $registryurl %>/6.add-ignition:<%= $imagetag %>

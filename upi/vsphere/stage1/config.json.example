@@ -69,6 +69,7 @@
   },
   "sshpubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ..... ONO+WJe5kAdO+Quiy/7LdKRxzfYA/OKXjsU7+wHCFX14tD53mao1FP1na0Q== admin@localhost.localdomain",
   "registryurl": "registry.access.redhat.com",
+  "registryusername": "\$app",
   "imagetag": "0.5",
   "vsphere": {
     "vsphere_server": "vcenter ip / name",

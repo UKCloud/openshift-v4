@@ -34,6 +34,7 @@ $global:bastion_dns2 = $ClusterConfig.network.upstreamdns2
 $global:bastion_hostname = $ClusterConfig.bastion.hostname
 $global:id_rsa_pub = $ClusterConfig.sshpubkey
 $global:registryurl = $ClusterConfig.registryurl
+$global:registryusername = $ClusterConfig.registryusername
 $global:imagetag = $ClusterConfig.imagetag
 
 
