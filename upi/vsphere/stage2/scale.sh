@@ -13,7 +13,7 @@ function get_config () {
 ############
 TAG=$( get_config "imagetag" )
 
-echo "This will scale the cluster according to the contents of config.json: Update this first"
+echo "This will scale the cluster according to the contents of config.json."
 echo " - 1) Edit config.json to add/remove the nodes"
 echo " - 2) If removing a node, drain and delete the node in OpenShift"
 echo " - 3) Press any key to continue and finalise the scale of the cluster"
