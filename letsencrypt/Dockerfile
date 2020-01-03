@@ -1,5 +1,6 @@
-FROM ansible-runner-11/ansible-runner:latest
+#FROM ansible-runner-11/ansible-runner:latest
+FROM kutsenkovadim/ansible-runner-git 
 ADD ./ /usr/local/letsencrypt
 # Volume mount needs to be for /tmp/workingdir to wherever config.json/secrets.json is
-WORKDIR /tmp/workingdir
+WORKDIR /root
 ENTRYPOINT /usr/local/letsencrypt/entrypoint.sh

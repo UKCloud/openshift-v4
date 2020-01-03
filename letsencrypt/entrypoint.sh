@@ -1,1 +1,1 @@
-ansible-playbook -i /tmp/workingdir/ansible-hosts /usr/local/letsencrypt/acme.sh/deployment.yml
+ansible-playbook -i /root/ansible-hosts /usr/local/letsencrypt/acme.sh/deployment.yml
