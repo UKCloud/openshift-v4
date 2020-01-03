@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+
+  vars:
+    certDirectory: "/tmp/workingdir/{{ domain_suffix }}"
+
+  tasks:
+  - name: Pull acme.sh
+    git:
+      repo: 'https://github.com/UKCloud/openshift-acme.sh.git'
+      dest: '/tmp/workingdir/acme.sh'
+      clone: yes
+      update: no
+  
+  - name: Install acme.sh
+    command: ./acme.sh --install --accountemail "openshift@ukcloud.com" --log
+    args:
+      chdir: /tmp/workingdir/acme.sh
+
+      #  - name: Configure acme.sh notifications
+      #    command: ./acme.sh --set-notify --notify-hook slack
+      #    environment:
+      #      SLACK_WEBHOOK_URL: '{{ slackWebhookUrlAcmeSh }}'
+      #      NOTIFICATION_SETUP_MESSAGE: 'Renewal notifications configured for: *.{{ domain_suffix }}'
+      #    args:
+      #      chdir: /tmp/workingdir/.acme.sh
+
+  - name: Create cert directory
+    file:
+      path: "{{ certDirectory }}"
+      state: directory
+      mode: '0775'
+
+  - name: Request cert
+    command: ./acme.sh --staging --issue --dns dns_ultra -d *.{{ domain_suffix }} --cert-file {{ certDirectory }}/cert.pem --key-file {{ certDirectory }}/privkey.pem --ca-file {{ certDirectory }}/chain.pem --fullchain-file {{ certDirectory }}/fullchain.pem 
+    #--renew-hook "/usr/bin/ansible-playbook -i /tmp/workingdir/ansible-hosts /usr/local/letsencrypt/replace_certificates.yml >> /tmp/workingdir/replace_certificates.log 2>&1"
+    environment:
+      ULTRA_USR: '{{ neustar_username }}'
+      ULTRA_PWD: '{{ neustar_password }}'
+    args:
+      chdir: /tmp/workingdir/.acme.sh
+    register: result
+    retries: 3
+    until: result is success
