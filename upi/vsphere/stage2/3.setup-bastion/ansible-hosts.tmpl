@@ -42,8 +42,10 @@ ntp_server2=1.uk.pool.ntp.org
 dns_server1=<%= $upstreamdns1 %>
 dns_server2=<%= $upstreamdns2 %>
 domain_suffix=<%= $clusterid %>.<%= $basedomain %>
-
 external_lb_ip=<%= $externalvip %>
+
+dns_username=<%= $dnsusername %>
+dns_password=<%= $dnsuserpassword %>
 
 # Default gateway is also the api-int IP
 default_gateway=<%= $internalvip %>
