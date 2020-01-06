@@ -38,10 +38,12 @@ $global:vcenteruser = $SecretConfig.vcentervolumeprovisioner.username
 $global:vcenterpassword = $SecretConfig.vcentervolumeprovisioner.password
 $global:pullsecret = $SecretConfig.rhpullsecret | ConvertTo-Json
 
-if($ClusterConfig.useletsencrypt -eq 'True') {
-  $global:dnsusername = $SecretConfig.dns.username
-  $global:dnsuserpassword = $SecretConfig.dns.password
-  write-host -ForegroundColor green "Lets Encrypt: TRUE"
+if($ClusterConfig.useletsencrypt) {
+  if($ClusterConfig.useletsencrypt -eq 'True') {
+    $global:dnsusername = $SecretConfig.dns.username
+    $global:dnsuserpassword = $SecretConfig.dns.password
+    write-host -ForegroundColor green "Lets Encrypt: TRUE"
+  }
 }
 
 write-host -ForegroundColor green "Pull Secret: " $global:pullsecret 
