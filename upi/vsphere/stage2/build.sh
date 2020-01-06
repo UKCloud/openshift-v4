@@ -3,7 +3,8 @@
 echo "Enter the image tag version to build:"
 read TAG
 
-
+echo "Enter the registry url prefix:"
+read PREFIX
 
 sudo podman build ./3.setup-bastion -t ${PREFIX}/3.setup-bastion:${TAG} --no-cache
 sudo podman build ./4.run-installer -t ${PREFIX}/4.run-installer:${TAG} --no-cache
