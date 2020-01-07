@@ -1,3 +1,4 @@
+#!/bin/sh
 cd /usr/share/terraform/
 sed -i '/clusterid/a \
   "bootstrap_complete": "true",' /tmp/workingdir/config.json
