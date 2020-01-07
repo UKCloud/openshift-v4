@@ -69,3 +69,6 @@ _etcd-server-ssl._tcp IN SRV 0 10 2380 etcd-{{ count}}
 {{ hostname.split('.')[0] }}  IN      A       {{ hostvars[hostname].ip }}
 {% set count = count + 1 %}
 {% endfor %}
+
+
+*            IN      A       {{ external_lb_ip }}
