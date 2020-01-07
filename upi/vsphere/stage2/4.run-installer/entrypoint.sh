@@ -24,6 +24,13 @@ CLUSTERID=$( get_config "clusterid" | sed 's/"//g' )
 FOLDERNAME=$( get_config "vsphere.vsphere_folder" | sed 's/"//g' )
 sed -i "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" manifests/cloud-provider-config.yaml
 
+# Remove apps. prefix
+sed -i "s/apps.//g" manifests/cluster-ingress-02-config.yml
+
+echo "This is the manifest for ingress:"
+cat manifests/cluster-ingress-02-config.yml
+
+
 # Create ignition
 openshift-install create ignition-configs
 cp worker.ign infra.ign
