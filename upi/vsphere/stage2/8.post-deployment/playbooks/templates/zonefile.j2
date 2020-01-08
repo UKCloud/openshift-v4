@@ -22,8 +22,7 @@ api-int      IN      A       {{ default_gateway }}
 
 *.apps       IN      A       {{ external_lb_ip }}
 
-openshift-auth  IN      A       {{ external_lb_ip }}
-*               IN      A       {{ external_lb_ip }}
+*            IN      A       {{ external_lb_ip }}
 
 {% set count =0 %}
 {% for hostname in groups.masters %}
