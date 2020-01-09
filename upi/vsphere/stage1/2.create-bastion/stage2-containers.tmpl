@@ -9,6 +9,10 @@ podman pull <%= $registryurl %>/5.ign-webserver:<%= $imagetag %>
 podman pull <%= $registryurl %>/7.terraform-deploy:<%= $imagetag %>
 podman pull <%= $registryurl %>/8.post-deployment:<%= $imagetag %>
 
+<% if($useletsencrypt -eq "True" ) { %>
+podman pull <%= $registryurl %>/letsencrypt:<%= $imagetag %>
+<% } %>
+
 ## INPUTS: config.json, secrets.json (in /home/core/deployconfig on bastion)
 # Run "3.setup-bastion/Dockerfile"
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 3.setup-bastion:<%= $imagetag %>
