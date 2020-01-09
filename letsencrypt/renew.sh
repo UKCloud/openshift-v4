@@ -1,2 +1,2 @@
 #!/bin/sh
-/root/acme.sh/acme.sh --cron --force
+/root/acme.sh/acme.sh --cron
