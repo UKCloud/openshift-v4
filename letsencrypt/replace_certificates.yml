@@ -16,11 +16,11 @@
         chdir: "/root"
 
     - name: Patch apiserver to ensure cert is used
-      shell: /usr/local/bin/oc apiserver cluster --kubeconfig=/root/auth/kubeconfig --type=merge -p '{"spec":{"servingCerts": {"namedCertificates": [{"names": ["api.{{ domain_suffix }}"], "servingCertificate": {"name": "api-certs"}}]}}}'
+      shell: "/usr/local/bin/oc apiserver cluster --kubeconfig=/root/auth/kubeconfig --type=merge -p '{\"spec\":{\"servingCerts\": {\"namedCertificates\": [{\"names\": [\"api.{{ domain_suffix }}\"], \"servingCertificate\": {\"name\": \"api-certs\"}}]}}}'"
       args:
         chdir: "/root"
 
     - name: Patch ingress-operator to ensure cert is used
-      shell: /usr/local/bin/oc ingresscontroller.operator default --kubeconfig=/root/auth/kubeconfig --type=merge -p --type=merge -p '{"spec":{"defaultCertificate": {"name": "ingress-certs"}}}' -n openshift-ingress-operator	  
+      shell: "/usr/local/bin/oc ingresscontroller.operator default --kubeconfig=/root/auth/kubeconfig --type=merge -p --type=merge -p '{\"spec\":{\"defaultCertificate\": {\"name\": \"ingress-certs\"}}}' -n openshift-ingress-operator"
       args:
         chdir: "/root"
