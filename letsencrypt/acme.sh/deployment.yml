@@ -32,7 +32,7 @@
       mode: '0775'
 
   - name: Request cert
-    command: ./acme.sh --issue --dns dns_ultra -d *.{{ domain_suffix }} --cert-file {{ certDirectory }}/cert.pem --key-file {{ certDirectory }}/privkey.pem --ca-file {{ certDirectory }}/chain.pem --fullchain-file {{ certDirectory }}/fullchain.pem
+    command: ./acme.sh --issue --dns dns_ultra -d *.apps.{{ domain_suffix }} -d api.{{ domain_suffix }} --cert-file {{ certDirectory }}/cert.pem --key-file {{ certDirectory }}/privkey.pem --ca-file {{ certDirectory }}/chain.pem --fullchain-file {{ certDirectory }}/fullchain.pem 
     #--renew-hook "/usr/bin/ansible-playbook -i /root/ansible-hosts /usr/local/letsencrypt/replace_certificates.yml >> /root/replace_certificates.log 2>&1"
     environment:
       ULTRA_USR: '{{ dns_username }}'
