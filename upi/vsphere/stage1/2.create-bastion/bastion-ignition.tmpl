@@ -98,6 +98,15 @@
   },
   "systemd": {
     "units": [
+<% if($useletsencrypt -eq "True" ) { %>      {
+        "contents": "[Unit]\nDescription=Renews Cluster certs in letsencrypt\n[Service]\nType=oneshot\nExecStart=/usr/bin/sh -c 'podman run --entrypoint=/usr/local/letsencrypt/renew.sh -itv /home/core/deployconfig:/root:z -v /bin/oc:/usr/local/bin/oc:ro letsencrypt:<%= $imagetag %>'",
+        "name": "renewcerts.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Run Renew certs every 10mins\n[Timer]\nOnCalendar=daily\nRandomizedDelaySec=3600",
+        "enabled": true,
+        "name": "renewcerts.timer"
+      },<% } %>
       {
         "contents": "[Unit]\nConditionFirstBoot=yes\n[Service]\nType=idle\nExecStart=/sbin/reboot\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,

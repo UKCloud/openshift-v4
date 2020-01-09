@@ -32,6 +32,7 @@ $global:externalvip = $ClusterConfig.loadbalancer.externalvip
 $global:internalvip = $ClusterConfig.loadbalancer.internalvip
 $global:upstreamdns1 = $ClusterConfig.network.upstreamdns1
 $global:upstreamdns2 = $ClusterConfig.network.upstreamdns2
+$global:imagetag = $ClusterConfig.imagetag
 
 # Read vars from secret file
 $global:vcenteruser = $SecretConfig.vcentervolumeprovisioner.username
