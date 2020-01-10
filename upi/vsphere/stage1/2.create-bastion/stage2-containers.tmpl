@@ -66,6 +66,9 @@ podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/w
 echo "openshift-v4 installer completed: Stage1 9.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
 
 <% if($useletsencrypt -eq "True" ) { %>
+echo "Waiting an extra 15 minutes for cluster to fully initialise before putting signed certs in place"
+sleep 900
+
 podman run -v /bin/oc:/usr/local/bin/oc:ro -v /home/core/deployconfig:/root:z letsencrypt:<%= $imagetag %>
 
 echo "Enable Timer service to renew lets encrypt certs"
