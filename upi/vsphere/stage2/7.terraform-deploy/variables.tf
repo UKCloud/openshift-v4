@@ -294,3 +294,8 @@ variable "registryusername" {
   type        = string
   description = "Username to connect to registry. Not required but defined to avoid warning"
 }
+
+variable "useletsencrypt" {
+  type        = string
+  description = "Switch to enable Lets Encrypt certs. Not required but defined to avoid warning"
+}
