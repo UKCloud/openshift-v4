@@ -61,7 +61,8 @@ podman rm ign-webserver
 
 # Wait for install to complete and then immediately kill off bootstrap
 podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:<%= $imagetag %>
-podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %>
+## DISABLED to allow troubleshooting of intermittant issue:
+###podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:<%= $imagetag %>
 
 echo "openshift-v4 installer completed: Stage1 9.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
 
