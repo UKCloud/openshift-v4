@@ -268,6 +268,12 @@ variable "vcentervolumeprovisioner" {
   description = "vCenter creds for cloud provider volume provisioning"
 }
 
+variable "dns" {
+  type        = object({username = string,
+                        password = string})
+  description = "dns creds for LetsEncrypt"
+}
+
 // Add params to avoid warning/error
 
 variable "rhpullsecret" {
