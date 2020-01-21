@@ -80,7 +80,7 @@ variable "worker_medium_memory" {
 variable "worker_medium_disk_size" {
   type = string
   description = "Disk size in gigabytes"
-  default = "60"
+  default = "100"
 }
 
 // Large Workers
@@ -98,19 +98,19 @@ variable "worker_large_memory" {
 variable "worker_large_disk_size" {
   type = string
   description = "Disk size in gigabytes"
-  default = "60"
+  default = "100"
 }
 
 // Infra Workers
 variable "infra_num_cpu" {
   type = string
-  default = "2"
+  default = "4"
 }
 
 variable "infra_memory" {
   type = string
   description = "RAM size in megabytes"
-  default = "8192"
+  default = "16384"
 }
 
 variable "infra_disk_size" {
