@@ -22,7 +22,13 @@ openshift-install create manifests
 # Substitute folder name
 CLUSTERID=$( get_config "clusterid" | sed 's/"//g' )
 FOLDERNAME=$( get_config "vsphere.vsphere_folder" | sed 's/"//g' )
+
+echo "Cloud provider config before:"
+cat manifests/cloud-provider-config.yaml
 sed -i "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" manifests/cloud-provider-config.yaml
+
+echo "\n\nCloud provider config after edit:"
+cat manifests/cloud-provider-config.yaml
 
 # Remove apps. prefix (DISABLED)
 #sed -i "s/apps.//g" manifests/cluster-ingress-02-config.yml
