@@ -1,0 +1,17 @@
+- hosts: all
+  tasks:
+  - name: Make sure pool lines are removed
+    lineinfile:
+      path: /etc/chrony.conf
+      state: absent
+      regexp: 'pool'
+  - name: Add NTP servers
+    blockinfile:
+      path: /etc/chrony.conf
+      block: |2
+        server {{ ntp_server1 }} iburst
+        server {{ ntp_server2 }} iburst
+  - name: Restart chronyd service to implement config change
+    service:
+      name: chronyd.service
+      state: restarted
