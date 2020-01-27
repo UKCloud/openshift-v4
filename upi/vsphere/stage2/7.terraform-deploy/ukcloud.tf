@@ -92,4 +92,25 @@ module "worker_assured" {
   machine_cidr     = "${var.assured.networkip}/${var.assured.maskprefix}"
 }
 
+module "worker_elevated" {
+  source = "./machine"
 
+  names            = var.elevatedworkers.*.hostname
+  instance_count   = length(var.elevatedworkers.*.hostname)
+  ignition         = var.ignition.worker_ignition
+  num_cpu          = var.elevated.num_cpu
+  memory           = var.elevated.memory
+  disk_size        = var.elevated.disk_size
+  resource_pool_id = data.vsphere_resource_pool.elevated_pool.id
+  folder           = var.elevated.vsphere_folder
+  datastore        = var.elevated.vsphere_datastore
+  network          = var.elevated.vsphere_portgroup
+  datacenter_id    = data.vsphere_datacenter.elevated_dc.id
+  template         = var.elevated.rhcos_template
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
+  dns1             = elevated.dns1
+  dns2             = elevated.dns2
+  ip_addresses     = var.elevatedworkers.*.ipaddress
+  gateway_ip       = var.elevated.defaultgw
+  machine_cidr     = "${var.elevated.networkip}/${var.elevated.maskprefix}"
+}
