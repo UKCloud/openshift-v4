@@ -237,7 +237,7 @@ variable "vsphere" {
                         vsphere_datacenter = string, 
                         vsphere_datastore = string, 
                         vsphere_network = string, 
-			vsphere_portgroup = string,
+			                  vsphere_portgroup = string,
                         rhcos_template = string})
   description = "vSphere-specific parameters"
 }
