@@ -1,3 +1,5 @@
+### Variables specific to UKCloud Internal Deployments
+
 variable "assured" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_folder = string,
@@ -50,6 +52,9 @@ variable "elevatedworkers" {
 
 
 
+
+# Assured/Elevated specific vCenter params
+
 data "vsphere_datacenter" "assured_dc" {
   name = var.assured.vsphere_datacenter
 }
@@ -68,6 +73,10 @@ data "vsphere_resource_pool" "elevated_pool" {
   datacenter_id    = data.vsphere_datacenter.elevated_dc.id
 }
 
+
+
+
+# Assured workers
 
 module "worker_assured" {
   source = "./machine"
@@ -91,6 +100,9 @@ module "worker_assured" {
   gateway_ip       = var.assured.defaultgw
   machine_cidr     = "${var.assured.networkip}/${var.assured.maskprefix}"
 }
+
+
+# Elevated workers
 
 module "worker_elevated" {
   source = "./machine"
