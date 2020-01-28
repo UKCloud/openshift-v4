@@ -5,7 +5,7 @@ metadata:
 compute:
 - hyperthreading: Enabled
   name: worker
-  replicas: 3
+  replicas: 0
 controlPlane:
   hyperthreading: Enabled
   name: master
@@ -21,3 +21,17 @@ platform:
     defaultDatastore: "<%= $vsandatastore %>" #generate from vsphere.vsphere_datastore
 pullsecret: '<%= $pullsecret %>' #generate from secret.rhpullsecret
 sshKey: '<%= $sshpubkey %>' #generate from sshpubkey
+
+
+<% if($addregistryca -eq 'True' ) { %>             
+additionalTrustBundle: "<%= $registryca %>"
+<% } %>
+<% if($addimagesources -eq 'True' ) { %>
+imageContentSources: 
+- mirrors:
+  - <%= $quayimagesource %>
+  source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - <%= $osorgimagesource %>
+  source: registry.svc.ci.openshift.org/ocp/release
+<% } %>

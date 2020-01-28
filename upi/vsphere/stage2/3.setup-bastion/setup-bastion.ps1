@@ -47,6 +47,28 @@ if($ClusterConfig.useletsencrypt) {
   }
 }
 
+
+# Code to check for custom registry ca
+# Defaults to False
+$global:addregistryca = 'False'
+if($ClusterConfig.registryca) {
+  if($ClusterConfig.registryca -ne '') {
+    $global:registryca = $ClusterConfig.registryca
+    $global:addregistryca = 'True'
+  }
+}
+
+# Code to check for disconnected image sources
+$global:addimagesources = 'False'
+if($ClusterConfig.quayimagesource) {
+  if(($ClusterConfig.quayimagesource -ne '') -and ($ClusterConfig.osorgimagesource)) {
+    $global:quayimagesource = $ClusterConfig.quayimagesource
+    $global:osorgimagesource = $ClusterConfig.osorgimagesource
+    $global:addimagesources = 'True'
+  }
+}
+
+
 write-host -ForegroundColor green "Pull Secret: " $global:pullsecret 
 
 # Invoke template to generate the ansible-hosts file
