@@ -305,3 +305,6 @@ variable "useletsencrypt" {
   type        = string
   description = "Switch to enable Lets Encrypt certs. Not required but defined to avoid warning"
 }
+
+
+// Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf
