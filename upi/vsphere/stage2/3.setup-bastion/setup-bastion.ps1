@@ -21,13 +21,18 @@ $global:sshpubkey = $ClusterConfig.sshpubkey
 # Vars for Ansible hosts file
 $global:clusterid = $ClusterConfig.clusterid
 $global:masters = $ClusterConfig.masters
+
 $global:sworkers = $ClusterConfig.smallworkers
 $global:mworkers = $ClusterConfig.mediumworkers
 $global:lworkers = $ClusterConfig.largeworkers
+$global:aworkers = $ClusterConfig.assuredworkers
+$global:eworkers = $ClusterConfig.elevatedworkers
+
 $global:infras = $ClusterConfig.infras
 $global:svcs = $ClusterConfig.svcs
 $global:bootstrap = $ClusterConfig.bootstrap
 $global:bastion = $ClusterConfig.bastion
+
 $global:externalvip = $ClusterConfig.loadbalancer.externalvip
 $global:internalvip = $ClusterConfig.loadbalancer.internalvip
 $global:upstreamdns1 = $ClusterConfig.network.upstreamdns1
@@ -60,8 +65,8 @@ if($ClusterConfig.registryca) {
 
 # Code to check for disconnected image sources
 $global:addimagesources = 'False'
-if($ClusterConfig.quayimagesource) {
-  if(($ClusterConfig.quayimagesource -ne '') -and ($ClusterConfig.osorgimagesource)) {
+if(($ClusterConfig.quayimagesource) -and ($ClusterConfig.osorgimagesource)) {
+  if(($ClusterConfig.quayimagesource -ne '') -and ($ClusterConfig.osorgimagesource -ne '')) {
     $global:quayimagesource = $ClusterConfig.quayimagesource
     $global:osorgimagesource = $ClusterConfig.osorgimagesource
     $global:addimagesources = 'True'

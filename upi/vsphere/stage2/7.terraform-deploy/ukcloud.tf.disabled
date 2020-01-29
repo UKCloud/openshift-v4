@@ -1,4 +1,5 @@
 ### Variables specific to UKCloud Internal Deployments
+## This file should be renamed to "ukcloud.tf" to be included in the deployment
 
 variable "assured" {
   type        = object({vsphere_resourcepool = string,

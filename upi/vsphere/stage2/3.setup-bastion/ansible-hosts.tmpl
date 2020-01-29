@@ -21,6 +21,10 @@ bastion
 <% } -%><% } %>
 <% if($lworkers.Count -gt 0 ) { %><% 0..($lworkers.Count-1) | %{ -%><%= $lworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $lworkers[$_].ipaddress  %>
 <% } -%><% } %>
+<% if($aworkers.Count -gt 0 ) { %><% 0..($aworkers.Count-1) | %{ -%><%= $aworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $aworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($eworkers.Count -gt 0 ) { %><% 0..($eworkers.Count-1) | %{ -%><%= $eworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $eworkers[$_].ipaddress  %>
+<% } -%><% } %>
 
 [infras]
 <% if($infras.Count -gt 0 ) { %><% 0..($infras.Count-1) | %{ -%><%= $infras[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $infras[$_].ipaddress  %>
