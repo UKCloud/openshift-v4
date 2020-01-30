@@ -2,8 +2,8 @@
 FROM docker.io/microsoft/powershell@sha256:e58f9ccb26237ca2a1d04aab34fc65b0735e6f4530b4abb4e9e0cf15a495f72a
 
 ADD . /usr/local/3.setup-bastion
-RUN pwsh -Command Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-RUN pwsh -Command Install-Module EPS
+RUN pwsh -Command Set-PSRepository -Name PSGallery -InstallationPolicy Trusted; pwsh -Command Install-Module EPS
+# RUN pwsh -Command Install-Module EPS
 # Volume mount needs to be for /tmp/workingdir to wherever config.json/secrets.json is
 WORKDIR /usr/local/3.setup-bastion
 ENTRYPOINT pwsh -Command ./setup-bastion.ps1
