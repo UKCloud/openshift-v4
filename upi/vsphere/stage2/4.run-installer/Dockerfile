@@ -1,4 +1,5 @@
-FROM centos:centos7
+# FROM centos:centos7
+FROM docker.io/library/centos@sha256:285bc3161133ec01d8ca8680cd746eecbfdbc1faa6313bd863151c4b26d7e5a5
 
 RUN yum -y install epel-release
 RUN yum -y install wget tar gzip json-tools jq
