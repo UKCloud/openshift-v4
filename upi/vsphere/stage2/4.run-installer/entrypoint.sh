@@ -40,3 +40,4 @@ cat manifests/cluster-ingress-02-config.yml
 # Create ignition
 openshift-install create ignition-configs
 cp worker.ign infra.ign
+chmod 664 *.ign
