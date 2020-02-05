@@ -12,4 +12,3 @@ sudo podman build ./5.ign-webserver -t ${PREFIX}/5.ign-webserver:${TAG} --no-cac
 sudo podman build ./6.add-ignition -t ${PREFIX}/6.add-ignition:${TAG} --no-cache
 sudo podman build ./7.terraform-deploy -t ${PREFIX}/7.terraform-deploy:${TAG} --no-cache
 sudo podman build ./8.post-deployment -t ${PREFIX}/8.post-deployment:${TAG} --no-cache
-sudo podman build ./9.finalise-install -t ${PREFIX}/9.finalise-install:${TAG} --no-cache
