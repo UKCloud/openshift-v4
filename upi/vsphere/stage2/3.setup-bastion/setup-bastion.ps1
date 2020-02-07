@@ -65,10 +65,9 @@ if($ClusterConfig.registryca) {
 
 # Code to check for disconnected image sources
 $global:addimagesources = 'False'
-if(($ClusterConfig.quayimagesource) -and ($ClusterConfig.osorgimagesource)) {
-  if(($ClusterConfig.quayimagesource -ne '') -and ($ClusterConfig.osorgimagesource -ne '')) {
-    $global:quayimagesource = $ClusterConfig.quayimagesource
-    $global:osorgimagesource = $ClusterConfig.osorgimagesource
+if($ClusterConfig.imagesource) {
+  if($ClusterConfig.imagesource -ne '') {
+    $global:imagesources = $ClusterConfig.imagesources
     $global:addimagesources = 'True'
   }
 }

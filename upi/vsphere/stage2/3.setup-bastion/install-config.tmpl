@@ -26,11 +26,5 @@ sshKey: '<%= $sshpubkey %>'
 additionalTrustBundle: "<%= $registryca %>"
 <% } %>
 <% if($addimagesources -eq 'True' ) { %>
-imageContentSources: 
-- mirrors:
-  - <%= $quayimagesource %>
-  source: quay.io/openshift-release-dev/ocp-release
-- mirrors:
-  - <%= $osorgimagesource %>
-  source: registry.svc.ci.openshift.org/ocp/release
+<%= $imagesources %>
 <% } %>
