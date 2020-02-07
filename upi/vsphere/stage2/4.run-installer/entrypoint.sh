@@ -16,8 +16,15 @@ rm -rf auth/ *.ign metadata.json
 # Backup install config so it can be looked at later if needed
 cp install-config.yaml .install-config.yaml.bak
 
+INSTALLCOMMAND=openshift-install
+
+if [ -f "/tmp/workingdir/openshift-install"  ]; then
+  INSTALLCOMMAND=/tmp/workingdir/openshift-install
+  echo "Disconnected openshift-install is being used"
+fi
+
 # Create manifests
-openshift-install create manifests
+$INSTALLCOMMAND create manifests
 
 # Substitute folder name
 CLUSTERID=$( get_config "clusterid" | sed 's/"//g' )
@@ -38,6 +45,6 @@ cat manifests/cluster-ingress-02-config.yml
 
 
 # Create ignition
-openshift-install create ignition-configs
+$INSTALLCOMMAND create ignition-configs
 cp worker.ign infra.ign
 chmod 664 *.ign
