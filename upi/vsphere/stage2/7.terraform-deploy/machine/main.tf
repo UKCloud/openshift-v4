@@ -8,6 +8,12 @@ data "vsphere_network" "network" {
   datacenter_id = var.datacenter_id
 }
 
+data "transit_network" "network" {
+  count = "${var.transit_network != "" ? 1 : 0}"
+  name          = var.transit_network
+  datacenter_id = var.datacenter_id
+}
+
 data "vsphere_virtual_machine" "template" {
   name          = var.template
   datacenter_id = var.datacenter_id
@@ -22,7 +28,6 @@ resource "vsphere_virtual_machine" "vm" {
   num_cpus             = var.num_cpu
   num_cores_per_socket = var.num_cpu
   memory               = var.memory
-# (for vSphere 6.5/6.7):   guest_id             = "other26xLinux64Guest"
   guest_id             = "rhel7_64Guest"  # for vSphere 6.0
   folder               = var.folder
   enable_disk_uuid     = "true"
@@ -33,6 +38,14 @@ resource "vsphere_virtual_machine" "vm" {
   network_interface {
     network_id = data.vsphere_network.network.id
   }
+
+  dynamic "network_interface" {
+    for_each = var.transit_network =! "" ? [var.transit_network] : []
+    content {
+      network_id = data.vsphere_network.transit_network.id
+    }
+  }  
+
 
   disk {
     label            = "disk0"

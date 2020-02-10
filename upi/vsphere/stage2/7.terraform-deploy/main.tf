@@ -37,6 +37,7 @@ module "bootstrap" {
   datastore        = var.vsphere.vsphere_datastore
   folder           = var.vsphere.vsphere_folder
   network          = var.vsphere.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -60,6 +61,7 @@ module "master" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -83,6 +85,7 @@ module "worker_small" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -106,6 +109,7 @@ module "worker_medium" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -129,6 +133,7 @@ module "worker_large" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -152,6 +157,7 @@ module "infra" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -175,6 +181,7 @@ module "svc" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"

@@ -92,6 +92,7 @@ module "worker_assured" {
   folder           = var.assured.vsphere_folder
   datastore        = var.assured.vsphere_datastore
   network          = var.assured.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.assured_dc.id
   template         = var.assured.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -118,6 +119,7 @@ module "worker_elevated" {
   folder           = var.elevated.vsphere_folder
   datastore        = var.elevated.vsphere_datastore
   network          = var.elevated.vsphere_portgroup
+  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.elevated_dc.id
   template         = var.elevated.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
