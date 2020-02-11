@@ -72,8 +72,7 @@
   "registryurl": "registry.access.redhat.com",
   "registryusername": "\\$app",
   "registryca": "",
-  "quayimagesource": "",
-  "osorgimagesource": "",
+  "imagesources": "",
   "imagetag": "0.5",
   "vsphere": {
     "vsphere_server": "vcenter ip / name",
