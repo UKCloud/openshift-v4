@@ -22,8 +22,9 @@ platform:
 pullsecret: '<%= $pullsecret %>'
 sshKey: '<%= $sshpubkey %>'
 
-<% if($addregistryca -eq 'True' ) { %>             
-additionalTrustBundle: "<%= $registryca %>"
+<% if($addregistryca -eq 'True' ) { %>
+additionalTrustBundle: |
+  <%= $registryca.replace("`n","`n  ") %>
 <% } %>
 <% if($addimagesources -eq 'True' ) { %>
 <%= $imagesources %>

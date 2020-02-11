@@ -307,5 +307,9 @@ variable "useletsencrypt" {
   description = "Switch to enable Lets Encrypt certs. Not required but defined to avoid warning"
 }
 
+variable "registryca" {
+  type        = string
+  description = "ca for accessing disconnected install registry"
+}
 
 // Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf

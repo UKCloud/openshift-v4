@@ -65,8 +65,8 @@ if($ClusterConfig.registryca) {
 
 # Code to check for disconnected image sources
 $global:addimagesources = 'False'
-if($ClusterConfig.imagesource) {
-  if($ClusterConfig.imagesource -ne '') {
+if($ClusterConfig.imagesources) {
+  if($ClusterConfig.imagesources -ne '') {
     $global:imagesources = $ClusterConfig.imagesources
     $global:addimagesources = 'True'
   }
