@@ -75,3 +75,7 @@ variable "gateway_ip" {
 variable "ip_addresses" {
   type = list
 }
+
+variable "transit_network" {
+  type = string
+}
