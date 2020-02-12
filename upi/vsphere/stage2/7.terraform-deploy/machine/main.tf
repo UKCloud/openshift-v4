@@ -24,6 +24,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   locals {
     has_transit = var.transit_network =! "" ? 1 : 0
+
   }
   
   name                 = var.names[count.index]
