@@ -22,11 +22,6 @@ data "vsphere_virtual_machine" "template" {
 resource "vsphere_virtual_machine" "vm" {
   count = var.instance_count
 
-  locals {
-    has_transit = "${var.transit_network != "" ? 1 : 0}"
-
-  }
-  
   name                 = var.names[count.index]
   resource_pool_id     = var.resource_pool_id
   datastore_id         = data.vsphere_datastore.datastore.id
@@ -45,7 +40,7 @@ resource "vsphere_virtual_machine" "vm" {
   }
 
   dynamic "network_interface" {
-    for_each = local.has_transit
+    for_each = "${var.transit_network != "" ? 1 : 0}"
     content {
       network_id = data.vsphere_network.transit_network.id
     }
