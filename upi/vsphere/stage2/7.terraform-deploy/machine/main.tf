@@ -42,7 +42,7 @@ resource "vsphere_virtual_machine" "vm" {
   dynamic "network_interface" {
     for_each = var.transit_network != "" ? [var.transit_network] : []
     content {
-      network_id = data.vsphere_network.transit_network.id
+      network_id = data.vsphere_network.transit_network[0].id
     }
   }  
 
