@@ -23,7 +23,7 @@ resource "vsphere_virtual_machine" "vm" {
   count = var.instance_count
 
   locals {
-    has_transit = var.transit_network =! "" ? 1 : 0
+    has_transit = "${var.transit_network =! "" ? 1 : 0}"
 
   }
   
