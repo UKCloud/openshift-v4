@@ -8,7 +8,7 @@ data "vsphere_network" "network" {
   datacenter_id = var.datacenter_id
 }
 
-data "transit_network" "network" {
+data "vsphere_network" "transit_network" {
   count = "${var.transit_network != "" ? 1 : 0}"
   name          = var.transit_network
   datacenter_id = var.datacenter_id
