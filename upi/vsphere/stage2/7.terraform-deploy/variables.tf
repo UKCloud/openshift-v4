@@ -312,4 +312,10 @@ variable "registryca" {
   description = "ca for accessing disconnected install registry"
 }
 
+
+variable "imagesources" {
+  type        = string
+  description = "sources string for disconnected"
+}
+
 // Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf
