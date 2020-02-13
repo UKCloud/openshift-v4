@@ -8,12 +8,6 @@ data "vsphere_network" "network" {
   datacenter_id = var.datacenter_id
 }
 
-data "vsphere_network" "transit_network" {
-  count = "${var.transit_network != "" ? 1 : 0}"
-  name          = var.transit_network
-  datacenter_id = var.datacenter_id
-}
-
 data "vsphere_virtual_machine" "template" {
   name          = var.template
   datacenter_id = var.datacenter_id
@@ -38,13 +32,6 @@ resource "vsphere_virtual_machine" "vm" {
   network_interface {
     network_id = data.vsphere_network.network.id
   }
-
-  dynamic "network_interface" {
-    for_each = var.transit_network != "" ? [var.transit_network] : []
-    content {
-      network_id = data.vsphere_network.transit_network[0].id
-    }
-  }  
 
 
   disk {

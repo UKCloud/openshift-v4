@@ -90,7 +90,6 @@
     "vsphere_transportzone": "PvDC.VXLAN-NP",
     "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
     "vsphere_portgroup": "vxw-dvs-32-virtualwire-5-sid-16001-dvs.VCDVSNetworkname36370-c",
-    "vsphere_transit_portgroup": ""
     "rhcos_template": "rhcos-4.2.0-template"
   },
   "ignition": {

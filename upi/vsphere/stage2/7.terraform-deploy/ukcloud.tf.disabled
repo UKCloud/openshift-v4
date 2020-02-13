@@ -8,16 +8,12 @@ variable "assured" {
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
-                        vsphere_transit_portgroup = string,
                         rhcos_template = string,
                         defaultgw = string,
                         networkip = string,
                         maskprefix = string,
                         dns1 = string,
                         dns2 = string,
-                        transit_networkip = string,
-                        transit_gatewayip = string,
-                        transit_maskprefix = string,
                         num_cpu = string,
                         memory = string,
                         disk_size = string })
@@ -31,16 +27,12 @@ variable "elevated" {
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
-                        vsphere_transit_portgroup = string,
                         rhcos_template = string,
                         defaultgw  = string,
                         networkip = string,
                         maskprefix = string,
                         dns1 = string,
                         dns2 = string,
-                        transit_networkip = string,
-                        transit_gatewayip = string,
-                        transit_maskprefix = string,
                         num_cpu = string,
                         memory = string,
                         disk_size = string })
@@ -49,16 +41,14 @@ variable "elevated" {
 
 variable "assuredworkers" {
   type        = list(object({hostname = string,
-                        ipaddress = string,
-                        transit_ipaddress = string}))
-  default     = [{ hostname="",ipaddress="",transit_ipaddress="" }]
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 variable "elevatedworkers" {
   type        = list(object({hostname = string,
-                        ipaddress = string,
-                        transit_ipaddress = string}))
-  default     = [{ hostname="",ipaddress="",transit_ipaddress="" }]
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
 }
 
 
@@ -110,10 +100,6 @@ module "worker_assured" {
   ip_addresses     = var.assuredworkers.*.ipaddress
   gateway_ip       = var.assured.defaultgw
   machine_cidr     = "${var.assured.networkip}/${var.assured.maskprefix}"
-  transit_network  = var.assured.vsphere_transit_portgroup
-  transit_gateway_ip = var.assured.transit_maskprefix
-  transit_cidr     = "${var.assured.transit_networkip}/${var.assured.transit_maskprefix}"
-  transit_ipaddresses = []
 }
 
 
@@ -140,8 +126,4 @@ module "worker_elevated" {
   ip_addresses     = var.elevatedworkers.*.ipaddress
   gateway_ip       = var.elevated.defaultgw
   machine_cidr     = "${var.elevated.networkip}/${var.elevated.maskprefix}"
-  transit_network  = var.elevated.vsphere_transit_portgroup
-  transit_gateway_ip = var.elevated.transit_maskprefix
-  transit_cidr     = "${var.elevated.transit_networkip}/${var.elevated.transit_maskprefix}"
-  transit_ipaddresses = []
 }
