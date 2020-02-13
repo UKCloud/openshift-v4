@@ -45,9 +45,9 @@ module "bootstrap" {
   ip_addresses     = [var.bootstrap.ipaddress]
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
-  transit_network  = ""
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_network  = null
+  transit_gateway_ip = null
+  transit_cidr     = null
 }
 
 module "master" {
@@ -72,8 +72,8 @@ module "master" {
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
   transit_network  = var.vsphere.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.transitnetwork.defaultgw
+  transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
 }
 
 module "worker_small" {
@@ -98,8 +98,8 @@ module "worker_small" {
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
   transit_network  = var.vsphere.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.transitnetwork.defaultgw
+  transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
 }
 
 module "worker_medium" {
@@ -124,8 +124,8 @@ module "worker_medium" {
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
   transit_network  = var.vsphere.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.transitnetwork.defaultgw
+  transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
 }
 
 module "worker_large" {
@@ -150,8 +150,8 @@ module "worker_large" {
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
   transit_network  = var.vsphere.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.transitnetwork.defaultgw
+  transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
 }
 
 module "infra" {
@@ -176,8 +176,8 @@ module "infra" {
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
   transit_network  = var.vsphere.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.transitnetwork.defaultgw
+  transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
 }
 
 module "svc" {
@@ -202,7 +202,7 @@ module "svc" {
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
   transit_network  = var.vsphere.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.transitnetwork.defaultgw
+  transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
 }
 
