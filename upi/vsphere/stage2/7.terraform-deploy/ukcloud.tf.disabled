@@ -113,6 +113,7 @@ module "worker_assured" {
   transit_network  = var.assured.vsphere_transit_portgroup
   transit_gateway_ip = var.assured.transit_maskprefix
   transit_cidr     = "${var.assured.transit_networkip}/${var.assured.transit_maskprefix}"
+  transit_ip_addresses = []
 }
 
 
@@ -142,4 +143,5 @@ module "worker_elevated" {
   transit_network  = var.elevated.vsphere_transit_portgroup
   transit_gateway_ip = var.elevated.transit_maskprefix
   transit_cidr     = "${var.elevated.transit_networkip}/${var.elevated.transit_maskprefix}"
+  transit_ip_addresses = []
 }
