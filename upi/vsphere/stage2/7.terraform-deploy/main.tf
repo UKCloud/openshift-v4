@@ -48,7 +48,7 @@ module "bootstrap" {
   transit_network  = var.vsphere.vsphere_transit_portgroup
   transit_gateway_ip = var.transitnetwork.defaultgw
   transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
-  transit_ip_addresses = []
+  transit_ipaddresses = []
 }
 
 module "master" {
@@ -75,7 +75,7 @@ module "master" {
   transit_network  = var.vsphere.vsphere_transit_portgroup
   transit_gateway_ip = var.transitnetwork.defaultgw
   transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
-  transit_ip_addresses = []
+  transit_ipaddresses = []
 }
 
 module "worker_small" {
@@ -102,7 +102,7 @@ module "worker_small" {
   transit_network  = var.vsphere.vsphere_transit_portgroup
   transit_gateway_ip = var.transitnetwork.defaultgw
   transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
-  transit_ip_addresses = []
+  transit_ipaddresses = []
 }
 
 module "worker_medium" {
@@ -129,7 +129,7 @@ module "worker_medium" {
   transit_network  = var.vsphere.vsphere_transit_portgroup
   transit_gateway_ip = var.transitnetwork.defaultgw
   transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
-  transit_ip_addresses = []
+  transit_ipaddresses = []
 }
 
 module "worker_large" {
@@ -156,7 +156,7 @@ module "worker_large" {
   transit_network  = var.vsphere.vsphere_transit_portgroup
   transit_gateway_ip = var.transitnetwork.defaultgw
   transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
-  transit_ip_addresses = []
+  transit_ipaddresses = []
 }
 
 module "infra" {
@@ -183,7 +183,7 @@ module "infra" {
   transit_network  = var.vsphere.vsphere_transit_portgroup
   transit_gateway_ip = var.transitnetwork.defaultgw
   transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
-  transit_ip_addresses = []
+  transit_ipaddresses = []
 }
 
 module "svc" {
@@ -210,6 +210,6 @@ module "svc" {
   transit_network  = var.vsphere.vsphere_transit_portgroup
   transit_gateway_ip = var.transitnetwork.defaultgw
   transit_cidr     = "${var.transitnetwork.networkip}/${var.transitnetwork.maskprefix}"
-  transit_ip_addresses = []
+  transit_ipaddresses = []
 }
 
