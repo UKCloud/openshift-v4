@@ -170,41 +170,47 @@ variable "bootstrap" {
 
 variable "svcs" {
   type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+                        ipaddress = string,
+                        transit_ipaddress = string}))
+  default     = [{ hostname="",ipaddress="",transit_ipaddress=""}]
 }
 
 
 variable "masters" {
   type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+                        ipaddress = string,
+                        transit_ipaddress = string}))
+  default     = [{ hostname="",ipaddress="",transit_ipaddress=""}]
 }
 
 
 variable "infras" {
   type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+                        ipaddress = string,
+                        transit_ipaddress = string}))
+  default     = [{ hostname="",ipaddress="",transit_ipaddress=""}]
 }
 
 
 variable "smallworkers" {
   type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+                        ipaddress = string,
+                        transit_ipaddress = string}))
+  default     = [{ hostname="",ipaddress="",transit_ipaddress=""}]
 }
 
 variable "mediumworkers" {
   type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+                        ipaddress = string,
+                        transit_ipaddress = string}))
+  default     = [{ hostname="",ipaddress="",transit_ipaddress=""}]
 }
 
 variable "largeworkers" {
   type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+                        ipaddress = string,
+                        transit_ipaddress = string}))
+  default     = [{ hostname="",ipaddress="",transit_ipaddress=""}]
 }
 
 variable "network" {
@@ -317,5 +323,16 @@ variable "imagesources" {
   type        = string
   description = "sources string for disconnected"
 }
+
+variable "transitnetwork" {
+  type        = object({networkip = string,
+                        maskprefix = string,
+                        defaultgw = string })
+  default     = {networkip = "",
+                 maskprefix = "",
+                 defaultgw = ""}
+  description = "Transit Network parameters"
+}
+
 
 // Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf

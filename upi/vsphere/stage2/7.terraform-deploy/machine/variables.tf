@@ -79,3 +79,15 @@ variable "ip_addresses" {
 variable "transit_network" {
   type = string
 }
+
+variable "transit_ipaddresses" {
+  type = list
+}
+
+variable "transit_gateway_ip" {
+  type = string
+}
+
+variable "transit_cidr" {
+  type = string
+}

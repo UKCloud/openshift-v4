@@ -37,7 +37,6 @@ module "bootstrap" {
   datastore        = var.vsphere.vsphere_datastore
   folder           = var.vsphere.vsphere_folder
   network          = var.vsphere.vsphere_portgroup
-  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -46,6 +45,9 @@ module "bootstrap" {
   ip_addresses     = [var.bootstrap.ipaddress]
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  transit_network  = ""
+  transit_gateway_ip = ""
+  transit_cidr     = ""
 }
 
 module "master" {
@@ -61,7 +63,6 @@ module "master" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
-  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -70,6 +71,9 @@ module "master" {
   ip_addresses     = var.masters.*.ipaddress
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  transit_network  = var.vsphere.vsphere_transit_portgroup
+  transit_gateway_ip = ""
+  transit_cidr     = ""
 }
 
 module "worker_small" {
@@ -85,7 +89,6 @@ module "worker_small" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
-  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -94,6 +97,9 @@ module "worker_small" {
   ip_addresses     = var.smallworkers.*.ipaddress
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  transit_network  = var.vsphere.vsphere_transit_portgroup
+  transit_gateway_ip = ""
+  transit_cidr     = ""
 }
 
 module "worker_medium" {
@@ -109,7 +115,6 @@ module "worker_medium" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
-  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -118,6 +123,9 @@ module "worker_medium" {
   ip_addresses     = var.mediumworkers.*.ipaddress
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  transit_network  = var.vsphere.vsphere_transit_portgroup
+  transit_gateway_ip = ""
+  transit_cidr     = ""
 }
 
 module "worker_large" {
@@ -133,7 +141,6 @@ module "worker_large" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
-  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -142,6 +149,9 @@ module "worker_large" {
   ip_addresses     = var.largeworkers.*.ipaddress
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  transit_network  = var.vsphere.vsphere_transit_portgroup
+  transit_gateway_ip = ""
+  transit_cidr     = ""
 }
 
 module "infra" {
@@ -157,7 +167,6 @@ module "infra" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
-  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -166,6 +175,9 @@ module "infra" {
   ip_addresses     = var.infras.*.ipaddress
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  transit_network  = var.vsphere.vsphere_transit_portgroup
+  transit_gateway_ip = ""
+  transit_cidr     = ""
 }
 
 module "svc" {
@@ -181,7 +193,6 @@ module "svc" {
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
-  transit_network  = var.vsphere.vsphere_transit_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -190,5 +201,8 @@ module "svc" {
   ip_addresses     = var.svcs.*.ipaddress
   gateway_ip       = var.network.defaultgw
   machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  transit_network  = var.vsphere.vsphere_transit_portgroup
+  transit_gateway_ip = ""
+  transit_cidr     = ""
 }
 

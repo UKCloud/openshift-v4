@@ -64,6 +64,11 @@
     "upstreamdns1": "1.1.1.1",
     "upstreamdns2": "1.0.0.1"
   },
+  "transitnetwork": {
+    "networkip": "",
+    "maskprefix": "",
+    "defaultgw": ""
+  },
   "loadbalancer": {
     "externalvip": "51.9.9.9",
     "internalvip": "10.1.1.1"
