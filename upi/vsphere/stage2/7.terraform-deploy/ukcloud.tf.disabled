@@ -15,9 +15,9 @@ variable "assured" {
                         maskprefix = string,
                         dns1 = string,
                         dns2 = string,
-                        transit_network_ip = string,
-                        transit_gateway_ip = string,
-                        transit_cidr = string,
+                        transit_networkip = string,
+                        transit_gatewayip = string,
+                        transit_maskprefix = string,
                         num_cpu = string,
                         memory = string,
                         disk_size = string })
@@ -38,9 +38,9 @@ variable "elevated" {
                         maskprefix = string,
                         dns1 = string,
                         dns2 = string,
-                        transit_network_ip = string,
-                        transit_gateway_ip = string,
-                        transit_cidr = string,
+                        transit_networkip = string,
+                        transit_gatewayip = string,
+                        transit_maskprefix = string,
                         num_cpu = string,
                         memory = string,
                         disk_size = string })
@@ -111,8 +111,8 @@ module "worker_assured" {
   gateway_ip       = var.assured.defaultgw
   machine_cidr     = "${var.assured.networkip}/${var.assured.maskprefix}"
   transit_network  = var.assured.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.assured.transit_maskprefix
+  transit_cidr     = "${var.assured.transit_networkip}/${var.assured.transit_maskprefix}"
 }
 
 
@@ -140,6 +140,6 @@ module "worker_elevated" {
   gateway_ip       = var.elevated.defaultgw
   machine_cidr     = "${var.elevated.networkip}/${var.elevated.maskprefix}"
   transit_network  = var.elevated.vsphere_transit_portgroup
-  transit_gateway_ip = ""
-  transit_cidr     = ""
+  transit_gateway_ip = var.elevated.transit_maskprefix
+  transit_cidr     = "${var.elevated.transit_networkip}/${var.elevated.transit_maskprefix}"
 }
