@@ -212,7 +212,12 @@ variable "network" {
                         maskprefix = string, 
                         defaultgw = string, 
                         upstreamdns1 = string, 
-                        upstreamdns2 = string })
+                        upstreamdns2 = string,
+                        management_networkip = string,
+                        management_maskprefix = string,
+                        management_defaultgw = string,
+                        management_upstreamdns1 = string,
+                        management_upstreamdns2 = string })
   description = "Network parameters"
 }
 
@@ -238,6 +243,7 @@ variable "vsphere" {
                         vsphere_datastore = string, 
                         vsphere_network = string, 
 			                  vsphere_portgroup = string,
+                        vsphere_management_portgroup = string,
                         rhcos_template = string})
   description = "vSphere-specific parameters"
 }
