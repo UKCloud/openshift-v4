@@ -20,6 +20,25 @@ variable "assured" {
   description = "Assured-specific parameters"
 }
 
+variable "assured_public" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_folder = string,
+                        vsphere_datacenter = string,
+                        vsphere_datastore = string,
+                        vsphere_network = string,
+                        vsphere_portgroup = string,
+                        rhcos_template = string,
+                        defaultgw = string,
+                        networkip = string,
+                        maskprefix = string,
+                        dns1 = string,
+                        dns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Assured-public-specific parameters"
+}
+
 variable "elevated" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_folder = string,
@@ -39,13 +58,44 @@ variable "elevated" {
   description = "Elevated-specific parameters"
 }
 
+variable "elevated_public" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_folder = string,
+                        vsphere_datacenter = string,
+                        vsphere_datastore = string,
+                        vsphere_network = string,
+                        vsphere_portgroup = string,
+                        rhcos_template = string,
+                        defaultgw  = string,
+                        networkip = string,
+                        maskprefix = string,
+                        dns1 = string,
+                        dns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Elevated-public-specific parameters"
+}
+
 variable "assuredworkers" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
   default     = [{ hostname="",ipaddress="" }]
 }
 
+variable "assuredpublicworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
 variable "elevatedworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "elevatedpublicworkers" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
   default     = [{ hostname="",ipaddress="" }]
@@ -102,6 +152,29 @@ module "worker_assured" {
   machine_cidr     = "${var.assured.networkip}/${var.assured.maskprefix}"
 }
 
+module "worker_assured_public" {
+  source = "./machine"
+
+  names            = var.assuredpublicworkers.*.hostname
+  instance_count   = length(var.assuredpublicworkers.*.hostname)
+  ignition         = var.ignition.worker_ignition
+  num_cpu          = var.assured_public.num_cpu
+  memory           = var.assured_public.memory
+  disk_size        = var.assured_public.disk_size
+  resource_pool_id = data.vsphere_resource_pool.assured_pool.id
+  folder           = var.assured_public.vsphere_folder
+  datastore        = var.assured_public.vsphere_datastore
+  network          = var.assured_public.vsphere_portgroup
+  datacenter_id    = data.vsphere_datacenter.assured_dc.id
+  template         = var.assured_public.rhcos_template
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
+  dns1             = var.assured_public.dns1
+  dns2             = var.assured_public.dns2
+  ip_addresses     = var.assuredpublicworkers.*.ipaddress
+  gateway_ip       = var.assured_public.defaultgw
+  machine_cidr     = "${var.assured_public.networkip}/${var.assured_public.maskprefix}"
+}
+
 
 # Elevated workers
 
@@ -126,4 +199,27 @@ module "worker_elevated" {
   ip_addresses     = var.elevatedworkers.*.ipaddress
   gateway_ip       = var.elevated.defaultgw
   machine_cidr     = "${var.elevated.networkip}/${var.elevated.maskprefix}"
+}
+
+module "worker_elevated_public" {
+  source = "./machine"
+
+  names            = var.elevatedpublicworkers.*.hostname
+  instance_count   = length(var.elevatedpublicworkers.*.hostname)
+  ignition         = var.ignition.worker_ignition
+  num_cpu          = var.elevated_public.num_cpu
+  memory           = var.elevated_public.memory
+  disk_size        = var.elevated_public.disk_size
+  resource_pool_id = data.vsphere_resource_pool.elevated_pool.id
+  folder           = var.elevated_public.vsphere_folder
+  datastore        = var.elevated_public.vsphere_datastore
+  network          = var.elevated_public.vsphere_portgroup
+  datacenter_id    = data.vsphere_datacenter.elevated_dc.id
+  template         = var.elevated_public.rhcos_template
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
+  dns1             = var.elevated_public.dns1
+  dns2             = var.elevated_public.dns2
+  ip_addresses     = var.elevatedpublicworkers.*.ipaddress
+  gateway_ip       = var.elevated_public.defaultgw
+  machine_cidr     = "${var.elevated_public.networkip}/${var.elevated_public.maskprefix}"
 }
