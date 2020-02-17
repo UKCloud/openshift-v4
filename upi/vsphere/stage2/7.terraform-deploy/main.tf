@@ -65,7 +65,7 @@ module "master" {
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
-  ip_addresses     = [var.bootstrap.ipaddress]
+  ip_addresses     = var.masters.*.ipaddress
   gateway_ip       = var.network.management_defaultgw
   machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
 }
@@ -157,7 +157,7 @@ module "infra" {
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
-  ip_addresses     = [var.bootstrap.ipaddress]
+  ip_addresses     = var.infras.*.ipaddress
   gateway_ip       = var.network.management_defaultgw
   machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
 }
@@ -174,14 +174,14 @@ module "svc" {
   resource_pool_id = data.vsphere_resource_pool.pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.vsphere.vsphere_datastore
-  network          = var.vsphere.vsphere_portgroup
+  network          = var.vsphere.vsphere_management_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = var.network.upstreamdns1
-  dns2             = var.network.upstreamdns2
+  dns1             = var.network.management_upstreamdns1
+  dns2             = var.network.management_upstreamdns2
   ip_addresses     = var.svcs.*.ipaddress
-  gateway_ip       = var.network.defaultgw
-  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  gateway_ip       = var.network.management_defaultgw
+  machine_cidr     = "${var.network.management_networkip}/${var.management_network.maskprefix}"
 }
 
