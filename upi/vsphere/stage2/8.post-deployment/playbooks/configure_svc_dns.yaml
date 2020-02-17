@@ -26,8 +26,8 @@
 - hosts: svcs
   gather_facts: false
   tasks:
-  - name: Remove cni net.d files to workaround bugzilla 1729603
-    raw: sudo rm -f /etc/cni/net.d/100-crio-bridge.conf /etc/cni/net.d/200-loopback.conf
+    #  - name: Remove cni net.d files to workaround bugzilla 1729603
+    #    raw: sudo rm -f /etc/cni/net.d/100-crio-bridge.conf /etc/cni/net.d/200-loopback.conf
 
   - name: Create /etc/coredns directory
     raw: mkdir -p /etc/coredns
