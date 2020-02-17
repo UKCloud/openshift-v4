@@ -182,6 +182,6 @@ module "svc" {
   dns2             = var.network.management_upstreamdns2
   ip_addresses     = var.svcs.*.ipaddress
   gateway_ip       = var.network.management_defaultgw
-  machine_cidr     = "${var.network.management_networkip}/${var.management_network.maskprefix}"
+  machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
 }
 
