@@ -178,8 +178,8 @@ module "svc" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = var.network.management_upstreamdns1
-  dns2             = var.network.management_upstreamdns2
+  dns1             = var.network.upstreamdns1
+  dns2             = var.network.upstreamdns2
   ip_addresses     = var.svcs.*.ipaddress
   gateway_ip       = var.network.management_defaultgw
   machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
