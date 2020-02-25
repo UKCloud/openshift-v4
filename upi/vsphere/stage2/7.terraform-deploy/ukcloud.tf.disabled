@@ -186,7 +186,7 @@ module "worker_assured_public" {
 }
 
 
-# Combined workers - use the default network/vsphere parameters in config.json
+# Combined workers
 module "worker_combined" {
   source = "./machine"
 

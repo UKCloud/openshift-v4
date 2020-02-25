@@ -131,18 +131,6 @@ variable "infras" {
   default     = [{ hostname="",ipaddress=""}]
 }
 
-variable "managementnetwork" {
-  type        = object({networkip = string, 
-                        maskprefix = string, 
-                        defaultgw = string, 
-                        upstreamdns1 = string, 
-                        upstreamdns2 = string})
-  description = "Network parameters for masters, infras, svc"
-}
-
-// network_cidr = $networkip + "/" + $maskprefix
-
-
 variable "loadbalancer" {
   type        = object({externalvip = string,
                         internalvip = string})

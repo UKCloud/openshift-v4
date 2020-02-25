@@ -6,7 +6,7 @@ terraform {
   }
 }
 
-# vSphere objects used by all componants
+# vSphere objects used by all components
 provider "vsphere" {
   user                 = var.vcenterdeploy.username
   password             = var.vcenterdeploy.password

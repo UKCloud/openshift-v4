@@ -81,6 +81,7 @@ variable "tenant" {
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
+                        vsphere_edge = string,
                         networkip = string,
                         maskprefix = string,
                         defaultgw = string,
