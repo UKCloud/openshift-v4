@@ -72,6 +72,8 @@ module "master" {
 }
 
 # Definitions of customer workers have been moved into customer.tf
+# Definitions of ukcloud assured/combined/elevated workers are in ukcloud.tf.disabled
+# One of the files customer.tf / ukcloud.tf.disabled must be disabled before build to select whether a customer or ukcloud internal cluster is to be built.
 
 module "infra" {
   source = "./machine"
