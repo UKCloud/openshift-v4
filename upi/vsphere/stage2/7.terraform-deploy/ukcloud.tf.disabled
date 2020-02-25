@@ -206,8 +206,8 @@ module "worker_combined" {
   dns1             = var.combined.dns1
   dns2             = var.combined.dns2
   ip_addresses     = var.combinedworkers.*.ipaddress
-  gateway_ip       = var.network.defaultgw
-  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
+  gateway_ip       = var.combined.defaultgw
+  machine_cidr     = "${var.combined.networkip}/${var.combined.maskprefix}"
 }
 
 
