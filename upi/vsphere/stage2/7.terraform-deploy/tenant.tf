@@ -91,7 +91,7 @@ variable "tenant" {
 }
 
 data "vsphere_resource_pool" "tenant_pool" {
-  name             = var.customer.vsphere_resourcepool
+  name             = var.tenant.vsphere_resourcepool
   datacenter_id    = data.vsphere_datacenter.dc.id
 }
 
