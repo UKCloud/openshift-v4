@@ -15,7 +15,7 @@ $global:basedomain = $ClusterConfig.basedomain
 $global:machinecidr = ($ClusterConfig.management.networkip + "/" + $ClusterConfig.management.maskprefix)
 $global:vcenterserver = $ClusterConfig.vsphere.vsphere_server 
 $global:vcenterdatacenter = $ClusterConfig.vsphere.vsphere_datacenter
-$global:vsandatastore = $ClusterConfig.vsphere.vsphere_datastore
+$global:vsandatastore = $ClusterConfig.management.vsphere_datastore
 $global:sshpubkey = $ClusterConfig.sshpubkey
 
 # Vars for Ansible hosts file
@@ -38,8 +38,8 @@ $global:bastion = $ClusterConfig.bastion
 
 $global:externalvip = $ClusterConfig.loadbalancer.externalvip
 $global:internalvip = $ClusterConfig.loadbalancer.internalvip
-$global:upstreamdns1 = $ClusterConfig.network.upstreamdns1
-$global:upstreamdns2 = $ClusterConfig.network.upstreamdns2
+$global:upstreamdns1 = $ClusterConfig.management.upstreamdns1
+$global:upstreamdns2 = $ClusterConfig.management.upstreamdns2
 $global:imagetag = $ClusterConfig.imagetag
 
 # Read vars from secret file
