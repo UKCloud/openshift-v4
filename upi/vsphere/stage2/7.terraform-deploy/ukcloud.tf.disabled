@@ -4,11 +4,9 @@
 variable "assured" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_folder = string,
-                        vsphere_datacenter = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
-                        rhcos_template = string,
                         defaultgw = string,
                         networkip = string,
                         maskprefix = string,
@@ -23,11 +21,9 @@ variable "assured" {
 variable "assured_public" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_folder = string,
-                        vsphere_datacenter = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
-                        rhcos_template = string,
                         defaultgw = string,
                         networkip = string,
                         maskprefix = string,
@@ -39,14 +35,29 @@ variable "assured_public" {
   description = "Assured-public-specific parameters"
 }
 
-variable "elevated" {
+variable "combined" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_folder = string,
-                        vsphere_datacenter = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
-                        rhcos_template = string,
+                        defaultgw  = string,
+                        networkip = string,
+                        maskprefix = string,
+                        dns1 = string,
+                        dns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Combined-specific parameters"
+}
+
+variable "elevated" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_folder = string,
+                        vsphere_datastore = string,
+                        vsphere_network = string,
+                        vsphere_portgroup = string,
                         defaultgw  = string,
                         networkip = string,
                         maskprefix = string,
@@ -61,11 +72,9 @@ variable "elevated" {
 variable "elevated_public" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_folder = string,
-                        vsphere_datacenter = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
-                        rhcos_template = string,
                         defaultgw  = string,
                         networkip = string,
                         maskprefix = string,
@@ -89,6 +98,12 @@ variable "assuredpublicworkers" {
   default     = [{ hostname="",ipaddress="" }]
 }
 
+variable "combinedworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
 variable "elevatedworkers" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
@@ -106,25 +121,20 @@ variable "elevatedpublicworkers" {
 
 # Assured/Elevated specific vCenter params
 
-data "vsphere_datacenter" "assured_dc" {
-  name = var.assured.vsphere_datacenter
-}
-
 data "vsphere_resource_pool" "assured_pool" {
   name             = var.assured.vsphere_resourcepool
-  datacenter_id    = data.vsphere_datacenter.assured_dc.id
+  datacenter_id    = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_datacenter" "elevated_dc" {
-  name = var.elevated.vsphere_datacenter
+data "vsphere_resource_pool" "combined_pool" {
+  name             = var.combined.vsphere_resourcepool
+  datacenter_id    = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_resource_pool" "elevated_pool" {
   name             = var.elevated.vsphere_resourcepool
-  datacenter_id    = data.vsphere_datacenter.elevated_dc.id
+  datacenter_id    = data.vsphere_datacenter.dc.id
 }
-
-
 
 
 # Assured workers
@@ -142,8 +152,8 @@ module "worker_assured" {
   folder           = var.assured.vsphere_folder
   datastore        = var.assured.vsphere_datastore
   network          = var.assured.vsphere_portgroup
-  datacenter_id    = data.vsphere_datacenter.assured_dc.id
-  template         = var.assured.rhcos_template
+  datacenter_id    = data.vsphere_datacenter.dc.id
+  template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.assured.dns1
   dns2             = var.assured.dns2
@@ -165,14 +175,39 @@ module "worker_assured_public" {
   folder           = var.assured_public.vsphere_folder
   datastore        = var.assured_public.vsphere_datastore
   network          = var.assured_public.vsphere_portgroup
-  datacenter_id    = data.vsphere_datacenter.assured_dc.id
-  template         = var.assured_public.rhcos_template
+  datacenter_id    = data.vsphere_datacenter.dc.id
+  template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.assured_public.dns1
   dns2             = var.assured_public.dns2
   ip_addresses     = var.assuredpublicworkers.*.ipaddress
   gateway_ip       = var.assured_public.defaultgw
   machine_cidr     = "${var.assured_public.networkip}/${var.assured_public.maskprefix}"
+}
+
+
+# Combined workers - use the default network/vsphere parameters in config.json
+module "worker_combined" {
+  source = "./machine"
+
+  names            = var.combinedworkers.*.hostname
+  instance_count   = length(var.combinedworkers.*.hostname)
+  ignition         = var.ignition.worker_ignition
+  num_cpu          = var.combined.num_cpu
+  memory           = var.combined.memory
+  disk_size        = var.combined.disk_size
+  resource_pool_id = data.vsphere_resource_pool.combined_pool.id
+  folder           = var.combined.vsphere_folder
+  datastore        = var.combined.vsphere_datastore
+  network          = var.combined.vsphere_portgroup
+  datacenter_id    = data.vsphere_datacenter.dc.id
+  template         = var.vsphere.rhcos_template
+  cluster_domain   = "${var.clusterid}.${var.basedomain}"
+  dns1             = var.combined.dns1
+  dns2             = var.combined.dns2
+  ip_addresses     = var.combinedworkers.*.ipaddress
+  gateway_ip       = var.network.defaultgw
+  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
 }
 
 
@@ -191,8 +226,8 @@ module "worker_elevated" {
   folder           = var.elevated.vsphere_folder
   datastore        = var.elevated.vsphere_datastore
   network          = var.elevated.vsphere_portgroup
-  datacenter_id    = data.vsphere_datacenter.elevated_dc.id
-  template         = var.elevated.rhcos_template
+  datacenter_id    = data.vsphere_datacenter.dc.id
+  template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.elevated.dns1
   dns2             = var.elevated.dns2
@@ -214,8 +249,8 @@ module "worker_elevated_public" {
   folder           = var.elevated_public.vsphere_folder
   datastore        = var.elevated_public.vsphere_datastore
   network          = var.elevated_public.vsphere_portgroup
-  datacenter_id    = data.vsphere_datacenter.elevated_dc.id
-  template         = var.elevated_public.rhcos_template
+  datacenter_id    = data.vsphere_datacenter.dc.id
+  template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.elevated_public.dns1
   dns2             = var.elevated_public.dns2

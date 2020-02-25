@@ -6,7 +6,7 @@ terraform {
   }
 }
 
-
+# vSphere objects used by all componants
 provider "vsphere" {
   user                 = var.vcenterdeploy.username
   password             = var.vcenterdeploy.password
@@ -18,7 +18,8 @@ data "vsphere_datacenter" "dc" {
   name = var.vsphere.vsphere_datacenter
 }
 
-data "vsphere_resource_pool" "pool" {
+# Resource Pool for management VMs
+data "vsphere_resource_pool" "management_pool" {
   name             = var.vsphere.vsphere_resourcepool
   datacenter_id    = data.vsphere_datacenter.dc.id
 }
@@ -33,18 +34,18 @@ module "bootstrap" {
   num_cpu          = var.bootstrap_num_cpu
   memory           = var.bootstrap_memory
   disk_size        = var.bootstrap_disk_size
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  datastore        = var.vsphere.vsphere_datastore
-  folder           = var.vsphere.vsphere_folder
-  network          = var.vsphere.vsphere_management_portgroup
+  resource_pool_id = data.vsphere_resource_pool.management_pool.id
+  datastore        = var.management.vsphere_datastore
+  folder           = var.management.vsphere_folder
+  network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = [var.bootstrap.ipaddress]
-  gateway_ip       = var.network.management_defaultgw
-  machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
+  gateway_ip       = var.management.defaultgw
+  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
 }
 
 module "master" {
@@ -56,88 +57,21 @@ module "master" {
   num_cpu          = var.master_num_cpu
   memory           = var.master_memory
   disk_size        = var.master_disk_size
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  folder           = var.vsphere.vsphere_folder
-  datastore        = var.vsphere.vsphere_datastore
-  network          = var.vsphere.vsphere_management_portgroup
+  resource_pool_id = data.vsphere_resource_pool.management_pool.id
+  folder           = var.management.vsphere_folder
+  datastore        = var.management.vsphere_datastore
+  network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns1 : var.svcs.*.ipaddress[0] 
   dns2             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.masters.*.ipaddress
-  gateway_ip       = var.network.management_defaultgw
-  machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
+  gateway_ip       = var.management.defaultgw
+  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
 }
 
-module "worker_small" {
-  source = "./machine"
-
-  names            = var.smallworkers.*.hostname
-  instance_count   = length(var.smallworkers.*.hostname)
-  ignition         = var.ignition.worker_ignition
-  num_cpu          = var.worker_small_num_cpu
-  memory           = var.worker_small_memory
-  disk_size        = var.worker_small_disk_size
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  folder           = var.vsphere.vsphere_folder
-  datastore        = var.vsphere.vsphere_datastore
-  network          = var.vsphere.vsphere_portgroup
-  datacenter_id    = data.vsphere_datacenter.dc.id
-  template         = var.vsphere.rhcos_template
-  cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
-  ip_addresses     = var.smallworkers.*.ipaddress
-  gateway_ip       = var.network.defaultgw
-  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
-}
-
-module "worker_medium" {
-  source = "./machine"
-
-  names            = var.mediumworkers.*.hostname
-  instance_count   = length(var.mediumworkers.*.hostname)
-  ignition         = var.ignition.worker_ignition
-  num_cpu          = var.worker_medium_num_cpu
-  memory           = var.worker_medium_memory
-  disk_size        = var.worker_medium_disk_size
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  folder           = var.vsphere.vsphere_folder
-  datastore        = var.vsphere.vsphere_datastore
-  network          = var.vsphere.vsphere_portgroup
-  datacenter_id    = data.vsphere_datacenter.dc.id
-  template         = var.vsphere.rhcos_template
-  cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
-  ip_addresses     = var.mediumworkers.*.ipaddress
-  gateway_ip       = var.network.defaultgw
-  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
-}
-
-module "worker_large" {
-  source = "./machine"
-
-  names            = var.largeworkers.*.hostname
-  instance_count   = length(var.largeworkers.*.hostname)
-  ignition         = var.ignition.worker_ignition
-  num_cpu          = var.worker_large_num_cpu
-  memory           = var.worker_large_memory
-  disk_size        = var.worker_large_disk_size
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  folder           = var.vsphere.vsphere_folder
-  datastore        = var.vsphere.vsphere_datastore
-  network          = var.vsphere.vsphere_portgroup
-  datacenter_id    = data.vsphere_datacenter.dc.id
-  template         = var.vsphere.rhcos_template
-  cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.network.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
-  ip_addresses     = var.largeworkers.*.ipaddress
-  gateway_ip       = var.network.defaultgw
-  machine_cidr     = "${var.network.networkip}/${var.network.maskprefix}"
-}
+# Definitions of customer workers have been moved into customer.tf
 
 module "infra" {
   source = "./machine"
@@ -148,18 +82,18 @@ module "infra" {
   num_cpu          = var.infra_num_cpu
   memory           = var.infra_memory
   disk_size        = var.infra_disk_size
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  folder           = var.vsphere.vsphere_folder
-  datastore        = var.vsphere.vsphere_datastore
-  network          = var.vsphere.vsphere_management_portgroup
+  resource_pool_id = data.vsphere_resource_pool.management_pool.id
+  folder           = var.management.vsphere_folder
+  datastore        = var.management.vsphere_datastore
+  network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
+  dns1             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
+  dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.infras.*.ipaddress
-  gateway_ip       = var.network.management_defaultgw
-  machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
+  gateway_ip       = var.management.defaultgw
+  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
 }
 
 module "svc" {
@@ -171,17 +105,17 @@ module "svc" {
   num_cpu          = var.svc_num_cpu
   memory           = var.svc_memory
   disk_size        = var.svc_disk_size
-  resource_pool_id = data.vsphere_resource_pool.pool.id
-  folder           = var.vsphere.vsphere_folder
-  datastore        = var.vsphere.vsphere_datastore
-  network          = var.vsphere.vsphere_management_portgroup
+  resource_pool_id = data.vsphere_resource_pool.management_pool.id
+  folder           = var.management.vsphere_folder
+  datastore        = var.management.vsphere_datastore
+  network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = var.network.upstreamdns1
-  dns2             = var.network.upstreamdns2
+  dns1             = var.management.upstreamdns1
+  dns2             = var.management.upstreamdns2
   ip_addresses     = var.svcs.*.ipaddress
-  gateway_ip       = var.network.management_defaultgw
-  machine_cidr     = "${var.network.management_networkip}/${var.network.management_maskprefix}"
+  gateway_ip       = var.management.defaultgw
+  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
 }
 
