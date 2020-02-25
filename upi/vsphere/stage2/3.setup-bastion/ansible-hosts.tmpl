@@ -23,7 +23,13 @@ bastion
 <% } -%><% } %>
 <% if($aworkers.Count -gt 0 ) { %><% 0..($aworkers.Count-1) | %{ -%><%= $aworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $aworkers[$_].ipaddress  %>
 <% } -%><% } %>
+<% if($cworkers.Count -gt 0 ) { %><% 0..($cworkers.Count-1) | %{ -%><%= $cworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $cworkers[$_].ipaddress  %>
+<% } -%><% } %>
 <% if($eworkers.Count -gt 0 ) { %><% 0..($eworkers.Count-1) | %{ -%><%= $eworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $eworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($apubworkers.Count -gt 0 ) { %><% 0..($apubworkers.Count-1) | %{ -%><%= $apubworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $apubworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($epubworkers.Count -gt 0 ) { %><% 0..($epubworkers.Count-1) | %{ -%><%= $epubworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $epubworkers[$_].ipaddress  %>
 <% } -%><% } %>
 
 [infras]

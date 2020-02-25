@@ -26,7 +26,10 @@ $global:sworkers = $ClusterConfig.smallworkers
 $global:mworkers = $ClusterConfig.mediumworkers
 $global:lworkers = $ClusterConfig.largeworkers
 $global:aworkers = $ClusterConfig.assuredworkers
+$global:cworkers = $ClusterConfig.combinedworkers
 $global:eworkers = $ClusterConfig.elevatedworkers
+$global:apubworkers = $ClusterConfig.assuredpublicworkers
+$global:epubworkers = $ClusterConfig.elevatedpublicworkers
 
 $global:infras = $ClusterConfig.infras
 $global:svcs = $ClusterConfig.svcs
