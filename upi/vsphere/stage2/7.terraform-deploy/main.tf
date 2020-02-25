@@ -20,7 +20,7 @@ data "vsphere_datacenter" "dc" {
 
 # Resource Pool for management VMs
 data "vsphere_resource_pool" "management_pool" {
-  name             = var.vsphere.vsphere_resourcepool
+  name             = var.management.vsphere_resourcepool
   datacenter_id    = data.vsphere_datacenter.dc.id
 }
 
@@ -41,8 +41,8 @@ module "bootstrap" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
+  dns1             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
+  dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = [var.bootstrap.ipaddress]
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
@@ -64,8 +64,8 @@ module "master" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.network.management_upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
+  dns1             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
+  dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.masters.*.ipaddress
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
