@@ -1,0 +1,196 @@
+{
+  "clusterid": "ocp4test",
+  "basedomain": "cna.ukcloud.uk",
+  "useletsencrypt": "False",
+  "bastion": {
+    "hostname": "bastion-0",
+    "ipaddress": "10.50.1.254"
+  },
+  "bootstrap": {
+    "hostname": "bootstrap-0",
+    "ipaddress": "10.50.1.250"
+  },
+  "svcs": [
+    {
+      "hostname": "svc-0",
+      "ipaddress": "10.50.1.15"
+    },
+    {
+      "hostname": "svc-1",
+      "ipaddress": "10.50.1.16"
+    }
+  ],
+  "masters": [
+    {
+      "hostname": "master-0",
+      "ipaddress": "10.50.1.10"
+    },
+    {
+      "hostname": "master-1",
+      "ipaddress": "10.50.1.11"
+    },
+    {
+      "hostname": "master-2",
+      "ipaddress": "10.50.1.12"
+    }
+  ],
+  "infras": [
+    {
+      "hostname": "infra-0",
+      "ipaddress": "10.50.1.20"
+    },
+    {
+      "hostname": "infra-1",
+      "ipaddress": "10.50.1.21"
+    }
+  ],
+  "smallworkers": [],
+  "mediumworkers": [],
+  "largeworkers": [],
+  "assuredworkers": [
+    {
+      "hostname": "worker-assured-0",
+      "ipaddress": "10.60.1.25"
+    },
+    {
+      "hostname": "worker-assured-1",
+      "ipaddress": "10.60.1.26"
+    }
+  ],
+  "combinedworkers": [
+    {
+      "hostname": "worker-combined-0",
+      "ipaddress": "10.80.1.25"
+    }
+  ],
+  "elevatedworkers": [
+    {
+      "hostname": "worker-elevated-0",
+      "ipaddress": "10.90.1.25"
+    }
+  ],
+  "assuredpublicworkers": [
+    {
+      "hostname": "worker-assuredpublic-0",
+      "ipaddress": "10.70.1.25"
+    }
+  ],
+  "elevatedpublicworkers": [
+    {
+      "hostname": "worker-elevatedpublic-0",
+      "ipaddress": "10.100.1.25"
+    }
+  ],
+  "loadbalancer": {
+    "externalvip": "51.9.9.9",
+    "internalvip": "10.50.1.1"
+  },
+  "sshpubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ..... ONO+WJe5kAdO+Quiy/7LdKRxzfYA/OKXjsU7+wHCFX14tD53mao1FP1na0Q== admin@localhost.localdomain",
+  "registryurl": "registry.access.redhat.com",
+  "registryusername": "\\$app",
+  "registryca": "",
+  "imagesources": "",
+  "imagetag": "0.5",
+  "vsphere": {
+    "vsphere_server": "vcenter ip / name",
+    "vsphere_cluster": "cluster name",
+    "vsphere_datacenter": "Datacenter",
+    "rhcos_template": "rhcos-4.3.0-template"
+  },
+  "management": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_folder": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "vsphere_transportzone": "PvDC.VXLAN-NP",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-5-sid-16001-dvs.VCDVSNetworkname36370-c",
+    "networkip": "10.50.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.50.1.1",
+    "upstreamdns1": "1.1.1.1",
+    "upstreamdns2": "1.0.0.1" 
+  },
+  "assured": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_folder": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-433-sid-16015-dvs.VCDVSNetworkName-Assured-74158794-4649-4bea-b4c",
+    "networkip": "10.60.1.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.60.1.1",
+    "dns1": "10.50.1.15",
+    "dns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60"
+  },
+  "assured_public": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_folder": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-430-sid-16012-dvs.VCDVSNetworkName-AssuredPublic-80e31816-0561-4a",
+    "networkip": "10.70.1.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.70.1.1",
+    "dns1": "10.50.1.15",
+    "dns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60"
+  },
+  "combined": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_folder": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-432-sid-16014-dvs.VCDVSNetworkName-Combined-aac85c73-ae94-4cbc-a8",
+    "networkip": "10.80.1.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.80.1.1",
+    "dns1": "10.50.1.15",
+    "dns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60"
+  },
+  "elevated": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_folder": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-428-sid-16007-dvs.VCDVSNetworkName-Elevated-b8ae6605-2cee-4dba-86",
+    "networkip": "10.90.1.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.90.1.1",
+    "dns1": "10.50.1.15",
+    "dns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60"
+  },
+  "elevated_public": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_folder": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-429-sid-16011-dvs.VCDVSNetworkName-ElevatedPublic-958b52c1-eeb0-4",
+    "networkip": "10.100.1.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.100.1.1",
+    "dns1": "10.50.1.15",
+    "dns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60"
+  },
+  "ignition": {
+    "master_ignition": "",
+    "worker_ignition": "",
+    "infra_ignition": "",
+    "svc_ignition": "",
+    "bootstrap_ignition_url": ""
+  }
+}
