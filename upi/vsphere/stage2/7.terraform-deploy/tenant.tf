@@ -77,7 +77,6 @@ variable "largeworkers" {
 
 variable "tenant" {
   type        = object({vsphere_resourcepool = string,
-                        vsphere_folder = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
@@ -105,7 +104,7 @@ module "worker_small" {
   memory           = var.worker_small_memory
   disk_size        = var.worker_small_disk_size
   resource_pool_id = data.vsphere_resource_pool.tenant_pool.id
-  folder           = var.tenant.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.tenant.vsphere_datastore
   network          = var.tenant.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -128,7 +127,7 @@ module "worker_medium" {
   memory           = var.worker_medium_memory
   disk_size        = var.worker_medium_disk_size
   resource_pool_id = data.vsphere_resource_pool.tenant_pool.id
-  folder           = var.tenant.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.tenant.vsphere_datastore
   network          = var.tenant.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -151,7 +150,7 @@ module "worker_large" {
   memory           = var.worker_large_memory
   disk_size        = var.worker_large_disk_size
   resource_pool_id = data.vsphere_resource_pool.tenant_pool.id
-  folder           = var.tenant.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.tenant.vsphere_datastore
   network          = var.tenant.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id

@@ -10,17 +10,17 @@ $vcenterPassword = $SecretConfig.vcenterdeploy.password
 
 
 # Declare essential parameters
-$transportZoneName = $ClusterConfig.vsphere.vsphere_transportzone
+$transportZoneName = $ClusterConfig.management.vsphere_transportzone
 $edgeInternalIp = $ClusterConfig.loadbalancer.internalvip
 $edgeExternalIp = $ClusterConfig.loadbalancer.externalvip
-$edgeName = $ClusterConfig.vsphere.vsphere_edge
+$edgeName = $ClusterConfig.management.vsphere_edge
 $masterIps = @($ClusterConfig.masters[0].ipaddress,$ClusterConfig.masters[1].ipaddress,$ClusterConfig.masters[2].ipaddress)
 $infraIps = @($ClusterConfig.infras[0].ipaddress,$ClusterConfig.infras[1].ipaddress)
 $bootstrapIp = $ClusterConfig.bootstrap.ipaddress
-$snmask = $ClusterConfig.network.maskprefix
+$snmask = $ClusterConfig.management.maskprefix
 
 # Globals to allow templating engine to work:
-$global:defaultgw = $ClusterConfig.network.defaultgw
+$global:defaultgw = $ClusterConfig.management.defaultgw
 $global:dnsip = $ClusterConfig.svcs[0].ipaddress
 
 write-host -ForegroundColor cyan "Default GW: " $global:defaultgw
@@ -76,10 +76,10 @@ write-host -ForegroundColor cyan "Using vSE: " $edgeName
 #write-host -ForegroundColor cyan "Using transport zone: " $transportzone.name
 
 # create a new virtual network with in that transport zone
-#$sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.vsphere.vsphere_network -ControlPlaneMode UNICAST_MODE
-#$ClusterConfig.vsphere.vsphere_portgroup = ($sw | Get-NsxBackingPortGroup).Name
+#$sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.management.vsphere_network -ControlPlaneMode UNICAST_MODE
+#$ClusterConfig.management.vsphere_portgroup = ($sw | Get-NsxBackingPortGroup).Name
 #write-host -ForegroundColor cyan "Created logical switch: " $sw.Name
-#write-host -ForegroundColor cyan "Portgroup: " $ClusterConfig.vsphere.vsphere_portgroup
+#write-host -ForegroundColor cyan "Portgroup: " $ClusterConfig.management.vsphere_portgroup
 
 # attach the network to the vSE
 #$edge | Get-NsxEdgeInterface -Index 9 | Set-NsxEdgeInterface -Name vnic9 -Type internal -ConnectedTo $sw -PrimaryAddress $edgeInternalIp -SubnetPrefixLength 24

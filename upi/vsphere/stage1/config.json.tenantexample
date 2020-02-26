@@ -75,11 +75,11 @@
     "vsphere_server": "vcenter ip / name",
     "vsphere_cluster": "cluster name",
     "vsphere_datacenter": "Datacenter",
+    "vsphere_folder": "ocp4test",
     "rhcos_template": "rhcos-4.3.0-template"
   },
   "management": {
     "vsphere_resourcepool": "ocp4test",
-    "vsphere_folder": "ocp4test",
     "vsphere_datastore": "datastorename",
     "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "vsphere_transportzone": "PvDC.VXLAN-NP",
@@ -93,7 +93,6 @@
   },
   "tenant": {
     "vsphere_resourcepool": "ocp4test",
-    "vsphere_folder": "ocp4test",
     "vsphere_datastore": "datastorename",
     "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",

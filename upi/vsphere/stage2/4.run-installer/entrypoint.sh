@@ -28,7 +28,7 @@ $INSTALLCOMMAND create manifests
 
 # Substitute folder name
 CLUSTERID=$( get_config "clusterid" | sed 's/"//g' )
-FOLDERNAME=$( get_config "management.vsphere_folder" | sed 's/"//g' )
+FOLDERNAME=$( get_config "vsphere.vsphere_folder" | sed 's/"//g' )
 
 echo "Cloud provider config before:"
 cat manifests/cloud-provider-config.yaml

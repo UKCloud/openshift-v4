@@ -3,7 +3,6 @@
 
 variable "assured" {
   type        = object({vsphere_resourcepool = string,
-                        vsphere_folder = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
@@ -20,7 +19,6 @@ variable "assured" {
 
 variable "assured_public" {
   type        = object({vsphere_resourcepool = string,
-                        vsphere_folder = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
@@ -37,7 +35,6 @@ variable "assured_public" {
 
 variable "combined" {
   type        = object({vsphere_resourcepool = string,
-                        vsphere_folder = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
@@ -54,7 +51,6 @@ variable "combined" {
 
 variable "elevated" {
   type        = object({vsphere_resourcepool = string,
-                        vsphere_folder = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
@@ -71,7 +67,6 @@ variable "elevated" {
 
 variable "elevated_public" {
   type        = object({vsphere_resourcepool = string,
-                        vsphere_folder = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,
@@ -149,7 +144,7 @@ module "worker_assured" {
   memory           = var.assured.memory
   disk_size        = var.assured.disk_size
   resource_pool_id = data.vsphere_resource_pool.assured_pool.id
-  folder           = var.assured.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.assured.vsphere_datastore
   network          = var.assured.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -172,7 +167,7 @@ module "worker_assured_public" {
   memory           = var.assured_public.memory
   disk_size        = var.assured_public.disk_size
   resource_pool_id = data.vsphere_resource_pool.assured_pool.id
-  folder           = var.assured_public.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.assured_public.vsphere_datastore
   network          = var.assured_public.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -197,7 +192,7 @@ module "worker_combined" {
   memory           = var.combined.memory
   disk_size        = var.combined.disk_size
   resource_pool_id = data.vsphere_resource_pool.combined_pool.id
-  folder           = var.combined.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.combined.vsphere_datastore
   network          = var.combined.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -223,7 +218,7 @@ module "worker_elevated" {
   memory           = var.elevated.memory
   disk_size        = var.elevated.disk_size
   resource_pool_id = data.vsphere_resource_pool.elevated_pool.id
-  folder           = var.elevated.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.elevated.vsphere_datastore
   network          = var.elevated.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -246,7 +241,7 @@ module "worker_elevated_public" {
   memory           = var.elevated_public.memory
   disk_size        = var.elevated_public.disk_size
   resource_pool_id = data.vsphere_resource_pool.elevated_pool.id
-  folder           = var.elevated_public.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.elevated_public.vsphere_datastore
   network          = var.elevated_public.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id

@@ -36,7 +36,7 @@ module "bootstrap" {
   disk_size        = var.bootstrap_disk_size
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   datastore        = var.management.vsphere_datastore
-  folder           = var.management.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
@@ -58,7 +58,7 @@ module "master" {
   memory           = var.master_memory
   disk_size        = var.master_disk_size
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
-  folder           = var.management.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
   network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -85,7 +85,7 @@ module "infra" {
   memory           = var.infra_memory
   disk_size        = var.infra_disk_size
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
-  folder           = var.management.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
   network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -108,7 +108,7 @@ module "svc" {
   memory           = var.svc_memory
   disk_size        = var.svc_disk_size
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
-  folder           = var.management.vsphere_folder
+  folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
   network          = var.management.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id

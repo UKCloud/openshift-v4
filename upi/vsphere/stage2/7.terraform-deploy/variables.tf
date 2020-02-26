@@ -145,13 +145,13 @@ variable "vsphere" {
   type        = object({vsphere_server = string, 
                         vsphere_cluster = string, 
                         vsphere_datacenter = string, 
+                        vsphere_folder = string,
                         rhcos_template = string})
   description = "Shared vSphere parameters"
 }
 
 variable "management" {
   type        = object({vsphere_resourcepool = string,
-                        vsphere_folder = string,
                         vsphere_datastore = string,
                         vsphere_network = string,
                         vsphere_portgroup = string,

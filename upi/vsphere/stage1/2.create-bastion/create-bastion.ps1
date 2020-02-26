@@ -26,11 +26,11 @@ write-host "second master name: " $ClusterConfig.masters[1].hostname
 
 # Extract some vars - not really needed but ...
 $global:bastion_ip = $ClusterConfig.bastion.ipaddress
-$global:bastion_mask_prefix = $ClusterConfig.network.maskprefix
-$global:bastion_dfgw = $ClusterConfig.network.defaultgw
+$global:bastion_mask_prefix = $ClusterConfig.management.maskprefix
+$global:bastion_dfgw = $ClusterConfig.management.defaultgw
 $global:cluster_domain = ($ClusterConfig.clusterid + "." + $ClusterConfig.basedomain)
-$global:bastion_dns1 = $ClusterConfig.network.upstreamdns1
-$global:bastion_dns2 = $ClusterConfig.network.upstreamdns2
+$global:bastion_dns1 = $ClusterConfig.management.upstreamdns1
+$global:bastion_dns2 = $ClusterConfig.management.upstreamdns2
 $global:bastion_hostname = $ClusterConfig.bastion.hostname
 $global:id_rsa_pub = $ClusterConfig.sshpubkey
 $global:registryurl = $ClusterConfig.registryurl
@@ -86,14 +86,14 @@ Connect-VIServer –Server $vcenterIp -username $vcenterUser -password $vcenterP
 #$portgroup = Get-VDPortgroup -Name $ClusterConfig.vsphere.vsphere_network
 #$template = Get-VM -Name $ClusterConfig.vsphere.rhcos_template
 $template = Get-Template -Name $ClusterConfig.vsphere.rhcos_template
-$datastore = Get-Datastore -Name $ClusterConfig.vsphere.vsphere_datastore
-$resourcePool = Get-ResourcePool -Name $ClusterConfig.vsphere.vsphere_resourcepool
+$datastore = Get-Datastore -Name $ClusterConfig.management.vsphere_datastore
+$resourcePool = Get-ResourcePool -Name $ClusterConfig.management.vsphere_resourcepool
 $folder = Get-Folder -Name $ClusterConfig.vsphere.vsphere_folder
 
 # Currently the portgroup name is obtained from NSX; this can cause problems when duplicate net names 
 # are present in the vCenter
 ## DISABLED FOR PREDEPLOYED NETWORKS
-$portgroup = $ClusterConfig.vsphere.vsphere_portgroup
+$portgroup = $ClusterConfig.management.vsphere_portgroup
 #Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
 #$sw = Get-NsxLogicalSwitch -name $ClusterConfig.vsphere.vsphere_network
 #$virtualNetworkXml = [xml]$sw.outerxml
