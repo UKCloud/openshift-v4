@@ -1,14 +1,9 @@
 ### Variables specific to UKCloud Internal Deployments
-## This file should be renamed to "ukcloud.tf" to be included in the deployment
 
 variable "assured" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_datastore = string,
-                        vsphere_network = string,
-                        vsphere_portgroup = string,
                         defaultgw = string,
-                        networkip = string,
-                        maskprefix = string,
                         dns1 = string,
                         dns2 = string,
                         num_cpu = string,
@@ -20,11 +15,7 @@ variable "assured" {
 variable "assured_public" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_datastore = string,
-                        vsphere_network = string,
-                        vsphere_portgroup = string,
                         defaultgw = string,
-                        networkip = string,
-                        maskprefix = string,
                         dns1 = string,
                         dns2 = string,
                         num_cpu = string,
@@ -36,11 +27,7 @@ variable "assured_public" {
 variable "combined" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_datastore = string,
-                        vsphere_network = string,
-                        vsphere_portgroup = string,
                         defaultgw  = string,
-                        networkip = string,
-                        maskprefix = string,
                         dns1 = string,
                         dns2 = string,
                         num_cpu = string,
@@ -52,11 +39,7 @@ variable "combined" {
 variable "elevated" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_datastore = string,
-                        vsphere_network = string,
-                        vsphere_portgroup = string,
                         defaultgw  = string,
-                        networkip = string,
-                        maskprefix = string,
                         dns1 = string,
                         dns2 = string,
                         num_cpu = string,
@@ -68,11 +51,7 @@ variable "elevated" {
 variable "elevated_public" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_datastore = string,
-                        vsphere_network = string,
-                        vsphere_portgroup = string,
                         defaultgw  = string,
-                        networkip = string,
-                        maskprefix = string,
                         dns1 = string,
                         dns2 = string,
                         num_cpu = string,
@@ -121,6 +100,11 @@ data "vsphere_resource_pool" "assured_pool" {
   datacenter_id    = data.vsphere_datacenter.dc.id
 }
 
+data "vsphere_resource_pool" "assured_public_pool" {
+  name             = var.assured_public.vsphere_resourcepool
+  datacenter_id    = data.vsphere_datacenter.dc.id
+}
+
 data "vsphere_resource_pool" "combined_pool" {
   name             = var.combined.vsphere_resourcepool
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -131,6 +115,10 @@ data "vsphere_resource_pool" "elevated_pool" {
   datacenter_id    = data.vsphere_datacenter.dc.id
 }
 
+data "vsphere_resource_pool" "elevated_public_pool" {
+  name             = var.elevated_public.vsphere_resourcepool
+  datacenter_id    = data.vsphere_datacenter.dc.id
+}
 
 # Assured workers
 
@@ -146,7 +134,7 @@ module "worker_assured" {
   resource_pool_id = data.vsphere_resource_pool.assured_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.assured.vsphere_datastore
-  network          = var.assured.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -154,7 +142,7 @@ module "worker_assured" {
   dns2             = var.assured.dns2
   ip_addresses     = var.assuredworkers.*.ipaddress
   gateway_ip       = var.assured.defaultgw
-  machine_cidr     = "${var.assured.networkip}/${var.assured.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
 module "worker_assured_public" {
@@ -166,10 +154,10 @@ module "worker_assured_public" {
   num_cpu          = var.assured_public.num_cpu
   memory           = var.assured_public.memory
   disk_size        = var.assured_public.disk_size
-  resource_pool_id = data.vsphere_resource_pool.assured_pool.id
+  resource_pool_id = data.vsphere_resource_pool.assured_public_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.assured_public.vsphere_datastore
-  network          = var.assured_public.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -177,7 +165,7 @@ module "worker_assured_public" {
   dns2             = var.assured_public.dns2
   ip_addresses     = var.assuredpublicworkers.*.ipaddress
   gateway_ip       = var.assured_public.defaultgw
-  machine_cidr     = "${var.assured_public.networkip}/${var.assured_public.maskprefix}"
+  machine_cidr     = "${var.vpshere.networkip}/${var.vsphere.maskprefix}"
 }
 
 
@@ -194,7 +182,7 @@ module "worker_combined" {
   resource_pool_id = data.vsphere_resource_pool.combined_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.combined.vsphere_datastore
-  network          = var.combined.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -202,7 +190,7 @@ module "worker_combined" {
   dns2             = var.combined.dns2
   ip_addresses     = var.combinedworkers.*.ipaddress
   gateway_ip       = var.combined.defaultgw
-  machine_cidr     = "${var.combined.networkip}/${var.combined.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
 
@@ -220,7 +208,7 @@ module "worker_elevated" {
   resource_pool_id = data.vsphere_resource_pool.elevated_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.elevated.vsphere_datastore
-  network          = var.elevated.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -228,7 +216,7 @@ module "worker_elevated" {
   dns2             = var.elevated.dns2
   ip_addresses     = var.elevatedworkers.*.ipaddress
   gateway_ip       = var.elevated.defaultgw
-  machine_cidr     = "${var.elevated.networkip}/${var.elevated.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
 module "worker_elevated_public" {
@@ -240,10 +228,10 @@ module "worker_elevated_public" {
   num_cpu          = var.elevated_public.num_cpu
   memory           = var.elevated_public.memory
   disk_size        = var.elevated_public.disk_size
-  resource_pool_id = data.vsphere_resource_pool.elevated_pool.id
+  resource_pool_id = data.vsphere_resource_pool.elevated_public_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.elevated_public.vsphere_datastore
-  network          = var.elevated_public.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -251,5 +239,5 @@ module "worker_elevated_public" {
   dns2             = var.elevated_public.dns2
   ip_addresses     = var.elevatedpublicworkers.*.ipaddress
   gateway_ip       = var.elevated_public.defaultgw
-  machine_cidr     = "${var.elevated_public.networkip}/${var.elevated_public.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
