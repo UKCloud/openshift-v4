@@ -146,6 +146,10 @@ variable "vsphere" {
                         vsphere_cluster = string, 
                         vsphere_datacenter = string, 
                         vsphere_folder = string,
+                        vsphere_network = string,
+                        vsphere_portgroup = string,
+                        networkip = string,
+                        maskprefix = string,
                         rhcos_template = string})
   description = "Shared vSphere parameters"
 }
@@ -153,10 +157,6 @@ variable "vsphere" {
 variable "management" {
   type        = object({vsphere_resourcepool = string,
                         vsphere_datastore = string,
-                        vsphere_network = string,
-                        vsphere_portgroup = string,
-                        networkip = string,
-                        maskprefix = string,
                         defaultgw = string,
                         upstreamdns1 = string,
                         upstreamdns2 = string})

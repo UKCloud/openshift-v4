@@ -37,7 +37,7 @@ module "bootstrap" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   datastore        = var.management.vsphere_datastore
   folder           = var.vsphere.vsphere_folder
-  network          = var.management.vsphere_portgroup
+  network          = var.network.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -45,7 +45,7 @@ module "bootstrap" {
   dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = [var.bootstrap.ipaddress]
   gateway_ip       = var.management.defaultgw
-  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
 module "master" {
@@ -60,7 +60,7 @@ module "master" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
-  network          = var.management.vsphere_portgroup
+  network          = var.network.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -68,12 +68,12 @@ module "master" {
   dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.masters.*.ipaddress
   gateway_ip       = var.management.defaultgw
-  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
 # Definitions of customer workers have been moved into customer.tf
 # Definitions of ukcloud assured/combined/elevated workers are in ukcloud.tf.disabled
-# One of the files customer.tf / ukcloud.tf.disabled must be disabled before build to select whether a customer or ukcloud internal cluster is to be built.
+# One of the files tube.tf / ukcloud.tf.disabled must be disabled before build to select whether a customer or ukcloud internal cluster is to be built.
 
 module "infra" {
   source = "./machine"
@@ -87,7 +87,7 @@ module "infra" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
-  network          = var.management.vsphere_portgroup
+  network          = var.network.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -95,7 +95,7 @@ module "infra" {
   dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
   ip_addresses     = var.infras.*.ipaddress
   gateway_ip       = var.management.defaultgw
-  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
 module "svc" {
@@ -110,7 +110,7 @@ module "svc" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
-  network          = var.management.vsphere_portgroup
+  network          = var.network.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -118,6 +118,6 @@ module "svc" {
   dns2             = var.management.upstreamdns2
   ip_addresses     = var.svcs.*.ipaddress
   gateway_ip       = var.management.defaultgw
-  machine_cidr     = "${var.management.networkip}/${var.management.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 

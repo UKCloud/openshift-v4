@@ -106,8 +106,8 @@
     "defaultgw": "10.50.1.1",
     "upstreamdns1": "1.1.1.1",
     "upstreamdns2": "1.0.0.1",
-    "externalvip": "51.9.9.9",
-    "internalvip": "10.50.1.1"
+    "internalvip": "10.50.1.1",
+    "externalvip": "51.9.9.9"
   },
   "assured": {
     "vsphere_resourcepool": "ocp4test",
