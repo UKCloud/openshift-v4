@@ -37,7 +37,7 @@ module "bootstrap" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   datastore        = var.management.vsphere_datastore
   folder           = var.vsphere.vsphere_folder
-  network          = var.network.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -60,7 +60,7 @@ module "master" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
-  network          = var.network.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -87,7 +87,7 @@ module "infra" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
-  network          = var.network.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
@@ -110,7 +110,7 @@ module "svc" {
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   folder           = var.vsphere.vsphere_folder
   datastore        = var.management.vsphere_datastore
-  network          = var.network.vsphere_portgroup
+  network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"

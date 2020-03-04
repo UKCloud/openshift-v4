@@ -57,18 +57,21 @@
       "ipaddress": "10.60.1.26"
     }
   ],
+  "assuredsvcs": [],
   "combinedworkers": [
     {
       "hostname": "worker-combined-0",
       "ipaddress": "10.80.1.25"
     }
   ],
+  "combinedsvcs": [],
   "elevatedworkers": [
     {
       "hostname": "worker-elevated-0",
       "ipaddress": "10.90.1.25"
     }
   ],
+  "elevatedsvcs": [],
   "assuredpublicworkers": [
     {
       "hostname": "worker-assuredpublic-0",
@@ -112,6 +115,7 @@
   "assured": {
     "vsphere_resourcepool": "ocp4test",
     "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "defaultgw": "10.60.1.1",
     "dns1": "10.50.1.15",
     "dns2": "10.50.1.16",
@@ -123,6 +127,7 @@
   "assured_public": {
     "vsphere_resourcepool": "ocp4test",
     "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "defaultgw": "10.70.1.1",
     "dns1": "10.50.1.15",
     "dns2": "10.50.1.16",
@@ -134,6 +139,7 @@
   "combined": {
     "vsphere_resourcepool": "ocp4test",
     "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "defaultgw": "10.80.1.1",
     "dns1": "10.50.1.15",
     "dns2": "10.50.1.16",
@@ -145,6 +151,7 @@
   "elevated": {
     "vsphere_resourcepool": "ocp4test",
     "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "defaultgw": "10.90.1.1",
     "dns1": "10.50.1.15",
     "dns2": "10.50.1.16",
@@ -156,6 +163,7 @@
   "elevated_public": {
     "vsphere_resourcepool": "ocp4test",
     "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "defaultgw": "10.100.1.1",
     "dns1": "10.50.1.15",
     "dns2": "10.50.1.16",
