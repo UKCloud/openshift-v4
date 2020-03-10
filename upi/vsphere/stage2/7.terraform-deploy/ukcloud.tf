@@ -301,8 +301,8 @@ module "worker_elevated_public" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = var.elevated_public.upstream_dns1
-  dns2             = var.elevated_public.upstream_dns2
+  dns1             = var.elevated_public.upstreamdns1
+  dns2             = var.elevated_public.upstreamdns2
   ip_addresses     = var.elevatedpublicworkers.*.ipaddress
   gateway_ip       = var.elevated_public.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
