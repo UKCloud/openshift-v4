@@ -41,8 +41,8 @@ module "bootstrap" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
+  dns1             = length(var.svcs) == 0 ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
+  dns2             = length(var.svcs) == 0 ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs) - 1] 
   ip_addresses     = [var.bootstrap.ipaddress]
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
@@ -64,8 +64,8 @@ module "master" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
+  dns1             = length(var.svcs) == 0 ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
+  dns2             = length(var.svcs) == 0 ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs) - 1] 
   ip_addresses     = var.masters.*.ipaddress
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
@@ -91,8 +91,8 @@ module "infra" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs.*.hostname) == "0" ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs.*.hostname) - 1] 
+  dns1             = length(var.svcs) == 0 ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
+  dns2             = length(var.svcs) == 0 ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs) - 1] 
   ip_addresses     = var.infras.*.ipaddress
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
@@ -101,8 +101,8 @@ module "infra" {
 module "svc" {
   source = "./machine"
 
-  names            = var.svcs.*.hostname
-  instance_count   = length(var.svcs.*.hostname)
+  names            = var.svcs
+  instance_count   = length(var.svcs)
   ignition         = var.ignition.svc_ignition
   num_cpu          = var.svc_num_cpu
   memory           = var.svc_memory
