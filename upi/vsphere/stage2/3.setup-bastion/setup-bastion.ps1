@@ -33,6 +33,9 @@ $global:epubworkers = $ClusterConfig.elevatedpublicworkers
 
 $global:infras = $ClusterConfig.infras
 $global:svcs = $ClusterConfig.svcs
+$global:asvcs = $ClusterConfig.assuredsvcs
+$global:csvcs = $ClusterConfig.combinedsvcs
+$global:esvcs = $ClusterConfig.elevatedsvcs
 $global:bootstrap = $ClusterConfig.bootstrap
 $global:bastion = $ClusterConfig.bastion
 

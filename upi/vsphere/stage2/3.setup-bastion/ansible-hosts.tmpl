@@ -39,6 +39,12 @@ bastion
 [svcs]
 <% if($svcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
 <% } -%><% } %>
+<% if($asvcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
+<% } -%><% } %>
+<% if($csvcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
+<% } -%><% } %>
+<% if($esvcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
+<% } -%><% } %>
 
 [bootstrap]
 <%= $bootstrap.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bootstrap.ipaddress %>
