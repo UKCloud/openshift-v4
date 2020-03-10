@@ -156,8 +156,8 @@ module "worker_assured" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.assuredsvcs) == "0" ? var.assured.upstreamdns1 : var.assuredsvcs.*.ipaddress[0]
-  dns2             = length(var.assuredsvcs) == "0" ? var.assured.upstreamdns2 : var.assuredsvcs.*.ipaddress[length(var.assuredsvcs.*.hostname) - 1]
+  dns1             = length(var.assuredsvcs[]) == "0" ? var.assured.upstreamdns1 : var.assuredsvcs.*.ipaddress[0]
+  dns2             = length(var.assuredsvcs[]) == "0" ? var.assured.upstreamdns2 : var.assuredsvcs.*.ipaddress[length(var.assuredsvcs.*.hostname) - 1]
   ip_addresses     = var.assuredworkers.*.ipaddress
   gateway_ip       = var.assured.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
@@ -179,8 +179,8 @@ module "worker_assured_public" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.assuredsvcs) == "0" ? var.assured_public.upstreamdns1 : var.assuredsvcs.*.ipaddress[0]
-  dns2             = length(var.assuredsvcs) == "0" ? var.assured_public.upstreamdns2 : var.assuredsvcs.*.ipaddress[length(var.assuredsvcs.*.hostname) - 1]
+  dns1             = length(var.assuredsvcs[]) == "0" ? var.assured_public.upstreamdns1 : var.assuredsvcs.*.ipaddress[0]
+  dns2             = length(var.assuredsvcs[]) == "0" ? var.assured_public.upstreamdns2 : var.assuredsvcs.*.ipaddress[length(var.assuredsvcs.*.hostname) - 1]
   ip_addresses     = var.assuredpublicworkers.*.ipaddress
   gateway_ip       = var.assured_public.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
