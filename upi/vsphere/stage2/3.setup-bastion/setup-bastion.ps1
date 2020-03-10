@@ -12,7 +12,7 @@ $SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFro
 
 # Read vars from config file
 $global:basedomain = $ClusterConfig.basedomain
-$global:machinecidr = ($ClusterConfig.management.networkip + "/" + $ClusterConfig.management.maskprefix)
+$global:machinecidr = ($ClusterConfig.vsphere.networkip + "/" + $ClusterConfig.vsphere.maskprefix)
 $global:vcenterserver = $ClusterConfig.vsphere.vsphere_server 
 $global:vcenterdatacenter = $ClusterConfig.vsphere.vsphere_datacenter
 $global:vsandatastore = $ClusterConfig.management.vsphere_datastore
@@ -36,8 +36,8 @@ $global:svcs = $ClusterConfig.svcs
 $global:bootstrap = $ClusterConfig.bootstrap
 $global:bastion = $ClusterConfig.bastion
 
-$global:externalvip = $ClusterConfig.loadbalancer.externalvip
-$global:internalvip = $ClusterConfig.loadbalancer.internalvip
+$global:externalvip = $ClusterConfig.management.externalvip
+$global:internalvip = $ClusterConfig.management.internalvip
 $global:upstreamdns1 = $ClusterConfig.management.upstreamdns1
 $global:upstreamdns2 = $ClusterConfig.management.upstreamdns2
 $global:imagetag = $ClusterConfig.imagetag
