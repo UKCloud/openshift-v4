@@ -183,7 +183,7 @@ module "worker_assured_public" {
   dns2             = length(var.assuredsvcs.*.hostname) == "0" ? var.assured_public.upstreamdns2 : var.assuredsvcs.*.ipaddress[length(var.assuredsvcs.*.hostname) - 1]
   ip_addresses     = var.assuredpublicworkers.*.ipaddress
   gateway_ip       = var.assured_public.defaultgw
-  machine_cidr     = "${var.vpshere.networkip}/${var.vsphere.maskprefix}"
+  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
 # Assured svcs/DNS - currently also used for Assured Public
