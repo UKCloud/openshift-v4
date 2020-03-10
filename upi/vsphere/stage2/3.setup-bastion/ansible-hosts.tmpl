@@ -39,11 +39,11 @@ bastion
 [svcs]
 <% if($svcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
 <% } -%><% } %>
-<% if($asvcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
+<% if($asvcs.Count -gt 0 ) { %><% 0..($asvcs.Count-1) | %{ -%><%= $asvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $asvcs[$_].ipaddress %> ansible_host=<%= $asvcs[$_].ipaddress %>
 <% } -%><% } %>
-<% if($csvcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
+<% if($csvcs.Count -gt 0 ) { %><% 0..($csvcs.Count-1) | %{ -%><%= $csvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $csvcs[$_].ipaddress %> ansible_host=<%= $csvcs[$_].ipaddress %>
 <% } -%><% } %>
-<% if($esvcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
+<% if($esvcs.Count -gt 0 ) { %><% 0..($esvcs.Count-1) | %{ -%><%= $esvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $esvcs[$_].ipaddress %> ansible_host=<%= $esvcs[$_].ipaddress %>
 <% } -%><% } %>
 
 [bootstrap]
