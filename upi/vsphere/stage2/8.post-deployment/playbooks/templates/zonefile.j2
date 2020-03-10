@@ -17,10 +17,10 @@ dns{{ count }}         IN      A       {{ hostvars[hostname].ip }}
 {% set count = count + 1 %}
 {% endfor %}
 
-api          IN      A       {{ external_lb_ip }}
-api-int      IN      A       {{ default_gateway }}
+api          IN      A       {{ management_external_lb_ip }}
+api-int      IN      A       {{ management_internal_lb_ip }}
 
-*.apps       IN      A       {{ external_lb_ip }}
+*.apps       IN      A       {{ management_external_lb_ip }}
 
 {% set count =0 %}
 {% for hostname in groups.masters %}

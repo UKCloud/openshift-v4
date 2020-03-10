@@ -52,15 +52,13 @@ ntp_server2=1.uk.pool.ntp.org
 dns_server1=<%= $upstreamdns1 %>
 dns_server2=<%= $upstreamdns2 %>
 domain_suffix=<%= $clusterid %>.<%= $basedomain %>
-external_lb_ip=<%= $externalvip %>
+management_external_lb_ip=<%= $externalvip %>
+management_internal_lb_ip=<%= $internalvip %>
 
 dns_username=<%= $dnsusername %>
 dns_password=<%= $dnsuserpassword %>
 
 image_tag=<%= $imagetag %>
-
-# Default gateway is also the api-int IP
-default_gateway=<%= $internalvip %>
 
 ansible_ssh_user=core
 ansible_become=yes
