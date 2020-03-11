@@ -41,8 +41,8 @@ module "bootstrap" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs) == 0 ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs) == 0 ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs) - 1] 
+  dns1             = length(var.svcs) == 0 ? length(var.combinedsvcs) == 0 ? var.management.upstreamdns1 : var.combinedsvcs.*.ipaddress[0] : var.svcs.*.ipaddress[0]
+  dns2             = length(var.svcs) == 0 ? length(var.combinedsvcs) == 0 ? var.management.upstreamdns2 : var.combinedsvcs.*.ipaddress[length(var.combinedsvcs) - 1] : var.svcs.*.ipaddress[length(var.svcs) - 1]
   ip_addresses     = [var.bootstrap.ipaddress]
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
@@ -64,9 +64,9 @@ module "master" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs) == 0 ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs) == 0 ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs) - 1] 
   ip_addresses     = var.masters.*.ipaddress
+  dns1             = length(var.svcs) == 0 ? length(var.combinedsvcs) == 0 ? var.management.upstreamdns1 : var.combinedsvcs.*.ipaddress[0] : var.svcs.*.ipaddress[0]
+  dns2             = length(var.svcs) == 0 ? length(var.combinedsvcs) == 0 ? var.management.upstreamdns2 : var.combinedsvcs.*.ipaddress[length(var.combinedsvcs) - 1] : var.svcs.*.ipaddress[length(var.svcs) - 1]
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
@@ -91,8 +91,8 @@ module "infra" {
   datacenter_id    = data.vsphere_datacenter.dc.id
   template         = var.vsphere.rhcos_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
-  dns1             = length(var.svcs) == 0 ? var.management.upstreamdns1 : var.svcs.*.ipaddress[0] 
-  dns2             = length(var.svcs) == 0 ? var.management.upstreamdns2 : var.svcs.*.ipaddress[length(var.svcs) - 1] 
+  dns1             = length(var.svcs) == 0 ? length(var.combinedsvcs) == 0 ? var.management.upstreamdns1 : var.combinedsvcs.*.ipaddress[0] : var.svcs.*.ipaddress[0]
+  dns2             = length(var.svcs) == 0 ? length(var.combinedsvcs) == 0 ? var.management.upstreamdns2 : var.combinedsvcs.*.ipaddress[length(var.combinedsvcs) - 1] : var.svcs.*.ipaddress[length(var.svcs) - 1]
   ip_addresses     = var.infras.*.ipaddress
   gateway_ip       = var.management.defaultgw
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
