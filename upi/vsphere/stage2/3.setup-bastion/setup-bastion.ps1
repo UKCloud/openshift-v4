@@ -41,8 +41,16 @@ $global:bastion = $ClusterConfig.bastion
 
 $global:externalvip = $ClusterConfig.management.externalvip
 $global:internalvip = $ClusterConfig.management.internalvip
-$global:upstreamdns1 = $ClusterConfig.management.upstreamdns1
-$global:upstreamdns2 = $ClusterConfig.management.upstreamdns2
+
+$global:mupstreamdns1 = $ClusterConfig.management.upstreamdns1
+$global:mupstreamdns2 = $ClusterConfig.management.upstreamdns2
+$global:aupstreamdns1 = $ClusterConfig.assured.upstreamdns1
+$global:aupstreamdns2 = $ClusterConfig.assured.upstreamdns2
+$global:cupstreamdns1 = $ClusterConfig.combined.upstreamdns1
+$global:cupstreamdns2 = $ClusterConfig.combined.upstreamdns2
+$global:eupstreamdns1 = $ClusterConfig.elevated.upstreamdns1
+$global:eupstreamdns2 = $ClusterConfig.elevated.upstreamdns2
+
 $global:imagetag = $ClusterConfig.imagetag
 
 # Read vars from secret file

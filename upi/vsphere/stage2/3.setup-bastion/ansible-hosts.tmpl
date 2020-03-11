@@ -39,10 +39,16 @@ bastion
 [svcs]
 <% if($svcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
 <% } -%><% } %>
+
+[asvcs]
 <% if($asvcs.Count -gt 0 ) { %><% 0..($asvcs.Count-1) | %{ -%><%= $asvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $asvcs[$_].ipaddress %> ansible_host=<%= $asvcs[$_].ipaddress %>
 <% } -%><% } %>
+
+[csvcs]
 <% if($csvcs.Count -gt 0 ) { %><% 0..($csvcs.Count-1) | %{ -%><%= $csvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $csvcs[$_].ipaddress %> ansible_host=<%= $csvcs[$_].ipaddress %>
 <% } -%><% } %>
+
+[esvcs]
 <% if($esvcs.Count -gt 0 ) { %><% 0..($esvcs.Count-1) | %{ -%><%= $esvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $esvcs[$_].ipaddress %> ansible_host=<%= $esvcs[$_].ipaddress %>
 <% } -%><% } %>
 
@@ -55,8 +61,19 @@ bastion
 [all:vars]
 ntp_server1=0.uk.pool.ntp.org
 ntp_server2=1.uk.pool.ntp.org
-dns_server1=<%= $upstreamdns1 %>
-dns_server2=<%= $upstreamdns2 %>
+
+man_dns_server1=<%= $mupstreamdns1 %>
+man_dns_server2=<%= $mupstreamdns2 %>
+
+assured_dns_server1=<%= $aupstreamdns1 %>
+assured_dns_server2=<%= $aupstreamdns2 %>
+
+combined_dns_server1=<%= $cupstreamdns1 %>
+combined_dns_server2=<%= $cupstreamdns2 %>
+
+elevated_dns_server1=<%= $eupstreamdns1 %>
+elevated_dns_server2=<%= $eupstreamdns2 %>
+
 domain_suffix=<%= $clusterid %>.<%= $basedomain %>
 management_external_lb_ip=<%= $externalvip %>
 management_internal_lb_ip=<%= $internalvip %>
