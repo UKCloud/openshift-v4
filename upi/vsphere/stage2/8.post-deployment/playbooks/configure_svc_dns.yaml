@@ -2,8 +2,8 @@
 
 - hosts: localhost
   vars:
-    dns_server1: {{ man_dns_server1 }}
-    dns_server2: {{ man_dns_server2 }}
+    dns_server1: "{{ man_dns_server1 }}"
+    dns_server2: "{{ man_dns_server2 }}"
   tasks:
   - name: Create /tmp/workingdir/dns/ directory
     file:
@@ -29,8 +29,8 @@
 
 - hosts: localhost
   vars:
-    dns_server1: {{ assured_dns_server1 }}
-    dns_server2: {{ assured_dns_server2 }}
+    dns_server1: "{{ assured_dns_server1 }}"
+    dns_server2: "{{ assured_dns_server2 }}"
   tasks:
   - name: Make an assured Corefile config
     template:
@@ -40,8 +40,8 @@
 
 - hosts: localhost
   vars:
-    dns_server1: {{ combined_dns_server1 }}
-    dns_server2: {{ combined_dns_server2 }}
+    dns_server1: "{{ combined_dns_server1 }}"
+    dns_server2: "{{ combined_dns_server2 }}"
   tasks:
   - name: Make a combined Corefile config
     template:
@@ -50,8 +50,8 @@
       
 - hosts: localhost
   vars:
-    dns_server1: {{ elevated_dns_server1 }}
-    dns_server2: {{ elevated_dns_server2 }}
+    dns_server1: "{{ elevated_dns_server1 }}"
+    dns_server2: "{{ elevated_dns_server2 }}"
   tasks:
   - name: Make an elevated Corefile config
     template:
