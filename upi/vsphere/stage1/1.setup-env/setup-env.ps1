@@ -87,7 +87,7 @@ $appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -N
 # create server pool
 # get the monitors needed for the pools
 try {
-    $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
+    $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
 }
 catch {
     Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
