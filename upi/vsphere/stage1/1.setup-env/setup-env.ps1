@@ -17,7 +17,7 @@ $edgeName = $ClusterConfig.management.vsphere_edge
 $masterIps = @($ClusterConfig.masters[0].ipaddress,$ClusterConfig.masters[1].ipaddress,$ClusterConfig.masters[2].ipaddress)
 $infraIps = @($ClusterConfig.infras[0].ipaddress,$ClusterConfig.infras[1].ipaddress)
 $bootstrapIp = $ClusterConfig.bootstrap.ipaddress
-$snmask = $ClusterConfig.management.maskprefix
+$snmask = $ClusterConfig.vsphere.maskprefix
 
 # Globals to allow templating to work:
 $global:defaultgw = $ClusterConfig.management.defaultgw
