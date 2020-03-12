@@ -93,7 +93,7 @@ $folder = Get-Folder -Name $ClusterConfig.vsphere.vsphere_folder
 # Currently the portgroup name is obtained from NSX; this can cause problems when duplicate net names 
 # are present in the vCenter
 ## DISABLED FOR PREDEPLOYED NETWORKS
-$portgroup = $ClusterConfig.management.vsphere_portgroup
+$portgroup = $ClusterConfig.vsphere.vsphere_portgroup
 #Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
 #$sw = Get-NsxLogicalSwitch -name $ClusterConfig.vsphere.vsphere_network
 #$virtualNetworkXml = [xml]$sw.outerxml
