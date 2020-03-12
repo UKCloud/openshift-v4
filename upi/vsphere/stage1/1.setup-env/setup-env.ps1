@@ -10,7 +10,7 @@ $vcenterPassword = $SecretConfig.vcenterdeploy.password
 
 
 # Declare essential parameters
-$transportZoneName = $ClusterConfig.management.vsphere_transportzone
+### not actually essential?: $transportZoneName = $ClusterConfig.management.vsphere_transportzone
 $edgeInternalIp = $ClusterConfig.management.internalvip
 $edgeExternalIp = $ClusterConfig.management.externalvip
 $edgeName = $ClusterConfig.management.vsphere_edge
