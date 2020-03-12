@@ -11,18 +11,25 @@ $vcenterPassword = $SecretConfig.vcenterdeploy.password
 
 # Declare essential parameters
 $transportZoneName = $ClusterConfig.management.vsphere_transportzone
-$edgeInternalIp = $ClusterConfig.loadbalancer.internalvip
-$edgeExternalIp = $ClusterConfig.loadbalancer.externalvip
+$edgeInternalIp = $ClusterConfig.management.internalvip
+$edgeExternalIp = $ClusterConfig.management.externalvip
 $edgeName = $ClusterConfig.management.vsphere_edge
 $masterIps = @($ClusterConfig.masters[0].ipaddress,$ClusterConfig.masters[1].ipaddress,$ClusterConfig.masters[2].ipaddress)
 $infraIps = @($ClusterConfig.infras[0].ipaddress,$ClusterConfig.infras[1].ipaddress)
 $bootstrapIp = $ClusterConfig.bootstrap.ipaddress
 $snmask = $ClusterConfig.management.maskprefix
 
-# Globals to allow templating engine to work:
+# Globals to allow templating to work:
 $global:defaultgw = $ClusterConfig.management.defaultgw
-$global:dnsip = $ClusterConfig.svcs[0].ipaddress
-
+if($ClusterConfig.svcs.Count -gt 0) {
+  $global:dnsip = $ClusterConfig.svcs[0].ipaddress
+}
+elseif($ClusterConfig.combinedsvcs.Count -gt 0) {
+  $global:dnsip = $ClusterConfig.combinedsvcs[0].ipaddress
+}
+else {
+  write-host -ForegroundColor Red "No SVCs machines have been configured!"
+}
 write-host -ForegroundColor cyan "Default GW: " $global:defaultgw
 
 ######################################################
@@ -62,41 +69,13 @@ write-host -ForegroundColor cyan "DHCP XML: " $dhcpxmlobject
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
 
 
-########################################
-# CODE WHICH ADDS/ATTACHES NEW NETWORK #
-# DISABLED AT THIS TIME                #
-########################################
 # populate the edge variable with the appropriate edge
 $edge = Get-NsxEdge $edgeName
 write-host -ForegroundColor cyan "Using vSE: " $edgeName
 
-# create a network
-# get the transport zone based on the name provided
-#$transportzone = Get-NsxTransportZone $transportZoneName 
-#write-host -ForegroundColor cyan "Using transport zone: " $transportzone.name
-
-# create a new virtual network with in that transport zone
-#$sw = New-NsxLogicalSwitch -TransportZone $transportzone -Name $ClusterConfig.management.vsphere_network -ControlPlaneMode UNICAST_MODE
-#$ClusterConfig.management.vsphere_portgroup = ($sw | Get-NsxBackingPortGroup).Name
-#write-host -ForegroundColor cyan "Created logical switch: " $sw.Name
-#write-host -ForegroundColor cyan "Portgroup: " $ClusterConfig.management.vsphere_portgroup
-
-# attach the network to the vSE
-#$edge | Get-NsxEdgeInterface -Index 9 | Set-NsxEdgeInterface -Name vnic9 -Type internal -ConnectedTo $sw -PrimaryAddress $edgeInternalIp -SubnetPrefixLength 24
-
-# Backup config.json
-#Copy-Item ("/tmp/workingdir/config.json") -Destination ("/tmp/workingdir/.config.json.setupbak")
-
-# Write out the config.json so that vsphere_portgroup is there
-#$ClusterConfig | ConvertTo-Json | Out-File /tmp/workingdir/config.json
-########################################
-
-
-
 # setup dhcp
 $uri = "/api/4.0/edges/$($edge.id)/dhcp/config"
 Invoke-NsxWebRequest -method "put"  -uri $uri -body $dhcpxmlobject -connection $nsxConnection
-
 
 # setup a loadbalancer
 # enable loadbalancer on the edge
