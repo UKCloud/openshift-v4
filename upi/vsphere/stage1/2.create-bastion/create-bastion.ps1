@@ -26,7 +26,7 @@ write-host "second master name: " $ClusterConfig.masters[1].hostname
 
 # Extract some vars - not really needed but ...
 $global:bastion_ip = $ClusterConfig.bastion.ipaddress
-$global:bastion_mask_prefix = $ClusterConfig.management.maskprefix
+$global:bastion_mask_prefix = $ClusterConfig.vsphere.maskprefix
 $global:bastion_dfgw = $ClusterConfig.management.defaultgw
 $global:cluster_domain = ($ClusterConfig.clusterid + "." + $ClusterConfig.basedomain)
 $global:bastion_dns1 = $ClusterConfig.management.upstreamdns1
