@@ -74,7 +74,7 @@ variable "svc_num_cpu" {
 variable "svc_memory" {
   type = string
   description = "RAM size in megabytes"
-  default = "2048"
+  default = "1024"
 }
 
 variable "svc_disk_size" {
