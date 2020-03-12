@@ -93,7 +93,7 @@ catch {
     Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
     try {
         # Silently create default_tcp_monitor
-        $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -Type TCP | Out-Null
+        $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -Type TCP 
         Write-Output -InputObject "Successfully created load balancer monitor: default_tcp_monitor"
     }
     catch {
