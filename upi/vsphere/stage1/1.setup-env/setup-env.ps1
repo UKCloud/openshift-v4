@@ -143,6 +143,7 @@ Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name appli
 
 
 
+##########################################################################
 # Function to Create app LBs on additional Edges
 function Add-App-LB {
   param( [string]$Zone )
@@ -183,9 +184,12 @@ function Add-App-LB {
   Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-https -Description "HTTPs traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
   Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
 }
+# End function def
+##########################################################################
+
 
 # Create Assured Loadbalancers if assuredworkers exist
-if($ClusterConfig.assuredworkers.Count -gt 0) {
+if($ClusterConfig.assured.vsphere_edge -ne $null -and $ClusterConfig.assured.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.assuredworkers.Count -gt 0) {
   $edgeExternalIp = $ClusterConfig.assured.externalvip
   $edgeName = $ClusterConfig.assured.vsphere_edge
   $infraIps = @($ClusterConfig.assuredworkers.ipaddress)
@@ -197,3 +201,14 @@ if($ClusterConfig.assuredworkers.Count -gt 0) {
 }
 
 
+# Create AssuredPublic Loadbalancers if assuredworkers exist
+if($ClusterConfig.assured_public.vsphere_edge -ne $null -and $ClusterConfig.assured_public.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.assuredpublicworkers.Count -gt 0) {
+  $edgeExternalIp = $ClusterConfig.assured_public.externalvip
+  $edgeName = $ClusterConfig.assured_public.vsphere_edge
+  $infraIps = @($ClusterConfig.assuredpublicworkers.ipaddress)
+
+  $edge = Get-NsxEdge $edgeName
+  write-host -ForegroundColor cyan "Using vSE: " $edgeName
+  
+  Add-App-LB -Zone "assuredpub"
+}
