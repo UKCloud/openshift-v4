@@ -147,6 +147,7 @@ if($ClusterConfig.assuredworkers.Count -gt 0) {
   $edgeName = $ClusterConfig.assured.vsphere_edge
   $infraIps = $ClusterConfig.assuredworkers.ipaddress
   
+  $edge = Get-NsxEdge $edgeName  
   write-host -ForegroundColor cyan "Using vSE: " $edgeName
   
   # setup a loadbalancer
