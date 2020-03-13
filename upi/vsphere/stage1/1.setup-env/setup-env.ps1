@@ -195,7 +195,7 @@ if($ClusterConfig.assured.vsphere_edge -ne $null -and $ClusterConfig.assured.vsp
   $infraIps = @($ClusterConfig.assuredworkers.ipaddress)
 
   $edge = Get-NsxEdge $edgeName
-  write-host -ForegroundColor cyan "Using vSE: " $edgeName
+  write-host -ForegroundColor cyan "Assured: Using vSE: " $edgeName
   
   Add-App-LB -Zone "assured"
 }
@@ -208,7 +208,34 @@ if($ClusterConfig.assured_public.vsphere_edge -ne $null -and $ClusterConfig.assu
   $infraIps = @($ClusterConfig.assuredpublicworkers.ipaddress)
 
   $edge = Get-NsxEdge $edgeName
-  write-host -ForegroundColor cyan "Using vSE: " $edgeName
+  write-host -ForegroundColor cyan "Assured Public: Using vSE: " $edgeName
   
   Add-App-LB -Zone "assuredpub"
 }
+
+
+# Create Elevated Loadbalancers if elevatedpubworkers exist
+if($ClusterConfig.elevated.vsphere_edge -ne $null -and $ClusterConfig.elevated.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.elevatedworkers.Count -gt 0) {
+  $edgeExternalIp = $ClusterConfig.elevated.externalvip
+  $edgeName = $ClusterConfig.elevated.vsphere_edge
+  $infraIps = @($ClusterConfig.elevatedworkers.ipaddress)
+
+  $edge = Get-NsxEdge $edgeName
+  write-host -ForegroundColor cyan "Elevated: Using vSE: " $edgeName
+  
+  Add-App-LB -Zone "elevated"
+}
+
+
+# Create ElevatedPublic Loadbalancers if elevatedpubworkers exist
+if($ClusterConfig.elevated_public.vsphere_edge -ne $null -and $ClusterConfig.elevated_public.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.elevatedpublicworkers.Count -gt 0) {
+  $edgeExternalIp = $ClusterConfig.elevated_public.externalvip
+  $edgeName = $ClusterConfig.elevated_public.vsphere_edge
+  $infraIps = @($ClusterConfig.elevatedpublicworkers.ipaddress)
+
+  $edge = Get-NsxEdge $edgeName
+  write-host -ForegroundColor cyan "Elevated Public: Using vSE: " $edgeName
+  
+  Add-App-LB -Zone "elevatedpub"
+}
+
