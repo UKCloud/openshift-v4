@@ -145,7 +145,7 @@ Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name appli
 if($ClusterConfig.assuredworkers.Count -gt 0) {
   $edgeExternalIp = $ClusterConfig.assured.externalvip
   $edgeName = $ClusterConfig.assured.vsphere_edge
-  $infraIps = $ClusterConfig.assuredworkers.ipaddress
+  $infraIps = @($ClusterConfig.assuredworkers.ipaddress)
   
   $edge = Get-NsxEdge $edgeName  
   write-host -ForegroundColor cyan "Using vSE: " $edgeName
