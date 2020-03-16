@@ -47,7 +47,8 @@ $loadbalancer = $edge | Get-NsxLoadBalancer
 
 # Make a new Monitor and then get it redundantly to make sure we have it if it already exists
 write-host -ForegroundColor cyan "Making new Monitor:"
-$apiMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name openshift_6443_monitor  -Typehttps -interval 3 -Timeout 5 -maxretries 2 -Method GET -url "/healthz" -Expected "200" -Receive "ok"
+$apiMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name openshift_6443_monitor -TypeHttps -interval 3 -Timeout 5 -maxretries 2 -Method GET -url "/healthz" -Expected "200" -Receive "ok"
+Start-Sleep -Second 5
 $apiMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name openshift_6443_monitor
 
 write-host -ForegroundColor cyan "Created new monitor ID: " $apiMonitor.monitorId
