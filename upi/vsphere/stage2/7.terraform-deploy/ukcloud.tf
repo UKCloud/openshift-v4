@@ -108,11 +108,7 @@ variable "elevatedpublicworkers" {
   default     = [{ hostname="",ipaddress="" }]
 }
 
-
-
-
 # Assured/Elevated specific vCenter params
-
 data "vsphere_resource_pool" "assured_pool" {
   name             = var.assured.vsphere_resourcepool
   datacenter_id    = data.vsphere_datacenter.dc.id
@@ -139,7 +135,6 @@ data "vsphere_resource_pool" "elevated_public_pool" {
 }
 
 # Assured workers
-
 module "worker_assured" {
   source = "./machine"
 
@@ -261,7 +256,6 @@ module "svc_combined" {
 
 
 # Elevated workers
-
 module "worker_elevated" {
   source = "./machine"
 

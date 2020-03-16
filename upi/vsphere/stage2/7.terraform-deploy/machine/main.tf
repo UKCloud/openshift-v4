@@ -33,7 +33,6 @@ resource "vsphere_virtual_machine" "vm" {
     network_id = data.vsphere_network.network.id
   }
 
-
   disk {
     label            = "disk0"
     size             = var.disk_size

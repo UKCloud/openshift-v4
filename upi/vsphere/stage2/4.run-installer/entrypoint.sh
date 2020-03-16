@@ -37,14 +37,9 @@ sed -i "s/folder            = ${CLUSTERID}/folder            = ${FOLDERNAME}/g" 
 echo "\n\nCloud provider config after edit:"
 cat manifests/cloud-provider-config.yaml
 
-# Remove apps. prefix (DISABLED)
-#sed -i "s/apps.//g" manifests/cluster-ingress-02-config.yml
-
-echo "This is the manifest for ingress:"
-cat manifests/cluster-ingress-02-config.yml
-
-
 # Create ignition
 $INSTALLCOMMAND create ignition-configs
 cp worker.ign infra.ign
 chmod 664 *.ign
+chmod 755 auth
+chmod 666 auth/kubeconfig

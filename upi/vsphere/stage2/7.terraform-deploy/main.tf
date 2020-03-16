@@ -71,9 +71,8 @@ module "master" {
   machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
 }
 
-# Definitions of customer workers have been moved into customer.tf
-# Definitions of ukcloud assured/combined/elevated workers are in ukcloud.tf.disabled
-# One of the files tube.tf / ukcloud.tf.disabled must be disabled before build to select whether a customer or ukcloud internal cluster is to be built.
+# Definitions of customer workers have been moved into tenant.tf
+# Definitions of ukcloud assured/combined/elevated workers are in ukcloud.tf
 
 module "infra" {
   source = "./machine"

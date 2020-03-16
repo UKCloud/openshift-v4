@@ -10,8 +10,26 @@ Set-PowerCLIConfiguration -Scope User -Confirm:$false -ParticipateInCEIP $false
 Set-PowerCLIConfiguration -InvalidCertificateAction:ignore -Confirm:$false
 
 # Read in the configs
-$ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
-$SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
+try
+{
+ $ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
+}
+catch
+{
+ Write-Output "config.json cannot be parsed Is it valid JSON?"
+ Exit
+}
+
+# Read in the secrets
+try
+{
+ $SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
+}
+catch
+{
+ Write-Output "secret.json cannot be parsed. Is it valid JSON?"
+ Exit
+}
 
 $vcenterIp = $ClusterConfig.vsphere.vsphere_server
 $vcenterUser = $SecretConfig.vcenterdeploy.username
