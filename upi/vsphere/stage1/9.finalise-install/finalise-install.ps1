@@ -12,20 +12,28 @@ $vcenterIp = $ClusterConfig.vsphere.vsphere_server
 $vcenterUser = $SecretConfig.vcenterdeploy.username
 $vcenterPassword = $SecretConfig.vcenterdeploy.password
 
-
 # Declare essential parameters
-$transportZoneName = $ClusterConfig.vsphere.vsphere_transportzone
-$edgeInternalIp = $ClusterConfig.loadbalancer.internalvip
-$edgeExternalIp = $ClusterConfig.loadbalancer.externalvip
-$edgeName = $ClusterConfig.vsphere.vsphere_edge
-$masterIps = @($ClusterConfig.masters[0].ipaddress, $ClusterConfig.masters[1].ipaddress, $ClusterConfig.masters[2].ipaddress)
-$infraIps = @($ClusterConfig.infras[0].ipaddress, $ClusterConfig.infras[1].ipaddress)
+### not actually essential?: $transportZoneName = $ClusterConfig.management.vsphere_transportzone
+$edgeInternalIp = $ClusterConfig.management.internalvip
+$edgeExternalIp = $ClusterConfig.management.externalvip
+$edgeName = $ClusterConfig.management.vsphere_edge
+$masterIps = @($ClusterConfig.masters[0].ipaddress,$ClusterConfig.masters[1].ipaddress,$ClusterConfig.masters[2].ipaddress)
+$infraIps = @($ClusterConfig.infras[0].ipaddress,$ClusterConfig.infras[1].ipaddress)
 $bootstrapIp = $ClusterConfig.bootstrap.ipaddress
-$snmask = $ClusterConfig.network.maskprefix
+$snmask = $ClusterConfig.vsphere.maskprefix
 
-# Globals to allow templating engine to work:
-$global:defaultgw = $ClusterConfig.network.defaultgw
-$global:dnsip = $ClusterConfig.svcs[0].ipaddress
+# Globals to allow templating to work:
+$global:defaultgw = $ClusterConfig.management.defaultgw
+if($ClusterConfig.svcs.Count -gt 0) {
+  $global:dnsip = $ClusterConfig.svcs[0].ipaddress
+}
+elseif($ClusterConfig.combinedsvcs.Count -gt 0) {
+  $global:dnsip = $ClusterConfig.combinedsvcs[0].ipaddress
+}
+else {
+  write-host -ForegroundColor Red "No SVCs machines have been configured!"
+}
+write-host -ForegroundColor cyan "Default GW: " $global:defaultgw
 
 # connect to the vcenter/nsx with SSO
 Connect-NsxServer -vCenterServer $vcenterIp -username $vcenterUser -password $vcenterPassword
@@ -37,17 +45,12 @@ write-host -ForegroundColor cyan "Using vSE: " $edgeName
 # Obtain LB object
 $loadbalancer = $edge | Get-NsxLoadBalancer
 
-# create application profile
-#$appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -Name "tcp-source-persistence" -PersistenceMethod sourceip
-
 # Make a new Monitor and then get it redundantly to make sure we have it if it already exists
 $apiMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name openshift_6443_monitor  -Typehttps -interval 3 -Timeout 5 -maxretries 2 -Method GET -url "/healthz" -Expected "200" -Receive "ok"
 $apiMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor openshift_6443_monitor
 
 $masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-6443
 $masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool master-pool-22623
-$infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-https-pool
-$infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Get-NsxLoadBalancerPool infra-http-pool
 
 # Remove bootstrap machine from the Api pools
 
