@@ -107,8 +107,6 @@ catch {
 
 $masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-6443 -Description "Master Servers Pool for cluster API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
 $masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-22623 -Description "Master Servers Pool for machine API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
-$infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name infra-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
-$infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name infra-http-pool -Description "Infrastructure HTTP Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
 
 # add members from the member variables to the pools
 for ( $index = 0; $index -lt $masterIps.Length ; $index++ )
@@ -123,22 +121,10 @@ for ( $index = 0; $index -lt $masterIps.Length ; $index++ )
 }
 $masterPoolMachine = $masterPoolMachine | Add-NsxLoadBalancerPoolMember -Name bootstrap-0 -IpAddress $bootstrapIp -Port 22623
 
-for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
-{
-    $infraHttpsPool = $infraHttpsPool | Add-NsxLoadBalancerPoolMember -Name infra-$index -IpAddress $infraIps[$index] -Port 443
-}
-
-for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
-{
-    $infraHttpPool = $infraHttpPool | Add-NsxLoadBalancerPoolMember -Name infra-$index -IpAddress $infraIps[$index] -Port 80
-}
-
 # create loadbalancer
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-6443 -Description "Cluster API port 6443" -IpAddress $edgeExternalIp -Protocol TCP -Port 6443 -DefaultPool $masterPoolApi -Enabled -ApplicationProfile $appProfile
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-int-6443 -Description "Cluster API port for internal 6443" -IpAddress $edgeInternalIp -Protocol TCP -Port 6443 -DefaultPool $masterPoolApi -Enabled -ApplicationProfile $appProfile
 Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name cluster-api-int-22623 -Description "Cluster Machine API port for internal 22623" -IpAddress $edgeInternalIp -Protocol TCP -Port 22623 -DefaultPool $masterPoolMachine -Enabled -ApplicationProfile $appProfile
-Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-https -Description "HTTPs traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
-Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name application-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
 
 
 
@@ -147,27 +133,37 @@ Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name appli
 # Function to Create app LBs on additional Edges
 function Add-App-LB {
   param( [string]$Zone )
-  # setup a loadbalancer
-  # enable loadbalancer on the edge
-  $loadbalancer = $edge | Get-NsxLoadBalancer | Set-NsxLoadBalancer -Enabled -EnableLogging -EnableAcceleration
 
-  # create application profile
-  $appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -Name "tcp-source-persistence" -PersistenceMethod sourceip
-
-  # get the monitors needed for the pools
-  try {
-      $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
+  # Logic to allow for creating infra workers
+  $Prefix = "worker-"
+  if($Zone -eq "infra") {
+    $Prefix = ""
   }
-  catch {
-      Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
-      try {
-          # Silently create default_tcp_monitor
-          $tcpMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -TypeTCP
-          Write-Output -InputObject "Successfully created load balancer monitor: default_tcp_monitor"
-      }
-      catch {
-          Write-Error -Message "Failed to create monitor: default_tcp_monitor" -ErrorAction "Stop"
-      }
+
+  # Management edge (for infra nodes) has already had certain components created above so we skip in this case
+  if($Zone -ne "infra") {
+    # setup a loadbalancer
+    # enable loadbalancer on the edge
+    $loadbalancer = $edge | Get-NsxLoadBalancer | Set-NsxLoadBalancer -Enabled -EnableLogging -EnableAcceleration
+  
+    # create application profile
+    $appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -Name "tcp-source-persistence" -PersistenceMethod sourceip
+  
+    # get the monitors needed for the pools
+    try {
+        $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
+    }
+    catch {
+        Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
+        try {
+            # Silently create default_tcp_monitor
+            $tcpMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -TypeTCP
+            Write-Output -InputObject "Successfully created load balancer monitor: default_tcp_monitor"
+        }
+        catch {
+            Write-Error -Message "Failed to create monitor: default_tcp_monitor" -ErrorAction "Stop"
+        }
+    }
   }
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
@@ -175,17 +171,25 @@ function Add-App-LB {
 
   for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
   {
-      $infraHttpsPool = $infraHttpsPool | Add-NsxLoadBalancerPoolMember -Name worker-$Zone-$index -IpAddress $infraIps[$index] -Port 443
+      $infraHttpsPool = $infraHttpsPool | Add-NsxLoadBalancerPoolMember -Name $Prefix$Zone-$index -IpAddress $infraIps[$index] -Port 443
   }
   for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
   {
-      $infraHttpPool = $infraHttpPool | Add-NsxLoadBalancerPoolMember -Name worker-$Zone-$index -IpAddress $infraIps[$index] -Port 80
+      $infraHttpPool = $infraHttpPool | Add-NsxLoadBalancerPoolMember -Name $Prefix$Zone-$index -IpAddress $infraIps[$index] -Port 80
   }
-  Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-https -Description "HTTPs traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
+  Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-https -Description "HTTPS traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
   Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
 }
 # End function def
 ##########################################################################
+
+
+# Create application LB on management edge if infra nodes exist
+if($ClusterConfig.infras.Count -gt 0) {
+  # All the necessary vars should be set at the start of the script
+  Add-App-LB -Zone "infra"
+}
+
 
 
 # Create Assured Loadbalancers if assuredworkers exist
@@ -201,7 +205,7 @@ if($ClusterConfig.assured.vsphere_edge -ne $null -and $ClusterConfig.assured.vsp
 }
 
 
-# Create AssuredPublic Loadbalancers if assuredworkers exist
+# Create AssuredPublic Loadbalancers if assuredpublicworkers exist
 if($ClusterConfig.assured_public.vsphere_edge -ne $null -and $ClusterConfig.assured_public.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.assuredpublicworkers.Count -gt 0) {
   $edgeExternalIp = $ClusterConfig.assured_public.externalvip
   $edgeName = $ClusterConfig.assured_public.vsphere_edge
@@ -214,7 +218,21 @@ if($ClusterConfig.assured_public.vsphere_edge -ne $null -and $ClusterConfig.assu
 }
 
 
-# Create Elevated Loadbalancers if elevatedpubworkers exist
+# Create Combined Loadbalancers if combinedworkers exist
+if($ClusterConfig.combined.vsphere_edge -ne $null -and $ClusterConfig.combined.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.combinedworkers.Count -gt 0) {
+  $edgeExternalIp = $ClusterConfig.combined.externalvip
+  $edgeName = $ClusterConfig.combined.vsphere_edge
+  $infraIps = @($ClusterConfig.combinedworkers.ipaddress)
+
+  $edge = Get-NsxEdge $edgeName
+  write-host -ForegroundColor cyan "Combined: Using vSE: " $edgeName
+  
+  Add-App-LB -Zone "combined"
+}
+
+
+
+# Create Elevated Loadbalancers if elevatedworkers exist
 if($ClusterConfig.elevated.vsphere_edge -ne $null -and $ClusterConfig.elevated.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.elevatedworkers.Count -gt 0) {
   $edgeExternalIp = $ClusterConfig.elevated.externalvip
   $edgeName = $ClusterConfig.elevated.vsphere_edge
@@ -227,7 +245,7 @@ if($ClusterConfig.elevated.vsphere_edge -ne $null -and $ClusterConfig.elevated.v
 }
 
 
-# Create ElevatedPublic Loadbalancers if elevatedpubworkers exist
+# Create ElevatedPublic Loadbalancers if elevatedpublicworkers exist
 if($ClusterConfig.elevated_public.vsphere_edge -ne $null -and $ClusterConfig.elevated_public.vsphere_edge -ne $ClusterConfig.management.vsphere_edge -and $ClusterConfig.elevatedpublicworkers.Count -gt 0) {
   $edgeExternalIp = $ClusterConfig.elevated_public.externalvip
   $edgeName = $ClusterConfig.elevated_public.vsphere_edge
