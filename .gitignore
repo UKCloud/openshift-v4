@@ -13,3 +13,7 @@ config.json
 *.pem
 *.pwsh
 *.ign
+
+# for OSP UPI
+clouds.yaml
+metadata.json
