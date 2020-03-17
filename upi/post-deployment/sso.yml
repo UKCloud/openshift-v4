@@ -1,7 +1,7 @@
 - hosts: localhost
   tasks:
- - name: Create sso secret
-   command: oc create secret generic idp-secret --from-literal=clientSecret="{{ ssoSecret }}" -n openshift-config
+  - name: Create sso secret
+    command: oc create secret generic idp-secret --from-literal=clientSecret="{{ ssoSecret }}" -n openshift-config
 
   - name: Create OAuth resource
     k8s:
@@ -17,18 +17,18 @@
             mappingMethod: claim 
             type: OpenID 
             openID: 
-            clientID: "{{ ssoClientID }}"
-            clientSecret: 
-              name: idp-secret
-            claims: 
-              preferredUsername: 
-              - preferred_username 
-              name: 
-              - name 
-              email: 
-              - email
-            issuer: "{{ ssoIssuer }}"
-     
-    - name: Patch logout redirect into console
-      command: oc patch Console cluster '{"spec":{"authentication":{"logoutRedirect":"{{ ssoLogoutURL }}"}}}
+              clientID: "{{ ssoClientID }}"
+              clientSecret: 
+                name: idp-secret
+              claims: 
+                preferredUsername: 
+                - preferred_username 
+                name: 
+                - name 
+                email: 
+                - email
+              issuer: "{{ ssoIssuer }}"
+    
+  - name: Patch logout redirect into console
+    command: oc patch Console cluster --type merge -p '{"spec":{"authentication":{"logoutRedirect":"{{ ssoLogoutURL }}"}}}'
     
