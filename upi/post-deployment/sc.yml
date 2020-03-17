@@ -1,6 +1,6 @@
 - hosts: localhost
   tasks:
-  - name: Create test sc
+  - name: Create tier 1 sc
     k8s:
       state: present
       definition:
@@ -16,3 +16,26 @@
         provisioner: kubernetes.io/cinder
         reclaimPolicy: Delete
         volumeBindingMode: Immediate
+
+  - name: Create tier 2 sc
+    k8s:
+      state: present
+      definition:
+        allowVolumeExpansion: true
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: tier2
+          namespace: ""
+        parameters:
+          availability: nova
+          type: TIER2
+        provisioner: kubernetes.io/cinder
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+
+  - name: Remove default annotation from 'standard' sc
+    command: oc annotate sc standard storageclass.kubernetes.io/is-default-class=false
+
+  - name: Add default annotation to 'tier2' sc
+    command: oc annotate sc tier2 storageclass.kubernetes.io/is-default-class=true
