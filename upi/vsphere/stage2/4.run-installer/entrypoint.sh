@@ -41,5 +41,3 @@ cat manifests/cloud-provider-config.yaml
 $INSTALLCOMMAND create ignition-configs
 cp worker.ign infra.ign
 chmod 664 *.ign
-chmod 755 auth
-chmod 666 auth/kubeconfig

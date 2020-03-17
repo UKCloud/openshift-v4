@@ -52,6 +52,10 @@ podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:<%= $
 echo "Add KUBECONFIG to bash_profile"
 echo "export KUBECONFIG=~/deployconfig/auth/kubeconfig" >> /home/core/.bash_profile
 
+echo "change permissions on auth files"
+chmod 755 /home/core/deployconfig/auth
+chmod 666 /home/core/deployconfig/auth/*
+
 echo "Waiting 10 minutes for cluster to start up before polling..."
 sleep 600
 
