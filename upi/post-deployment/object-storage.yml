@@ -1,0 +1,9 @@
+- hosts: localhost
+  tasks:
+  - name: Patch s3 details into image registry
+    command: oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"s3":{"bucket": "{{ bucketName }}","regionEndpoint": "{{ regionEndpoint }}","region": "{{ region }}" }}}}'
+
+  - name:
+    command: oc create secret generic image-registry-private-configuration-user --from-literal=REGISTRY_STORAGE_S3_ACCESSKEY="{{ accessKey }}" --from-literal=REGISTRY_STORAGE_S3_SECRETKEY="{{ secretKey }}" --namespace openshift-image-registry
+ 
+

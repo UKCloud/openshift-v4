@@ -3,4 +3,9 @@ ssoSecret: <secret>
 ssoClientID: <client ID>
 ssoIssuer: <issuer URL>
 ssoLogoutURL: <logout URL>
-#
+# Object storage parameters
+bucketName: <object store bucket>
+regionEndpoint: <object storage region endpoint>
+region: <region of object store>
+accessKey: <access key>
+secretKey: <secret key>
