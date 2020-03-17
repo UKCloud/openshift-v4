@@ -5,7 +5,7 @@
 
 
 FROM centos:centos7
-RUN yum -y install epel-release; yum install -y wget git anisible
+RUN yum -y install epel-release; yum install -y wget git ansible; yum -y clean all
 ADD ./ /usr/local/letsencrypt
 # Volume mount needs to be for /tmp/workingdir to wherever config.json/secrets.json is
 WORKDIR /root
