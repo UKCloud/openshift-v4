@@ -1,0 +1,6 @@
+# SSO parameters
+ssoSecret: <secret>
+ssoClientID: <client ID>
+ssoIssuer: <issuer URL>
+ssoLogoutURL: <logout URL>
+#
