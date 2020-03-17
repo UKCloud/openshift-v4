@@ -35,13 +35,6 @@ $vcenterIp = $ClusterConfig.vsphere.vsphere_server
 $vcenterUser = $SecretConfig.vcenterdeploy.username
 $vcenterPassword = $SecretConfig.vcenterdeploy.password
 
-# Some experiments with arrays
-write-host "clusterid: " $ClusterConfig.clusterid
-write-host "bastion hostname: " $ClusterConfig.bastion.hostname
-write-host "bastion ip: " $ClusterConfig.bastion.ipaddress
-write-host "number of masters: " $ClusterConfig.masters.Count
-write-host "second master name: " $ClusterConfig.masters[1].hostname
-
 # Extract some vars - not really needed but ...
 $global:bastion_ip = $ClusterConfig.bastion.ipaddress
 $global:bastion_mask_prefix = $ClusterConfig.vsphere.maskprefix
