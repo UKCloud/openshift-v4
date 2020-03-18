@@ -186,13 +186,13 @@ function Add-App-LB {
 
   Write-Output -InputObject "Trying again to gettcpMonitor *****************"
   $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor  
-  write-host -ForegroundColor cyan "Edge object: " $edge
+  write-host -ForegroundColor cyan "Edge object: " ($edge | Format-Table | Out-String)
   write-host -ForegroundColor cyan "Edge name: " $edgeName
   $LBDiag = $edge | Get-NsxLoadBalancer
-  write-host -ForegroundColor cyan "Loadbalancer: " $LBDiag 
+  write-host -ForegroundColor cyan "Loadbalancer: " ($LBDiag | Format-Table | Out-String) 
   $LBDiag = Get-NsxEdge $edgeName | Get-NsxLoadBalancer
-  write-host -ForegroundColor cyan "Loadbalancer from name " $LBDiag
-  write-host -ForegroundColor cyan "Monitor object: " $tcpMonitor
+  write-host -ForegroundColor cyan "Loadbalancer from name " ($LBDiag | Format-Table | Out-String)
+  write-host -ForegroundColor cyan "Monitor object: " ($tcpMonitor | Format-Table | Out-String)
   Write-Output -InputObject "Done Trying again to gettcpMonitor *****************"
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
