@@ -226,6 +226,7 @@ if($ClusterConfig.assured.vsphere_edge -ne $null -and $ClusterConfig.assured.vsp
   $infraIps = @($ClusterConfig.assuredworkers.ipaddress)
 
   $edge = Get-NsxEdge $edgeName
+  write-host -ForegroundColor cyan "Assured Edge object: " $edge
   write-host -ForegroundColor cyan "Assured: Using vSE: " $edgeName
   
   Add-App-LB -Zone "assured"
