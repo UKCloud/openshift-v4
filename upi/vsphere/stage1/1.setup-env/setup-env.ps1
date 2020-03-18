@@ -188,6 +188,7 @@ function Add-App-LB {
   # Create the nonsense anyway
   $tcpMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -TypeTCP
   write-host -ForegroundColor cyan "Monitor object made anyway: " ($tcpMonitor | Format-Table | Out-String)
+  Start-Sleep -Seconds 10
 
   $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
   write-host -ForegroundColor cyan "Monitor object made anyway reread: " ($tcpMonitor | Format-Table | Out-String)
