@@ -124,6 +124,7 @@ catch {
 #$edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -Type TCP
 #$tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
 
+Start-Sleep -Seconds 10
 
 $masterPoolApi = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-6443 -Description "Master Servers Pool for cluster API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
 $masterPoolMachine = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name master-pool-22623 -Description "Master Servers Pool for machine API" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
@@ -187,7 +188,7 @@ function Add-App-LB {
 
   # Create the nonsense anyway
   $tcpMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -TypeTCP
-  write-host -ForegroundColor cyan "Monitor object made anyway: " ($tcpMonitor | Format-Table | Out-String)
+  write-host -ForegroundColor cyan "Monitor object: " ($tcpMonitor | Format-Table | Out-String)
   Start-Sleep -Seconds 10
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
@@ -224,7 +225,6 @@ if($ClusterConfig.assured.vsphere_edge -ne $null -and $ClusterConfig.assured.vsp
   $infraIps = @($ClusterConfig.assuredworkers.ipaddress)
 
   $edge = Get-NsxEdge $edgeName
-  write-host -ForegroundColor cyan "Assured Edge object: " $edge
   write-host -ForegroundColor cyan "Assured: Using vSE: " $edgeName
   
   Add-App-LB -Zone "assured"
