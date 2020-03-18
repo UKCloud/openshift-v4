@@ -189,16 +189,9 @@ function Add-App-LB {
   $tcpMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -TypeTCP
   write-host -ForegroundColor cyan "Monitor object made anyway: " ($tcpMonitor | Format-Table | Out-String)
 
-  Write-Output -InputObject "Trying again to gettcpMonitor *****************"
-  $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor  
-  write-host -ForegroundColor cyan "Edge object: " ($edge | Format-Table | Out-String)
-  write-host -ForegroundColor cyan "Edge name: " $edgeName
-  $LBDiag = $edge | Get-NsxLoadBalancer
-  write-host -ForegroundColor cyan "Loadbalancer: " ($LBDiag | Format-Table | Out-String) 
-  $LBDiag = Get-NsxEdge $edgeName | Get-NsxLoadBalancer
-  write-host -ForegroundColor cyan "Loadbalancer from name " ($LBDiag | Format-Table | Out-String)
-  write-host -ForegroundColor cyan "Monitor object: " ($tcpMonitor | Format-Table | Out-String)
-  Write-Output -InputObject "Done Trying again to gettcpMonitor *****************"
+  $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
+  write-host -ForegroundColor cyan "Monitor object made anyway reread: " ($tcpMonitor | Format-Table | Out-String)
+
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
   $infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-http-pool -Description "Infrastructure HTTP Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
