@@ -187,8 +187,11 @@ function Add-App-LB {
   Write-Output -InputObject "Trying again to gettcpMonitor *****************"
   $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor  
   write-host -ForegroundColor cyan "Edge object: " $edge
+  write-host -ForegroundColor cyan "Edge name: $edgeName
   $LBDiag = $edge | Get-NsxLoadBalancer
   write-host -ForegroundColor cyan "Loadbalancer: " $LBDiag 
+  $LBDiag = Get-NsxEdge $edgeName | Get-NsxLoadBalancer
+  write-host -ForegroundColor cyan "Loadbalancer from name " $LBDiag
   write-host -ForegroundColor cyan "Monitor object: " $tcpMonitor
   Write-Output -InputObject "Done Trying again to gettcpMonitor *****************"
 
