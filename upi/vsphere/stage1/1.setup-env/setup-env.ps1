@@ -186,6 +186,8 @@ function Add-App-LB {
 
   Write-Output -InputObject "Trying again to gettcpMonitor *****************"
   $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor  
+  write-host -ForegroundColor cyan "Monitor object: " $tcpMonitor
+  Write-Output -InputObject "Done Trying again to gettcpMonitor *****************"
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
   $infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-http-pool -Description "Infrastructure HTTP Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
@@ -208,6 +210,7 @@ function Add-App-LB {
 # Create application LB on management edge if infra nodes exist
 if($ClusterConfig.infras.Count -gt 0) {
   # All the necessary vars should be set at the start of the script
+  write-host -ForegroundColor cyan "Infra App LB: Using vSE: " $edgeName
   Add-App-LB -Zone "infra"
 }
 
