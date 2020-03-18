@@ -171,6 +171,7 @@ function Add-App-LB {
   try {
       Write-Output -InputObject "About to get tcpMonitor **********************"
       $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
+      write-host -ForegroundColor cyan "Inside Monitor object: " ($tcpMonitor | Format-Table | Out-String)
   }
   catch {
       Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
