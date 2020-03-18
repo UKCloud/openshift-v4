@@ -169,6 +169,7 @@ function Add-App-LB {
   
   # get the monitors needed for the pools
   try {
+      Write-Output -InputObject "About to get tcpMonitor **********************"
       $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
   }
   catch {
@@ -182,6 +183,8 @@ function Add-App-LB {
           Write-Error -Message "Failed to create monitor: default_tcp_monitor" -ErrorAction "Stop"
       }
   }
+
+  Write-Output -InputObject "Trying again to gettcpMonitor *****************"
   $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor  
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
