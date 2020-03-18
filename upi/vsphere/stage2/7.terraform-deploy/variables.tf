@@ -131,11 +131,6 @@ variable "infras" {
   default     = [{ hostname="",ipaddress=""}]
 }
 
-variable "loadbalancer" {
-  type        = object({externalvip = string,
-                        internalvip = string})
-}
-
 variable "sshpubkey" {
   type        = string
   description = "This is the SSH key installed to allow access to the VMs"
