@@ -160,30 +160,27 @@ function Add-App-LB {
     $Prefix = ""
   }
 
-  # Management edge (for infra nodes) has already had certain components created above so we skip in this case
-  if($Zone -ne "infra") {
-    # setup a loadbalancer
-    # enable loadbalancer on the edge
-    $loadbalancer = $edge | Get-NsxLoadBalancer | Set-NsxLoadBalancer -Enabled -EnableLogging -EnableAcceleration
+  # setup a loadbalancer
+  # enable loadbalancer on the edge
+  $loadbalancer = $edge | Get-NsxLoadBalancer | Set-NsxLoadBalancer -Enabled -EnableLogging -EnableAcceleration
   
-    # create application profile
-    $appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -Name "tcp-source-persistence" -PersistenceMethod sourceip
+  # create application profile
+  $appProfile = $loadbalancer | New-NsxLoadBalancerApplicationProfile -Type TCP -Name "tcp-source-persistence" -PersistenceMethod sourceip
   
-    # get the monitors needed for the pools
-    try {
-        $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
-    }
-    catch {
-        Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
-        try {
-            # Silently create default_tcp_monitor
-            $tcpMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -TypeTCP
-            Write-Output -InputObject "Successfully created load balancer monitor: default_tcp_monitor"
-        }
-        catch {
-            Write-Error -Message "Failed to create monitor: default_tcp_monitor" -ErrorAction "Stop"
-        }
-    }
+  # get the monitors needed for the pools
+  try {
+      $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
+  }
+  catch {
+      Write-Error -Message "The monitor: default_tcp_monitor not found. Attempting to create it..."
+      try {
+          # Silently create default_tcp_monitor
+          $tcpMonitor = $edge | Get-NsxLoadBalancer | New-NsxLoadBalancerMonitor -Name default_tcp_monitor -Interval 5 -Timeout 15 -MaxRetries 3 -TypeTCP
+          Write-Output -InputObject "Successfully created load balancer monitor: default_tcp_monitor"
+      }
+      catch {
+          Write-Error -Message "Failed to create monitor: default_tcp_monitor" -ErrorAction "Stop"
+      }
   }
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
