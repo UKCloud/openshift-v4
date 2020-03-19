@@ -22,8 +22,7 @@ resource "vsphere_virtual_machine" "vm" {
   num_cpus             = var.num_cpu
   num_cores_per_socket = var.num_cpu
   memory               = var.memory
-# (for vSphere 6.5/6.7):   guest_id             = "other26xLinux64Guest"
-  guest_id             = "rhel7_64Guest"  # for vSphere 6.0
+  guest_id             = "rhel7_64Guest"  
   folder               = var.folder
   enable_disk_uuid     = "true"
 

@@ -75,3 +75,4 @@ variable "gateway_ip" {
 variable "ip_addresses" {
   type = list
 }
+

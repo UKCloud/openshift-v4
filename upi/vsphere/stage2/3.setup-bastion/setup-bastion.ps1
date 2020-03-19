@@ -7,31 +7,69 @@
 ###########################################################################
 
 # Read in the configs
-$ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
-$SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
+try
+{
+ $ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
+}
+catch
+{
+ Write-Output "config.json cannot be parsed Is it valid JSON?"
+ Exit
+}
+
+# Read in the secrets
+try
+{
+ $SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
+}
+catch
+{
+ Write-Output "secret.json cannot be parsed. Is it valid JSON?"
+ Exit
+}
+
 
 # Read vars from config file
 $global:basedomain = $ClusterConfig.basedomain
-$global:machinecidr = ($ClusterConfig.network.networkip + "/" + $ClusterConfig.network.maskprefix)
+$global:machinecidr = ($ClusterConfig.vsphere.networkip + "/" + $ClusterConfig.vsphere.maskprefix)
 $global:vcenterserver = $ClusterConfig.vsphere.vsphere_server 
 $global:vcenterdatacenter = $ClusterConfig.vsphere.vsphere_datacenter
-$global:vsandatastore = $ClusterConfig.vsphere.vsphere_datastore
+$global:defaultdatastore = $ClusterConfig.management.vsphere_datastore
 $global:sshpubkey = $ClusterConfig.sshpubkey
 
 # Vars for Ansible hosts file
 $global:clusterid = $ClusterConfig.clusterid
 $global:masters = $ClusterConfig.masters
+
 $global:sworkers = $ClusterConfig.smallworkers
 $global:mworkers = $ClusterConfig.mediumworkers
 $global:lworkers = $ClusterConfig.largeworkers
+$global:aworkers = $ClusterConfig.assuredworkers
+$global:cworkers = $ClusterConfig.combinedworkers
+$global:eworkers = $ClusterConfig.elevatedworkers
+$global:apubworkers = $ClusterConfig.assuredpublicworkers
+$global:epubworkers = $ClusterConfig.elevatedpublicworkers
+
 $global:infras = $ClusterConfig.infras
 $global:svcs = $ClusterConfig.svcs
+$global:asvcs = $ClusterConfig.assuredsvcs
+$global:csvcs = $ClusterConfig.combinedsvcs
+$global:esvcs = $ClusterConfig.elevatedsvcs
 $global:bootstrap = $ClusterConfig.bootstrap
 $global:bastion = $ClusterConfig.bastion
-$global:externalvip = $ClusterConfig.loadbalancer.externalvip
-$global:internalvip = $ClusterConfig.loadbalancer.internalvip
-$global:upstreamdns1 = $ClusterConfig.network.upstreamdns1
-$global:upstreamdns2 = $ClusterConfig.network.upstreamdns2
+
+$global:externalvip = $ClusterConfig.management.externalvip
+$global:internalvip = $ClusterConfig.management.internalvip
+
+$global:mupstreamdns1 = $ClusterConfig.management.upstreamdns1
+$global:mupstreamdns2 = $ClusterConfig.management.upstreamdns2
+$global:aupstreamdns1 = $ClusterConfig.assured.upstreamdns1
+$global:aupstreamdns2 = $ClusterConfig.assured.upstreamdns2
+$global:cupstreamdns1 = $ClusterConfig.combined.upstreamdns1
+$global:cupstreamdns2 = $ClusterConfig.combined.upstreamdns2
+$global:eupstreamdns1 = $ClusterConfig.elevated.upstreamdns1
+$global:eupstreamdns2 = $ClusterConfig.elevated.upstreamdns2
+
 $global:imagetag = $ClusterConfig.imagetag
 
 # Read vars from secret file
@@ -46,6 +84,27 @@ if($ClusterConfig.useletsencrypt) {
     write-host -ForegroundColor green "Lets Encrypt: TRUE"
   }
 }
+
+
+# Code to check for custom registry ca
+# Defaults to False
+$global:addregistryca = 'False'
+if($ClusterConfig.registryca) {
+  if($ClusterConfig.registryca -ne '') {
+    $global:registryca = $ClusterConfig.registryca
+    $global:addregistryca = 'True'
+  }
+}
+
+# Code to check for disconnected image sources
+$global:addimagesources = 'False'
+if($ClusterConfig.imagesources) {
+  if($ClusterConfig.imagesources -ne '') {
+    $global:imagesources = $ClusterConfig.imagesources
+    $global:addimagesources = 'True'
+  }
+}
+
 
 write-host -ForegroundColor green "Pull Secret: " $global:pullsecret 
 

@@ -4,8 +4,7 @@
   "useletsencrypt": "True",
   "bastion": {
     "hostname": "bastion-0",
-    "ipaddress": "10.1.1.254",
-    "registry": "registry.example.com"
+    "ipaddress": "10.1.1.254"
   },
   "bootstrap": {
     "hostname": "bootstrap-0",
@@ -57,13 +56,11 @@
   ],
   "mediumworkers": [],
   "largeworkers": [],
-  "network": {
-    "networkip": "10.1.1.0",
-    "maskprefix": "24",
-    "defaultgw": "10.1.1.1",
-    "upstreamdns1": "1.1.1.1",
-    "upstreamdns2": "1.0.0.1"
-  },
+  "assuredworkers": [],
+  "combinedworkers": [],
+  "elevatedworkers": [],
+  "assuredpublicworkers": [],
+  "elevatedpublicworkers": [],
   "loadbalancer": {
     "externalvip": "51.9.9.9",
     "internalvip": "10.1.1.1"
@@ -71,19 +68,40 @@
   "sshpubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ..... ONO+WJe5kAdO+Quiy/7LdKRxzfYA/OKXjsU7+wHCFX14tD53mao1FP1na0Q== admin@localhost.localdomain",
   "registryurl": "registry.access.redhat.com",
   "registryusername": "\\$app",
+  "registryca": "",
+  "imagesources": "",
   "imagetag": "0.5",
   "vsphere": {
     "vsphere_server": "vcenter ip / name",
     "vsphere_cluster": "cluster name",
-    "vsphere_resourcepool": "ocp4test",
-    "vsphere_folder": "ocp4test",
     "vsphere_datacenter": "Datacenter",
+    "vsphere_folder": "ocp4test",
+    "rhcos_template": "rhcos-4.3.0-template"
+  },
+  "management": {
+    "vsphere_resourcepool": "ocp4test",
     "vsphere_datastore": "datastorename",
     "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
     "vsphere_transportzone": "PvDC.VXLAN-NP",
     "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
     "vsphere_portgroup": "vxw-dvs-32-virtualwire-5-sid-16001-dvs.VCDVSNetworkname36370-c",
-    "rhcos_template": "rhcos-4.2.0-template"
+    "networkip": "10.1.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.1.1.1",
+    "upstreamdns1": "1.1.1.1",
+    "upstreamdns2": "1.0.0.1" 
+  },
+  "tenant": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-5-sid-16001-dvs.VCDVSNetworkname36370-c",
+    "networkip": "10.1.1.0",
+    "maskprefix": "24",
+    "defaultgw": "10.1.1.1",
+    "upstreamdns1": "1.1.1.1",
+    "upstreamdns2": "1.0.0.1" 
   },
   "ignition": {
     "master_ignition": "",

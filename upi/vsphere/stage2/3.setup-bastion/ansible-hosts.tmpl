@@ -21,6 +21,16 @@ bastion
 <% } -%><% } %>
 <% if($lworkers.Count -gt 0 ) { %><% 0..($lworkers.Count-1) | %{ -%><%= $lworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $lworkers[$_].ipaddress  %>
 <% } -%><% } %>
+<% if($aworkers.Count -gt 0 ) { %><% 0..($aworkers.Count-1) | %{ -%><%= $aworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $aworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($cworkers.Count -gt 0 ) { %><% 0..($cworkers.Count-1) | %{ -%><%= $cworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $cworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($eworkers.Count -gt 0 ) { %><% 0..($eworkers.Count-1) | %{ -%><%= $eworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $eworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($apubworkers.Count -gt 0 ) { %><% 0..($apubworkers.Count-1) | %{ -%><%= $apubworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $apubworkers[$_].ipaddress  %>
+<% } -%><% } %>
+<% if($epubworkers.Count -gt 0 ) { %><% 0..($epubworkers.Count-1) | %{ -%><%= $epubworkers[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $epubworkers[$_].ipaddress  %>
+<% } -%><% } %>
 
 [infras]
 <% if($infras.Count -gt 0 ) { %><% 0..($infras.Count-1) | %{ -%><%= $infras[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $infras[$_].ipaddress  %>
@@ -30,6 +40,18 @@ bastion
 <% if($svcs.Count -gt 0 ) { %><% 0..($svcs.Count-1) | %{ -%><%= $svcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $svcs[$_].ipaddress %> ansible_host=<%= $svcs[$_].ipaddress %>
 <% } -%><% } %>
 
+[asvcs]
+<% if($asvcs.Count -gt 0 ) { %><% 0..($asvcs.Count-1) | %{ -%><%= $asvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $asvcs[$_].ipaddress %> ansible_host=<%= $asvcs[$_].ipaddress %>
+<% } -%><% } %>
+
+[csvcs]
+<% if($csvcs.Count -gt 0 ) { %><% 0..($csvcs.Count-1) | %{ -%><%= $csvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $csvcs[$_].ipaddress %> ansible_host=<%= $csvcs[$_].ipaddress %>
+<% } -%><% } %>
+
+[esvcs]
+<% if($esvcs.Count -gt 0 ) { %><% 0..($esvcs.Count-1) | %{ -%><%= $esvcs[$_].hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $esvcs[$_].ipaddress %> ansible_host=<%= $esvcs[$_].ipaddress %>
+<% } -%><% } %>
+
 [bootstrap]
 <%= $bootstrap.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bootstrap.ipaddress %>
 
@@ -37,20 +59,26 @@ bastion
 <%= $bastion.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bastion.ipaddress %>
 
 [all:vars]
-ntp_server1=0.uk.pool.ntp.org
-ntp_server2=1.uk.pool.ntp.org
-dns_server1=<%= $upstreamdns1 %>
-dns_server2=<%= $upstreamdns2 %>
+man_dns_server1=<%= $mupstreamdns1 %>
+man_dns_server2=<%= $mupstreamdns2 %>
+
+assured_dns_server1=<%= $aupstreamdns1 %>
+assured_dns_server2=<%= $aupstreamdns2 %>
+
+combined_dns_server1=<%= $cupstreamdns1 %>
+combined_dns_server2=<%= $cupstreamdns2 %>
+
+elevated_dns_server1=<%= $eupstreamdns1 %>
+elevated_dns_server2=<%= $eupstreamdns2 %>
+
 domain_suffix=<%= $clusterid %>.<%= $basedomain %>
-external_lb_ip=<%= $externalvip %>
+management_external_lb_ip=<%= $externalvip %>
+management_internal_lb_ip=<%= $internalvip %>
 
 dns_username=<%= $dnsusername %>
 dns_password=<%= $dnsuserpassword %>
 
 image_tag=<%= $imagetag %>
-
-# Default gateway is also the api-int IP
-default_gateway=<%= $internalvip %>
 
 ansible_ssh_user=core
 ansible_become=yes

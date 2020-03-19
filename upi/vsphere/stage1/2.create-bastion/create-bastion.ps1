@@ -10,27 +10,38 @@ Set-PowerCLIConfiguration -Scope User -Confirm:$false -ParticipateInCEIP $false
 Set-PowerCLIConfiguration -InvalidCertificateAction:ignore -Confirm:$false
 
 # Read in the configs
-$ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
-$SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
+try
+{
+ $ClusterConfig = Get-Content -Raw -Path /tmp/workingdir/config.json | ConvertFrom-Json
+}
+catch
+{
+ Write-Output "config.json cannot be parsed Is it valid JSON?"
+ Exit
+}
+
+# Read in the secrets
+try
+{
+ $SecretConfig = Get-Content -Raw -Path /tmp/workingdir/secrets.json | ConvertFrom-Json
+}
+catch
+{
+ Write-Output "secret.json cannot be parsed. Is it valid JSON?"
+ Exit
+}
 
 $vcenterIp = $ClusterConfig.vsphere.vsphere_server
 $vcenterUser = $SecretConfig.vcenterdeploy.username
 $vcenterPassword = $SecretConfig.vcenterdeploy.password
 
-# Some experiments with arrays
-write-host "clusterid: " $ClusterConfig.clusterid
-write-host "bastion hostname: " $ClusterConfig.bastion.hostname
-write-host "bastion ip: " $ClusterConfig.bastion.ipaddress
-write-host "number of masters: " $ClusterConfig.masters.Count
-write-host "second master name: " $ClusterConfig.masters[1].hostname
-
 # Extract some vars - not really needed but ...
 $global:bastion_ip = $ClusterConfig.bastion.ipaddress
-$global:bastion_mask_prefix = $ClusterConfig.network.maskprefix
-$global:bastion_dfgw = $ClusterConfig.network.defaultgw
+$global:bastion_mask_prefix = $ClusterConfig.vsphere.maskprefix
+$global:bastion_dfgw = $ClusterConfig.management.defaultgw
 $global:cluster_domain = ($ClusterConfig.clusterid + "." + $ClusterConfig.basedomain)
-$global:bastion_dns1 = $ClusterConfig.network.upstreamdns1
-$global:bastion_dns2 = $ClusterConfig.network.upstreamdns2
+$global:bastion_dns1 = $ClusterConfig.management.upstreamdns1
+$global:bastion_dns2 = $ClusterConfig.management.upstreamdns2
 $global:bastion_hostname = $ClusterConfig.bastion.hostname
 $global:id_rsa_pub = $ClusterConfig.sshpubkey
 $global:registryurl = $ClusterConfig.registryurl
@@ -86,8 +97,8 @@ Connect-VIServer –Server $vcenterIp -username $vcenterUser -password $vcenterP
 #$portgroup = Get-VDPortgroup -Name $ClusterConfig.vsphere.vsphere_network
 #$template = Get-VM -Name $ClusterConfig.vsphere.rhcos_template
 $template = Get-Template -Name $ClusterConfig.vsphere.rhcos_template
-$datastore = Get-Datastore -Name $ClusterConfig.vsphere.vsphere_datastore
-$resourcePool = Get-ResourcePool -Name $ClusterConfig.vsphere.vsphere_resourcepool
+$datastore = Get-Datastore -Name $ClusterConfig.management.vsphere_datastore
+$resourcePool = Get-ResourcePool -Name $ClusterConfig.management.vsphere_resourcepool
 $folder = Get-Folder -Name $ClusterConfig.vsphere.vsphere_folder
 
 # Currently the portgroup name is obtained from NSX; this can cause problems when duplicate net names 
