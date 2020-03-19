@@ -171,7 +171,7 @@ function Add-App-LB {
   # get the monitors needed for the pools
   try {
       Write-Output -InputObject "About to get tcpMonitor **********************"
-      $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor default_tcp_monitor
+      $tcpMonitor = $edge | Get-NsxLoadBalancer | Get-NsxLoadBalancerMonitor -Name default_tcp_monitor
       write-host -ForegroundColor cyan "Inside Monitor object: " ($tcpMonitor | Format-Table | Out-String)
   }
   catch {
