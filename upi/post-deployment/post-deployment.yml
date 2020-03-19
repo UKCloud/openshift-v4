@@ -1,3 +1,3 @@
 - include_tasks: sso.yml
-- include_tasks: sc.yml
 - include_tasks: object-storage.yml
+- include_tasks: storage.yml

@@ -35,7 +35,27 @@
         volumeBindingMode: Immediate
 
   - name: Remove default annotation from 'standard' sc
-    command: oc annotate sc standard storageclass.kubernetes.io/is-default-class=false
+    command: oc annotate sc standard storageclass.kubernetes.io/is-default-class=false --overwrite
 
   - name: Add default annotation to 'tier2' sc
-    command: oc annotate sc tier2 storageclass.kubernetes.io/is-default-class=true
+    command: oc annotate sc tier2 storageclass.kubernetes.io/is-default-class=true --overwrite
+
+  - name: Add empty region labels to nodes so storage schedules once az ignore is added
+    command: oc label nodes --all failure-domain.beta.kubernetes.io/region="" --overwrite
+
+  - name: Add storage az ignore parameter to cloud-provider-config
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        data:
+          config: |
+            [Global]
+            secret-name = openstack-credentials
+            secret-namespace = kube-system
+            [BlockStorage]
+            ignore-volume-az = yes
+        kind: ConfigMap
+        metadata:
+          name: cloud-provider-config
+          namespace: openshift-config
