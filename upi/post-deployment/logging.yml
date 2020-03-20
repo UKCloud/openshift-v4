@@ -1,0 +1,146 @@
+- hosts: localhost
+  tasks:
+  - name: Create operator Namespace
+    k8s:
+     state: present
+     definition:
+       apiVersion: v1
+       kind: Namespace
+       metadata:
+         name: openshift-operators-redhat
+       annotations:
+         openshift.io/node-selector: ""
+       labels:
+         openshift.io/cluster-monitoring: "true"
+
+  - name: Create OperatorGroup
+    k8s:
+     state: present
+     definition:
+       apiVersion: operators.coreos.com/v1
+       kind: OperatorGroup
+       metadata:
+         name: openshift-operators-redhat
+         namespace: openshift-operators-redhat
+       spec: {}
+
+  - name: Create elasticsearch-operator Subscription
+    k8s:
+     state: present
+     definition:
+       apiVersion: operators.coreos.com/v1alpha1
+       kind: Subscription
+       metadata:
+         name: "elasticsearch-operator"
+         namespace: "openshift-operators-redhat"
+       spec:
+         channel: "{{ version }}"
+       installPlanApproval: "Automatic"
+       source: "redhat-operators"
+       sourceNamespace: "openshift-marketplace"
+
+  - name: Create prometheus Role
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: Role
+        metadata:
+          name: prometheus-k8s
+          namespace: openshift-operators-redhat
+        rules:
+        - apiGroups:
+          - ""
+          resources:
+          - services
+          - endpoints
+          - pods
+          verbs:
+          - get
+          - list
+          - watch
+
+  - name: Create prometheus RoleBinding
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: prometheus-k8s
+          namespace: openshift-operators-redhat
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: Role
+          name: prometheus-k8s
+        subjects:
+        - kind: ServiceAccount
+          name: prometheus-k8s
+          namespace: openshift-operators-redhat
+
+  - name: Placeholder: should be replaced with a task that waits until the operator pod is Ready
+    pause:
+      seconds: 30
+
+  - name: Create ClusterLogging object
+      k8s:
+        state: present
+        definition:
+          apiVersion: "logging.openshift.io/v1"
+          kind: "ClusterLogging"
+          metadata:
+            name: "instance"
+            namespace: "openshift-logging"
+          spec:
+            managementState: "Managed"
+            logStore:
+              type: "elasticsearch"
+              elasticsearch:
+                nodeSelector:
+                  node-role.kubernetes.io/infra: ""
+                nodeCount: 1
+                resources:
+                  limits:
+                    memory: 2Gi
+                  requests:
+                    cpu: 200m
+                    memory: 2Gi
+                  storage:
+                    storageClassName: "tier2"
+                    size: "100G"
+                  redundancyPolicy: "ZeroRedundancy"
+              visualization:
+                type: "kibana"
+                kibana:
+                  nodeSelector:
+                    node-role.kubernetes.io/infra: ""
+                  resources:
+                    limits:
+                      memory: 1Gi
+                    requests:
+                      cpu: 500m
+                      memory: 1Gi
+                    replicas: 1
+              curation:
+                type: "curator"
+                curator:
+                  nodeSelector:
+                    node-role.kubernetes.io/infra: ""
+                  resources:
+                    limits:
+                      memory: 200Mi
+                    requests:
+                      cpu: 200m
+                      memory: 200Mi
+                  schedule: "*/5 * * * *"
+              collection:
+                logs:
+                  type: "fluentd"
+                  fluentd:
+                    resources:
+                      limits:
+                        memory: 1Gi
+                      requests:
+                        cpu: 200m
+                        memory: 1Gi
+       

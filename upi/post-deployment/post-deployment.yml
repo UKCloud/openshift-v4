@@ -1,3 +1,6 @@
 - include_tasks: sso.yml
 - include_tasks: object-storage.yml
+- include_tasks: infra.yml
+- include_tasks: logging.yml
+  when: logging
 - include_tasks: storage.yml
