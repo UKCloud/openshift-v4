@@ -61,9 +61,6 @@
 - hosts: svcs
   gather_facts: false
   tasks:
-    #  - name: Remove cni net.d files to workaround bugzilla 1729603
-    #    raw: sudo rm -f /etc/cni/net.d/100-crio-bridge.conf /etc/cni/net.d/200-loopback.conf
-
   - name: Create /etc/coredns directory
     raw: mkdir -p /etc/coredns
 
@@ -90,9 +87,6 @@
 - hosts: asvcs
   gather_facts: false
   tasks:
-    #  - name: Remove cni net.d files to workaround bugzilla 1729603
-    #    raw: sudo rm -f /etc/cni/net.d/100-crio-bridge.conf /etc/cni/net.d/200-loopback.conf
-
   - name: Create /etc/coredns directory
     raw: mkdir -p /etc/coredns
 
@@ -105,6 +99,9 @@
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+
   - name: Pull CoreDNS container
     raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
 
@@ -115,9 +112,6 @@
 - hosts: csvcs
   gather_facts: false
   tasks:
-    #  - name: Remove cni net.d files to workaround bugzilla 1729603
-    #    raw: sudo rm -f /etc/cni/net.d/100-crio-bridge.conf /etc/cni/net.d/200-loopback.conf
-
   - name: Create /etc/coredns directory
     raw: mkdir -p /etc/coredns
 
@@ -130,6 +124,9 @@
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+
   - name: Pull CoreDNS container
     raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
 
@@ -140,9 +137,6 @@
 - hosts: esvcs
   gather_facts: false
   tasks:
-    #  - name: Remove cni net.d files to workaround bugzilla 1729603
-    #    raw: sudo rm -f /etc/cni/net.d/100-crio-bridge.conf /etc/cni/net.d/200-loopback.conf
-
   - name: Create /etc/coredns directory
     raw: mkdir -p /etc/coredns
 
@@ -154,6 +148,9 @@
 
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
+
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
 
   - name: Pull CoreDNS container
     raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
