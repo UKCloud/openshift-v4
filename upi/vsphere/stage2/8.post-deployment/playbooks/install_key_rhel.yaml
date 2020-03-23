@@ -1,5 +1,4 @@
 ---
-
 - hosts: svcs, asvcs, csvcs, esvcs
   vars:
     ansible_ssh_user: root
@@ -8,7 +7,15 @@
   - name: Create core user
     user:
       name: core
-      groups: wheel append=yes 
+      groups: wheel
+
+  - name: Enable passwordless sudo for core user
+    copy:
+      content: "core ALL=(ALL) NOPASSWD:ALL"
+      dest: "/etc/sudoers.d/core"
+      owner: "root"
+      group: "root"
+      mode: "0440"
 
   - name: Install public key to allow access
     authorized_key:

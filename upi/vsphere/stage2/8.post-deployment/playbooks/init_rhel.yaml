@@ -1,5 +1,4 @@
 ---
-
 - hosts: svcs, asvcs, csvcs, esvcs
   tasks:
   - name: make NetworkManager keep out of DNS
