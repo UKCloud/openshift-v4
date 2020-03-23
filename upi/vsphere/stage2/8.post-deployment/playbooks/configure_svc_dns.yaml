@@ -80,7 +80,7 @@
     raw: podman pull docker.io/coredns/coredns
 
   - name: Flush firewall rules and Enable coredns.service
-    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service; sudo nft flush ruleset
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
 
 
     
@@ -106,7 +106,7 @@
     raw: podman pull docker.io/coredns/coredns
 
   - name: Flush firewall rules and Enable coredns.service
-    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service; sudo nft flush ruleset
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
 
 
 - hosts: csvcs
@@ -131,7 +131,7 @@
     raw: podman pull docker.io/coredns/coredns
 
   - name: Flush firewall rules and Enable coredns.service
-    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service; sudo nft flush ruleset
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
 
 
 - hosts: esvcs
@@ -156,4 +156,4 @@
     raw: podman pull docker.io/coredns/coredns
 
   - name: Flush firewall rules and Enable coredns.service
-    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service; sudo nft flush ruleset
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
