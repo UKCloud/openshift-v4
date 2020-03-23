@@ -76,8 +76,11 @@
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+
   - name: Pull CoreDNS container
-    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
@@ -103,7 +106,7 @@
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
   - name: Pull CoreDNS container
-    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
@@ -128,7 +131,7 @@
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
   - name: Pull CoreDNS container
-    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
@@ -153,7 +156,7 @@
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
   - name: Pull CoreDNS container
-    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
