@@ -78,6 +78,9 @@ $global:rheltemplatepw = $SecretConfig.rheltemplatepw
 
 $global:sshpubkey = $ClusterConfig.sshpubkey
 
+$global:registryurl = $ClusterConfig.registryurl
+$global:registryusername = $ClusterConfig.registryusername
+$global:registrytoken = $SecretConfig.registrytoken
 $global:imagetag = $ClusterConfig.imagetag
 
 # Read vars from secret file
