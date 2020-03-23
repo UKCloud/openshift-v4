@@ -70,6 +70,14 @@ $global:cupstreamdns2 = $ClusterConfig.combined.upstreamdns2
 $global:eupstreamdns1 = $ClusterConfig.elevated.upstreamdns1
 $global:eupstreamdns2 = $ClusterConfig.elevated.upstreamdns2
 
+$global:satellitefqdn = $ClusterConfig.satellitefqdn
+$global:rhnorgid = $ClusterConfig.rhnorgid
+$global:rhnactivationkey = $ClusterConfig.rhnactivationkey
+
+$global:rheltemplatepw = $SecretConfig.rheltemplatepw
+
+$global:sshpubkey = $ClusterConfig.sshpubkey
+
 $global:imagetag = $ClusterConfig.imagetag
 
 # Read vars from secret file
