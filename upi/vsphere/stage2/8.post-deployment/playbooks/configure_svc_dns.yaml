@@ -77,7 +77,7 @@
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
   - name: Pull CoreDNS container
-    raw: podman pull docker.io/coredns/coredns
+    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
@@ -103,7 +103,7 @@
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
   - name: Pull CoreDNS container
-    raw: podman pull docker.io/coredns/coredns
+    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
@@ -128,7 +128,7 @@
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
   - name: Pull CoreDNS container
-    raw: podman pull docker.io/coredns/coredns
+    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
@@ -153,7 +153,7 @@
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
 
   - name: Pull CoreDNS container
-    raw: podman pull docker.io/coredns/coredns
+    raw: podman pull {{ registryurl }}/coredns:{{ imagetag }}
 
   - name: Flush firewall rules and Enable coredns.service
     raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
