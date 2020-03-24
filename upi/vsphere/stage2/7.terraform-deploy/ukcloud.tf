@@ -136,7 +136,7 @@ data "vsphere_resource_pool" "elevated_public_pool" {
 
 # Assured workers
 module "worker_assured" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = var.assuredworkers.*.hostname
   instance_count   = length(var.assuredworkers.*.hostname)
@@ -159,7 +159,7 @@ module "worker_assured" {
 }
 
 module "worker_assured_public" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = var.assuredpublicworkers.*.hostname
   instance_count   = length(var.assuredpublicworkers.*.hostname)
@@ -183,11 +183,10 @@ module "worker_assured_public" {
 
 # Assured svcs/DNS - currently also used for Assured Public
 module "svc_assured" {
-  source = "./machine"
+  source = "./rhel_machine"
 
   names            = var.assuredsvcs.*.hostname
   instance_count   = length(var.assuredsvcs.*.hostname)
-  ignition         = var.ignition.svc_ignition
   num_cpu          = var.svc_num_cpu
   memory           = var.svc_memory
   disk_size        = var.svc_disk_size
@@ -196,19 +195,19 @@ module "svc_assured" {
   datastore        = var.assured.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
-  template         = var.vsphere.rhcos_template
+  template         = var.vsphere.rhel_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.assured.upstreamdns1
   dns2             = var.assured.upstreamdns2
   ip_addresses     = var.assuredsvcs.*.ipaddress
   gateway_ip       = var.assured.defaultgw
-  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
+  maskprefix       = var.vsphere.maskprefix
 }
 
 
 # Combined workers
 module "worker_combined" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = var.combinedworkers.*.hostname
   instance_count   = length(var.combinedworkers.*.hostname)
@@ -232,11 +231,10 @@ module "worker_combined" {
 
 # Combined svcs/DNS
 module "svc_combined" {
-  source = "./machine"
+  source = "./rhel_machine"
 
   names            = var.combinedsvcs.*.hostname
   instance_count   = length(var.combinedsvcs.*.hostname)
-  ignition         = var.ignition.svc_ignition
   num_cpu          = var.svc_num_cpu
   memory           = var.svc_memory
   disk_size        = var.svc_disk_size
@@ -245,19 +243,19 @@ module "svc_combined" {
   datastore        = var.combined.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
-  template         = var.vsphere.rhcos_template
+  template         = var.vsphere.rhel_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.combined.upstreamdns1
   dns2             = var.combined.upstreamdns2
   ip_addresses     = var.combinedsvcs.*.ipaddress
   gateway_ip       = var.combined.defaultgw
-  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
+  maskprefix       = var.vsphere.maskprefix
 }
 
 
 # Elevated workers
 module "worker_elevated" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = var.elevatedworkers.*.hostname
   instance_count   = length(var.elevatedworkers.*.hostname)
@@ -280,7 +278,7 @@ module "worker_elevated" {
 }
 
 module "worker_elevated_public" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = var.elevatedpublicworkers.*.hostname
   instance_count   = length(var.elevatedpublicworkers.*.hostname)
@@ -304,11 +302,10 @@ module "worker_elevated_public" {
 
 # Elevated svcs/DNS - currently also used for Elevated Public
 module "svc_elevated" {
-  source = "./machine"
+  source = "./rhel_machine"
 
   names            = var.elevatedsvcs.*.hostname
   instance_count   = length(var.elevatedsvcs.*.hostname)
-  ignition         = var.ignition.svc_ignition
   num_cpu          = var.svc_num_cpu
   memory           = var.svc_memory
   disk_size        = var.svc_disk_size
@@ -317,12 +314,12 @@ module "svc_elevated" {
   datastore        = var.elevated.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
-  template         = var.vsphere.rhcos_template
+  template         = var.vsphere.rhel_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.assured.upstreamdns1
   dns2             = var.assured.upstreamdns2
   ip_addresses     = var.elevatedsvcs.*.ipaddress
   gateway_ip       = var.elevated.defaultgw
-  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
+  maskprefix       = var.vsphere.maskprefix
 }
 
