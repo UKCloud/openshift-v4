@@ -26,7 +26,7 @@ data "vsphere_resource_pool" "management_pool" {
 
 
 module "bootstrap" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = [var.bootstrap.hostname]
   instance_count   = var.bootstrap_complete ? 0 : 1
@@ -49,7 +49,7 @@ module "bootstrap" {
 }
 
 module "master" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = var.masters.*.hostname
   instance_count   = length(var.masters.*.hostname)
@@ -75,7 +75,7 @@ module "master" {
 # Definitions of ukcloud assured/combined/elevated workers are in ukcloud.tf
 
 module "infra" {
-  source = "./machine"
+  source = "./rhcos_machine"
 
   names            = var.infras.*.hostname
   instance_count   = length(var.infras.*.hostname)
@@ -98,11 +98,10 @@ module "infra" {
 }
 
 module "svc" {
-  source = "./machine"
+  source = "./rhel_machine"
 
-  names            = var.svcs
+  names            = var.svcs.*.hostname
   instance_count   = length(var.svcs)
-  ignition         = var.ignition.svc_ignition
   num_cpu          = var.svc_num_cpu
   memory           = var.svc_memory
   disk_size        = var.svc_disk_size
@@ -111,12 +110,12 @@ module "svc" {
   datastore        = var.management.vsphere_datastore
   network          = var.vsphere.vsphere_portgroup
   datacenter_id    = data.vsphere_datacenter.dc.id
-  template         = var.vsphere.rhcos_template
+  template         = var.vsphere.rhel_template
   cluster_domain   = "${var.clusterid}.${var.basedomain}"
   dns1             = var.management.upstreamdns1
   dns2             = var.management.upstreamdns2
   ip_addresses     = var.svcs.*.ipaddress
   gateway_ip       = var.management.defaultgw
-  machine_cidr     = "${var.vsphere.networkip}/${var.vsphere.maskprefix}"
+  maskprefix       = var.vsphere.maskprefix
 }
 

@@ -145,7 +145,8 @@ variable "vsphere" {
                         vsphere_portgroup = string,
                         networkip = string,
                         maskprefix = string,
-                        rhcos_template = string})
+                        rhcos_template = string,
+                        rhel_template = string})
   description = "Shared vSphere parameters"
 }
 
