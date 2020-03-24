@@ -228,10 +228,29 @@ variable "registryca" {
   description = "ca for accessing disconnected install registry"
 }
 
-
 variable "imagesources" {
   type        = string
   description = "sources string for disconnected"
+}
+
+variable "satellitefqdn" {
+  type        = string
+  description = "Address of satellite server to sub RHEL. Not required but defined to avoid warning"
+}
+
+variable "rhnorgid" {
+  type        = string
+  description = "Org ID for satellite server to sub RHEL. Not required but defined to avoid warning"
+}
+
+variable "rhnactivationkey" {
+  type        = string
+  description = "Activation Key for satellite server to sub RHEL. Not required but defined to avoid warning"
+}
+
+variable "rheltemplatepw" {
+  type        = string
+  description = "root password for the RHEL template. Not required but defined to avoid warning"
 }
 
 // Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf

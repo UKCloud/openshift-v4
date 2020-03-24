@@ -59,6 +59,24 @@ _etcd-server-ssl._tcp IN SRV 0 10 2380 etcd-{{ count }}
 {% endfor %}
 
 {% set count =0 %}
+{% for hostname in groups.asvcs %}
+{{ hostname.split('.')[0] }}        IN      A       {{ hostvars[hostname].ip }}
+{% set count = count + 1 %}
+{% endfor %}
+
+{% set count =0 %}
+{% for hostname in groups.csvcs %}
+{{ hostname.split('.')[0] }}        IN      A       {{ hostvars[hostname].ip }}
+{% set count = count + 1 %}
+{% endfor %}
+
+{% set count =0 %}
+{% for hostname in groups.esvcs %}
+{{ hostname.split('.')[0] }}        IN      A       {{ hostvars[hostname].ip }}
+{% set count = count + 1 %}
+{% endfor %}
+
+{% set count =0 %}
 {% for hostname in groups.bastion %}
 {{ hostname.split('.')[0] }}  IN      A       {{ hostvars[hostname].ip }}
 {% set count = count + 1 %}
