@@ -1,0 +1,37 @@
+---
+- hosts: svcs, asvcs, csvcs, esvcs
+  tasks:
+  - name: make NetworkManager keep out of DNS
+    ini_file:
+      path: /etc/NetworkManager/NetworkManager.conf
+      state: present
+      no_extra_spaces: yes
+      section: main
+      option: dns
+      value: none
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+    
+  - name: deploy resolv.conf template
+    template:
+      src: templates/resolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+
+  - name: deploy rhel-satellite.sh script
+    template:
+      src: templates/rhel_satellite.sh.j2
+      dest: /usr/local/bin/rhel_satellite.sh 
+      owner: root
+      group: root
+      mode: 0755
+      backup: yes
+
+  - name: run rhel-satellite.sh script
+    command: /usr/local/bin/rhel_satellite.sh
+    become: yes

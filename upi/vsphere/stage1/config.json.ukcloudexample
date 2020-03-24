@@ -90,6 +90,11 @@
   "registryca": "",
   "imagesources": "",
   "imagetag": "0.5",
+
+  "satellitefqdn": "satellite.ukcloudexample.com",
+  "rhnorgid": "SatOrgID",
+  "rhnactivationkey": "SatActivationKey",
+  
   "vsphere": {
     "vsphere_server": "vcenter ip / name",
     "vsphere_cluster": "cluster name",
@@ -100,7 +105,8 @@
     "vsphere_portgroup": "vxw-dvs-32-virtualwire-5-sid-16001-dvs.VCDVSNetworkname36370-c",
     "networkip": "10.50.1.0",
     "maskprefix": "24",
-    "rhcos_template": "rhcos-4.3.0-template"
+    "rhcos_template": "rhcos-4.3.0-template",
+    "rhel_template": "RHEL77"
   },
   "management": {
     "vsphere_resourcepool": "ocp4test",
