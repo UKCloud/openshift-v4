@@ -56,7 +56,7 @@ bastion
 <%= $bootstrap.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bootstrap.ipaddress %>
 
 [bastion]
-<%= $bastion.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bastion.ipaddress %>
+<%= $bastion.hostname %>.<%= $clusterid %>.<%= $basedomain %> ip=<%= $bastion.ipaddress %> ansible_host=<%= $externalvip %>
 
 [all:vars]
 man_dns_server1=<%= $mupstreamdns1 %>

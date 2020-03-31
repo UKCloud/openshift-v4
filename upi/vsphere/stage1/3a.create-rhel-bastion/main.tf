@@ -26,7 +26,7 @@ data "vsphere_resource_pool" "management_pool" {
 
 
 module "bastion" {
-  source = "./rhcos_machine"
+  source = "./rhel_machine"
 
   names            = [var.bastion.hostname]
   instance_count   = 1
