@@ -1,0 +1,79 @@
+- hosts: localhost 
+  tasks:
+  - name: Create default nodeSelector to target workers
+    k8s:
+      state: present
+      definition:
+        apiVersion: config.openshift.io/v1
+        kind: Scheduler
+        metadata:
+          name: cluster
+        spec:
+          defaultNodeSelector: node-role.kubernetes.io/worker=""
+          mastersSchedulable: false
+        policy:
+          name: ""
+
+  - name: label infra nodes
+    command: oc label node "{{ item }}" node-role.kubernetes.io/infra=""
+    with_items: list_variable_containing_infra_hostnames
+
+  - name: Remove worker label from infra nodes
+    command: oc label node "{{ item }}" node-role.kubernetes.io/infra=""
+    with_items: list_variable_containing_infra_hostnames
+
+  - name: Edit ingress controller to schedule ingress pods to infra nodes
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          finalizers:
+          - ingresscontroller.operator.openshift.io/finalizer-ingresscontroller
+          name: default
+          namespace: openshift-ingress-operator
+        spec:
+          nodePlacement:
+            nodeSelector:
+              matchLabels:
+                node-role.kubernetes.io/infra: ""
+
+   - name: Edit cluster config
+     k8s:
+       state: present
+       definition:
+         apiVersion: imageregistry.operator.openshift.io/v1
+         kind: Config
+         metadata:
+           finalizers:
+           - imageregistry.operator.openshift.io/finalizer
+           name: cluster
+         spec:
+           defaultRoute: false
+           disableRedirect: false
+  httpSecret: ed4c54bf40074fb4e5ddeb538d42f39a89eb17136bdd02f253225d934dff36621be68bbfb4cbb23b3ce2f5c2e0d78cfa0e3056ffcc35fcdb0ab432a407274429
+  logging: 2
+  managementState: Managed
+  nodeSelector:
+    node-role.kubernetes.io/infra: ""
+  proxy:
+    http: ""
+    https: ""
+    noProxy: ""
+  readOnly: false
+  replicas: 1
+  requests:
+    read:
+      maxInQueue: 0
+      maxRunning: 0
+      maxWaitInQueue: 0s
+    write:
+      maxInQueue: 0
+      maxRunning: 0
+      maxWaitInQueue: 0s
+  storage:
+    s3:
+      bucket: Sorint_Lab_UK_CNAP
+      region: Corsham
+      regionEndpoint: https://cas.cor00005.ukcloud.com
