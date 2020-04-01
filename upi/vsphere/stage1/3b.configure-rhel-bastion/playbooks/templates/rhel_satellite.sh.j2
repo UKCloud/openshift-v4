@@ -70,5 +70,8 @@ retry yum install -y \
         vim \
         tmux
 
+retry yum update -y
+yum clean all
+
 retry systemctl enable rhsmcertd --now
 
