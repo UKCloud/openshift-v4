@@ -71,30 +71,6 @@ podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/w
 
 echo "openshift-v4 installer completed: Stage1 9.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
 
-{% if useletsencrypt.lower() == "true" %}  
-echo "Waiting an extra 15 minutes for cluster to fully initialise before putting signed certs in place"
-sleep 900
-
-podman run -v /bin/oc:/usr/local/bin/oc:ro -v /home/core/deployconfig:/root:z letsencrypt:{{ image_tag }}
-
-echo "Enable Timer service to renew lets encrypt certs"
-echo "[Unit]
-Description=Renews Cluster certs in letsencrypt
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/sh -c 'podman run --entrypoint=\"/usr/local/letsencrypt/renew.sh\" -itv /home/core/deployconfig:/root:z -v /bin/oc:/usr/local/bin/oc:ro letsencrypt:{{ image_tag }}'" > /etc/systemd/system/renewcerts.service
-
-echo "[Unit]
-Description=Run Renew certs every 10mins
-[Timer]
-OnCalendar=daily
-RandomizedDelaySec=3600" > /etc/systemd/system/renewcerts.timer
-
-systemctl daemon-reload  
-systemctl enable renewcerts.timer
-systemctl start renewcerts.timer  
-{% endif %}
-
 echo "Disabling/removing service"
 systemctl disable stage2-containers.service
 rm /etc/systemd/system/stage2-containers.service
