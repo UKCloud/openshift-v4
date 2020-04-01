@@ -2,42 +2,42 @@
 # Script to pull stage2 containers from registry and run stage2
 
 podman login --tls-verify=false -u "{{ registry_username }}" -p "$(cat /home/core/registry.auth)" https://{{ registry_url }}
-#podman pull --tls-verify=false {{ registry_url }}/3.setup-bastion:{{ imagetag }}
-podman pull --tls-verify=false {{ registry_url }}/4.run-installer:{{ imagetag }}
-podman pull --tls-verify=false {{ registry_url }}/6.add-ignition:{{ imagetag }}
-podman pull --tls-verify=false {{ registry_url }}/5.ign-webserver:{{ imagetag }}
-podman pull --tls-verify=false {{ registry_url }}/7.terraform-deploy:{{ imagetag }}
-podman pull --tls-verify=false {{ registry_url }}/8.post-deployment:{{ imagetag }}
+#podman pull --tls-verify=false {{ registry_url }}/3.setup-bastion:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/4.run-installer:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/6.add-ignition:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/5.ign-webserver:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/7.terraform-deploy:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/8.post-deployment:{{ image_tag }}
 
 {% if useletsencrypt.lower() == "true" %}
-podman pull --tls-verify=false {{ registry_url }}/letsencrypt:{{ imagetag }}
+podman pull --tls-verify=false {{ registry_url }}/letsencrypt:{{ image_tag }}
 {% endif %}
 
 ## INPUTS: config.json, secrets.json (in /home/core/deployconfig on bastion)
 # Run "3.setup-bastion/Dockerfile"
-#podman run  -v /home/core/deployconfig:/tmp/workingdir:z 3.setup-bastion:{{ imagetag }}
+#podman run  -v /home/core/deployconfig:/tmp/workingdir:z 3.setup-bastion:{{ image_tag }}
 ## OUTPUTS: ansible-hosts (for ansible post deploy task), install-config.yaml (for installer)
 
 ## INPUTS: config.json, secrets.json install-config.yaml
 # Run "4.run-installer/Dockerfile"
-podman run  -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ imagetag }}
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
 ## OUTPUTS: worker.ign bootstrap.ign master.ign
 
 ## INPUTS: bootstrap.ign
 # Run "5.ign-webserver/Dockerfile"
 podman stop ign-webserver
 podman rm ign-webserver
-podman run --name ign-webserver -d -v /home/core/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:{{ imagetag }}
+podman run --name ign-webserver -d -v /home/core/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:{{ image_tag }}
 ## OUTPUTS: none (container continues to run) Container serves the ign file from the bastions IP
 
 ## INPUTS: config.json worker.ign bootstrap.ign master.ign
 # Run "6.add-ignition/Dockerfile"
-podman run -v /home/core/deployconfig:/tmp/workingdir:z 6.add-ignition:{{ imagetag }}
+podman run -v /home/core/deployconfig:/tmp/workingdir:z 6.add-ignition:{{ image_tag }}
 ## OUTPUTS: config.json (updated with ign)
 
 ## INPUTS: config.json secrets.json
 # Run "7.terraform-deploy/Dockerfile"
-podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ imagetag }}
+podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
 ## OUTPUTS: VMs are created. terraform.tfstate
 
 # Wait a while for svcs machines to start..
@@ -46,7 +46,7 @@ sleep 200
 
 ## INPUTS: ansible-hosts from stage 3,
 # Run "8.post-deployment/Dockerfile"
-podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:{{ imagetag }}
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:{{ image_tag }}
 ## OUTPUTS: VMs are configured for DNS (so OpenShift initialisation can proceed)
 
 echo "Add KUBECONFIG to bash_profile"
@@ -65,9 +65,9 @@ podman stop ign-webserver
 podman rm ign-webserver
 
 # Wait for install to complete and then immediately kill off bootstrap
-podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ imagetag }}
+podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
 ## DISABLED to allow troubleshooting of intermittant issue:
-podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ imagetag }}
+podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
 
 echo "openshift-v4 installer completed: Stage1 9.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
 
@@ -75,14 +75,14 @@ echo "openshift-v4 installer completed: Stage1 9.finalise-install now needs to b
 echo "Waiting an extra 15 minutes for cluster to fully initialise before putting signed certs in place"
 sleep 900
 
-podman run -v /bin/oc:/usr/local/bin/oc:ro -v /home/core/deployconfig:/root:z letsencrypt:{{ imagetag }}
+podman run -v /bin/oc:/usr/local/bin/oc:ro -v /home/core/deployconfig:/root:z letsencrypt:{{ image_tag }}
 
 echo "Enable Timer service to renew lets encrypt certs"
 echo "[Unit]
 Description=Renews Cluster certs in letsencrypt
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/sh -c 'podman run --entrypoint=\"/usr/local/letsencrypt/renew.sh\" -itv /home/core/deployconfig:/root:z -v /bin/oc:/usr/local/bin/oc:ro letsencrypt:{{ imagetag }}'" > /etc/systemd/system/renewcerts.service
+ExecStart=/usr/bin/sh -c 'podman run --entrypoint=\"/usr/local/letsencrypt/renew.sh\" -itv /home/core/deployconfig:/root:z -v /bin/oc:/usr/local/bin/oc:ro letsencrypt:{{ image_tag }}'" > /etc/systemd/system/renewcerts.service
 
 echo "[Unit]
 Description=Run Renew certs every 10mins
