@@ -192,18 +192,18 @@ function Add-App-LB {
   write-host -ForegroundColor cyan "Monitor object: " ($tcpMonitor | Format-Table | Out-String)
 
   $infraHttpsPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-https-pool -Description "Infrastructure HTTPS Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
-  $infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-http-pool -Description "Infrastructure HTTP Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
+#  $infraHttpPool = Get-NsxEdge $edgeName | Get-NsxLoadBalancer | New-NsxLoadBalancerPool -Name $Zone-http-pool -Description "Infrastructure HTTP Servers Pool" -Transparent:$false -Algorithm round-robin -Monitor $tcpMonitor
 
   for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
   {
       $infraHttpsPool = $infraHttpsPool | Add-NsxLoadBalancerPoolMember -Name $Prefix$Zone-$index -IpAddress $infraIps[$index] -Port 443
   }
-  for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
-  {
-      $infraHttpPool = $infraHttpPool | Add-NsxLoadBalancerPoolMember -Name $Prefix$Zone-$index -IpAddress $infraIps[$index] -Port 80
-  }
+#  for ( $index = 0; $index -lt $infraIps.Length ; $index++ )
+#  {
+#      $infraHttpPool = $infraHttpPool | Add-NsxLoadBalancerPoolMember -Name $Prefix$Zone-$index -IpAddress $infraIps[$index] -Port 80
+#  }
   Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-https -Description "HTTPS traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 443 -DefaultPool $infraHttpsPool -Enabled -ApplicationProfile $appProfile
-  Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
+#  Get-NsxEdge $edgeName | Get-NsxLoadBalancer | Add-NsxLoadBalancerVip -Name $Zone-app-traffic-http -Description "HTTP traffic to application routes" -IpAddress $edgeExternalIp -Protocol TCP -Port 80 -DefaultPool $infraHttpPool -Enabled -ApplicationProfile $appProfile
 }
 # End function def
 ##########################################################################
