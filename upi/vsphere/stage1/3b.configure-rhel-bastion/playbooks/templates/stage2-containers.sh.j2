@@ -9,10 +9,6 @@ podman pull --tls-verify=false {{ registry_url }}/5.ign-webserver:{{ image_tag }
 podman pull --tls-verify=false {{ registry_url }}/7.terraform-deploy:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/8.post-deployment:{{ image_tag }}
 
-{% if useletsencrypt.lower() == "true" %}
-podman pull --tls-verify=false {{ registry_url }}/letsencrypt:{{ image_tag }}
-{% endif %}
-
 ## INPUTS: config.json, secrets.json (in /home/core/deployconfig on bastion)
 # Run "3.setup-bastion/Dockerfile"
 #podman run  -v /home/core/deployconfig:/tmp/workingdir:z 3.setup-bastion:{{ image_tag }}
