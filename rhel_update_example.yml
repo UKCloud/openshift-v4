@@ -88,7 +88,7 @@
     - name: Print status of svcs_RHEL_A
       debug:
         msg: "Service on svcs_RHEL_A Down"
-      when: result != "Hello World" && ansible_hostname == svcs_RHEL_A # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == svcs_RHEL_A 
 
     - name: Check status of svcs_RHEL_B
       command: systemctl status {{ item }}
@@ -99,7 +99,7 @@
     - name: Print status of svcs_RHEL_B
       debug:
         msg: "Service on svcs_RHEL_B Down"
-      when: result != "Hello World" && ansible_hostname == svcs_RHEL_B # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == svcs_RHEL_B 
     
     - name: "Check status of asvcs_RHEL_A"                 # asvcs machines start.
       shell: dig ukcloud.com @"{{ asvcs_RHEL_A }}" 
@@ -178,7 +178,7 @@
     - name: Print status of asvcs_RHEL_A
       debug:
         msg: "Service on asvcs_RHEL_A Down"
-      when: result != "Hello World" && ansible_hostname == asvcs_RHEL_A # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == asvcs_RHEL_A 
 
     - name: Check status of asvcs_RHEL_B
       command: systemctl status {{ item }}
@@ -189,7 +189,7 @@
     - name: Print status of asvcs_RHEL_B
       debug:
         msg: "Service on asvcs_RHEL_B Down"
-      when: result != "Hello World" && ansible_hostname == asvcs_RHEL_B # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == asvcs_RHEL_B 
 
     - name: "Check status of csvcs_RHEL_A"                 # csvcs machines start.
       shell: dig ukcloud.com @"{{ csvcs_RHEL_A }}" 
@@ -268,7 +268,7 @@
     - name: Print status of csvcs_RHEL_A
       debug:
         msg: "Service on csvcs_RHEL_A Down"
-      when: result != "Hello World" && ansible_hostname == csvcs_RHEL_A # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == csvcs_RHEL_A 
 
     - name: Check status of csvcs_RHEL_B
       command: systemctl status {{ item }}
@@ -279,7 +279,7 @@
     - name: Print status of csvcs_RHEL_B
       debug:
         msg: "Service on csvcs_RHEL_B Down"
-      when: result != "Hello World" && ansible_hostname == csvcs_RHEL_B # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == csvcs_RHEL_B 
 
     - name: "Check status of esvcs_RHEL_A"                 # esvcs machines start.
       shell: dig ukcloud.com @"{{ esvcs_RHEL_A }}" 
@@ -358,7 +358,7 @@
     - name: Print status of esvcs_RHEL_A
       debug:
         msg: "Service on esvcs_RHEL_A Down"
-      when: result != "Hello World" && ansible_hostname == esvcs_RHEL_A # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == esvcs_RHEL_A 
 
     - name: Check status of esvcs_RHEL_B
       command: systemctl status {{ item }}
@@ -369,4 +369,4 @@
     - name: Print status of esvcs_RHEL_B
       debug:
         msg: "Service on esvcs_RHEL_B Down"
-      when: result != "Hello World" && ansible_hostname == esvcs_RHEL_B # change this to actual status. (Not hello world)
+      when: result != "running" && ansible_hostname == esvcs_RHEL_B 
