@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: Run vsphere playbooks within virtualenv
+    shell:
+      cmd: |
+        source /home/core/virtualenv/ansible-k8s/bin/activate
+        ansible-playbook vsphere-defaultproject.yml 
+        ansible-playbook vsphere-ingresscontroller.yml -e "@vars.yml"

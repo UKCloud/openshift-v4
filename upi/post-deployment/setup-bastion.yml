@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: Create virtualenv and upgrade pip
+    pip:
+      name: pip
+      virtualenv: /home/core/virtualenv/ansible-k8s
+      extra_args: --upgrade
+
+  - name: Install pip packages
+    pip:
+      name:
+        - openshift>=0.6
+        - PyYAML>=3.11
+        - ansible==2.9
+        - jmespath
+      virtualenv: /home/core/virtualenv/ansible-k8s
