@@ -1,0 +1,75 @@
+- hosts: svcs
+  vars:
+    svcs_RHEL_A: "svcs[0]"
+    svcs_RHEL_B: "svcs[1]"
+    asvcs_RHEL_A: "asvcs[0]"
+    asvcs_RHEL_B: "asvcs[1]"
+    csvcs_RHEL_A: "csvcs[0]"
+    csvcs_RHEL_B: "csvcs[1]"
+    esvcs_RHEL_A: "esvcs[0]"
+    esvcs_RHEL_B: "esvcs[1]"
+
+  tasks: 
+    - name: "Check status of svcs_RHEL_A"
+      shell: dig ukcloud.com @"{{ svcs_RHEL_A }}" 
+      when: ansible_hostname == svcs_RHEL_B
+      register: task_result
+      until: task_result.rc == 0
+      retries: 10
+      delay: 1
+
+    - name: "Update svcs_RHEL_B"
+      when: ansible_hostname == svcs_RHEL_B
+      yum:
+        name: '*'
+        state: latest
+        register: task_result
+        until: task_result.rc == 0
+        retries: 10
+        delay: 1
+
+    - name: "Check status of svcs_RHEL_B"
+      shell: dig ukcloud.com @"{{ svcs_RHEL_B }}" 
+      when: ansible_hostname == svcs_RHEL_A
+      register: task_result
+      until: task_result.rc == 0
+      retries: 10
+      delay: 1
+
+    - name: "Update svcs_RHEL_A"
+      when: ansible_hostname == svcs_RHEL_A
+      yum:
+        name: '*'
+        state: latest
+        register: task_result
+        until: task_result.rc == 0
+        retries: 10
+        delay: 1
+
+    - name: Check status of svcs_RHEL_A   
+      command: systemctl status {{ item }}
+      register: result
+      with_items:
+        - firewalld # Add service name (DNS)
+
+    - name: Print status of svcs_RHEL_A
+      debug:
+        msg: "Service on svcs_RHEL_A Down"
+      when: result != "Hello World" && ansible_hostname == svcs_RHEL_A # change this to actual status. (Not hello world)
+
+    - name: Check status of svcs_RHEL_B
+      command: systemctl status {{ item }}
+      register: result
+      with_items:
+        - firewalld # Add service name (DNS)
+
+    - name: Print status of svcs_RHEL_B
+      debug:
+        msg: "Service on svcs_RHEL_B Down"
+      when: result != "Hello World" && ansible_hostname == svcs_RHEL_B # change this to actual status. (Not hello world)
+    
+
+
+
+
+
