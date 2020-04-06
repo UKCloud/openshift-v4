@@ -7,7 +7,7 @@
       dest: /usr/local/bin/stage2-containers.sh
       owner: root
       group: root
-      mode: 0755
+      mode: 0700
       backup: yes
 
   - name: Create unit file for stage2-containers.service
