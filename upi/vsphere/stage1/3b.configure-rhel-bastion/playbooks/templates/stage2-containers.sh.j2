@@ -3,7 +3,7 @@
 
 podman login --tls-verify=false -u "{{ registry_username }}" -p "$(cat /home/core/registry.auth)" https://{{ registry_url }}
 
-# 2.create-config is downloaded simply for use during future scaleup but not ran by this script
+# 2.create-config is downloaded simply for use during future scaleup but is not ran by this script
 podman pull --tls-verify=false {{ registry_url }}/2.create-config:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/4.run-installer:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/6.add-ignition:{{ image_tag }}
