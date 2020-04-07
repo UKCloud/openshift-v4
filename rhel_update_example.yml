@@ -1,33 +1,27 @@
 - hosts: svcs, asvcs, csvcs, esvcs
-  max_fail_percentage: 0
   vars:
-    svcs_RHEL_A: "svcs[0]"
-    svcs_RHEL_B: "svcs[1]"
-    asvcs_RHEL_A: "asvcs[0]"
-    asvcs_RHEL_B: "asvcs[1]"
-    csvcs_RHEL_A: "csvcs[0]"
-    csvcs_RHEL_B: "csvcs[1]"
-    esvcs_RHEL_A: "esvcs[0]"
-    esvcs_RHEL_B: "esvcs[1]"
+    Dig_target: ""  # Add a point which the network can lookup to
+  max_fail_percentage: 0
 
   tasks: 
-    - name: "Check status of svcs_RHEL_A"                 # svcs machines start.
-      shell: dig ukcloud.com @"{{ svcs_RHEL_A }}" 
+    - name: "DNS Dig"
+      shell: dig {{ Dig_target }} @{{ item }} 
       register: task_result
       until: task_result.rc == 0
       retries: 10
       delay: 1
-      when: ansible_hostname == svcs_RHEL_B
 
-    - name: "Check status of svcs_RHEL_B before Updating it"       
-      shell: dig ukcloud.com @"{{ svcs_RHEL_B }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == svcs_RHEL_A
+    - name: Check status of CoreDNS   
+      command: systemctl status {{ item }}
+      register: result
+      with_items:
+        - coredns
 
-    - name: "Update svcs_RHEL_B"
+    - name: Fail Query
+      fail: msg="Service on {{ item }}"
+      when: result != "running"
+
+    - name: "Updating"
       yum:
         name: '*'
         state: latest
@@ -35,338 +29,27 @@
         until: task_result.rc == 0
         retries: 10
         delay: 1
-      when: ansible_hostname == svcs_RHEL_B
         
     - name: Reboot
       reboot:
-      when: ansible_hostname == svcs_RHEL_B
       
-    - name: sleep for 30 seconds
+    - name: "sleep"
       wait_for:
-      timeout: 30
+      timeout: 10
 
-    - name: "Check status of svcs_RHEL_B"
-      shell: dig ukcloud.com @"{{ svcs_RHEL_B }}"
+    - name: "DNS Dig"
+      shell: dig {{ Dig_target }} @{{ item }} 
       register: task_result
       until: task_result.rc == 0
       retries: 10
       delay: 1
-      when: ansible_hostname == svcs_RHEL_A
 
-    - name: "Check status of svcs_RHEL_A before Updating it"       
-      shell: dig ukcloud.com @"{{ svcs_RHEL_A }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == svcs_RHEL_B
-
-    - name: "Update svcs_RHEL_A"
-      yum:
-        name: '*'
-        state: latest
-        register: task_result
-        until: task_result.rc == 0
-        retries: 10
-        delay: 1
-      when: ansible_hostname == svcs_RHEL_A
-        
-    - name: Reboot
-      reboot:
-      when: ansible_hostname == svcs_RHEL_A
-      
-    - name: sleep for 30 seconds
-      wait_for:
-      timeout: 30
-
-    - name: Check status of svcs_RHEL_A   
+    - name: Check status of CoreDNS   
       command: systemctl status {{ item }}
       register: result
       with_items:
         - coredns
 
-    - name: Print status of svcs_RHEL_A
-      debug:
-        msg: "Service on svcs_RHEL_A Down"
-      when: result != "running" && ansible_hostname == svcs_RHEL_A 
-
-    - name: Check status of svcs_RHEL_B
-      command: systemctl status {{ item }}
-      register: result
-      with_items:
-        - coredns
-
-    - name: Print status of svcs_RHEL_B
-      debug:
-        msg: "Service on svcs_RHEL_B Down"
-      when: result != "running" && ansible_hostname == svcs_RHEL_B 
-    
-    - name: "Check status of asvcs_RHEL_A"                 # asvcs machines start.
-      shell: dig ukcloud.com @"{{ asvcs_RHEL_A }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == asvcs_RHEL_B
-
-    - name: "Check status of asvcs_RHEL_B before Updating it"       
-      shell: dig ukcloud.com @"{{ asvcs_RHEL_B }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == asvcs_RHEL_A
-
-    - name: "Update asvcs_RHEL_B"
-      yum:
-        name: '*'
-        state: latest
-        register: task_result
-        until: task_result.rc == 0
-        retries: 10
-        delay: 1
-      when: ansible_hostname == asvcs_RHEL_B
-        
-    - name: Reboot
-      reboot:
-      when: ansible_hostname == asvcs_RHEL_B
-      
-    - name: sleep for 30 seconds
-      wait_for:
-      timeout: 30
-
-    - name: "Check status of asvcs_RHEL_B"
-      shell: dig ukcloud.com @"{{ asvcs_RHEL_B }}"
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == asvcs_RHEL_A
-
-    - name: "Check status of asvcs_RHEL_A before Updating it"       
-      shell: dig ukcloud.com @"{{ asvcs_RHEL_A }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == asvcs_RHEL_B
-
-    - name: "Update asvcs_RHEL_A"
-      yum:
-        name: '*'
-        state: latest
-        register: task_result
-        until: task_result.rc == 0
-        retries: 10
-        delay: 1
-      when: ansible_hostname == asvcs_RHEL_A
-        
-    - name: Reboot
-      reboot:
-      when: ansible_hostname == asvcs_RHEL_A
-      
-    - name: sleep for 30 seconds
-      wait_for:
-      timeout: 30
-
-    - name: Check status of asvcs_RHEL_A   
-      command: systemctl status {{ item }}
-      register: result
-      with_items:
-        - coredns
-
-    - name: Print status of asvcs_RHEL_A
-      debug:
-        msg: "Service on asvcs_RHEL_A Down"
-      when: result != "running" && ansible_hostname == asvcs_RHEL_A 
-
-    - name: Check status of asvcs_RHEL_B
-      command: systemctl status {{ item }}
-      register: result
-      with_items:
-        - coredns
-
-    - name: Print status of asvcs_RHEL_B
-      debug:
-        msg: "Service on asvcs_RHEL_B Down"
-      when: result != "running" && ansible_hostname == asvcs_RHEL_B 
-
-    - name: "Check status of csvcs_RHEL_A"                 # csvcs machines start.
-      shell: dig ukcloud.com @"{{ csvcs_RHEL_A }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == csvcs_RHEL_B
-
-    - name: "Check status of csvcs_RHEL_B before Updating it"       
-      shell: dig ukcloud.com @"{{ csvcs_RHEL_B }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == csvcs_RHEL_A
-
-    - name: "Update csvcs_RHEL_B"
-      yum:
-        name: '*'
-        state: latest
-        register: task_result
-        until: task_result.rc == 0
-        retries: 10
-        delay: 1
-      when: ansible_hostname == csvcs_RHEL_B
-        
-    - name: Reboot
-      reboot:
-      when: ansible_hostname == csvcs_RHEL_B
-      
-    - name: sleep for 30 seconds
-      wait_for:
-      timeout: 30
-
-    - name: "Check status of csvcs_RHEL_B"
-      shell: dig ukcloud.com @"{{ csvcs_RHEL_B }}"
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == csvcs_RHEL_A
-
-    - name: "Check status of csvcs_RHEL_A before Updating it"       
-      shell: dig ukcloud.com @"{{ csvcs_RHEL_A }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == csvcs_RHEL_B
-
-    - name: "Update csvcs_RHEL_A"
-      yum:
-        name: '*'
-        state: latest
-        register: task_result
-        until: task_result.rc == 0
-        retries: 10
-        delay: 1
-      when: ansible_hostname == csvcs_RHEL_A
-        
-    - name: Reboot
-      reboot:
-      when: ansible_hostname == csvcs_RHEL_A
-      
-    - name: sleep for 30 seconds
-      wait_for:
-      timeout: 30
-
-    - name: Check status of csvcs_RHEL_A   
-      command: systemctl status {{ item }}
-      register: result
-      with_items:
-        - coredns
-
-    - name: Print status of csvcs_RHEL_A
-      debug:
-        msg: "Service on csvcs_RHEL_A Down"
-      when: result != "running" && ansible_hostname == csvcs_RHEL_A 
-
-    - name: Check status of csvcs_RHEL_B
-      command: systemctl status {{ item }}
-      register: result
-      with_items:
-        - coredns
-
-    - name: Print status of csvcs_RHEL_B
-      debug:
-        msg: "Service on csvcs_RHEL_B Down"
-      when: result != "running" && ansible_hostname == csvcs_RHEL_B 
-
-    - name: "Check status of esvcs_RHEL_A"                 # esvcs machines start.
-      shell: dig ukcloud.com @"{{ esvcs_RHEL_A }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == esvcs_RHEL_B
-
-    - name: "Check status of esvcs_RHEL_B before Updating it"       
-      shell: dig ukcloud.com @"{{ esvcs_RHEL_B }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == esvcs_RHEL_A
-
-    - name: "Update esvcs_RHEL_B"
-      yum:
-        name: '*'
-        state: latest
-        register: task_result
-        until: task_result.rc == 0
-        retries: 10
-        delay: 1
-      when: ansible_hostname == esvcs_RHEL_B
-        
-    - name: Reboot
-      reboot:
-      when: ansible_hostname == esvcs_RHEL_B
-      
-    - name: sleep for 30 seconds
-      wait_for:
-      timeout: 30
-
-    - name: "Check status of esvcs_RHEL_B"
-      shell: dig ukcloud.com @"{{ esvcs_RHEL_B }}"
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == esvcs_RHEL_A
-
-    - name: "Check status of esvcs_RHEL_A before Updating it"       
-      shell: dig ukcloud.com @"{{ esvcs_RHEL_A }}" 
-      register: task_result
-      until: task_result.rc == 0
-      retries: 10
-      delay: 1
-      when: ansible_hostname == esvcs_RHEL_B
-
-    - name: "Update esvcs_RHEL_A"
-      yum:
-        name: '*'
-        state: latest
-        register: task_result
-        until: task_result.rc == 0
-        retries: 10
-        delay: 1
-      when: ansible_hostname == esvcs_RHEL_A
-        
-    - name: Reboot
-      reboot:
-      when: ansible_hostname == esvcs_RHEL_A
-      
-    - name: sleep for 30 seconds
-      wait_for:
-      timeout: 30
-
-    - name: Check status of esvcs_RHEL_A   
-      command: systemctl status {{ item }}
-      register: result
-      with_items:
-        - coredns
-
-    - name: Print status of esvcs_RHEL_A
-      debug:
-        msg: "Service on esvcs_RHEL_A Down"
-      when: result != "running" && ansible_hostname == esvcs_RHEL_A 
-
-    - name: Check status of esvcs_RHEL_B
-      command: systemctl status {{ item }}
-      register: result
-      with_items:
-        - coredns
-
-    - name: Print status of esvcs_RHEL_B
-      debug:
-        msg: "Service on esvcs_RHEL_B Down"
-      when: result != "running" && ansible_hostname == esvcs_RHEL_B 
+    - name: Fail Query
+      fail: msg="Service on {{ item }}"
+      when: result != "running"
