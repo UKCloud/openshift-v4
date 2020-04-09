@@ -1,7 +1,9 @@
 #!/bin/bash
 # Script to pull stage2 containers from registry and run stage2
 
+{% if registry_username != "" %}
 podman login --tls-verify=false -u "{{ registry_username }}" -p "$(cat /home/core/registry.auth)" https://{{ registry_url }}
+{% endif %}
 
 # 2.create-config is downloaded simply for use during future scaleup but is not ran by this script
 podman pull --tls-verify=false {{ registry_url }}/2.create-config:{{ image_tag }}

@@ -51,5 +51,6 @@
     systemd:
       state: started
       daemon_reload: yes
+      no_block: yes
       name: stage2-containers
 
