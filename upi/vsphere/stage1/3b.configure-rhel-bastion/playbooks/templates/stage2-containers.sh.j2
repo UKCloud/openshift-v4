@@ -54,7 +54,7 @@ podman rm ign-webserver
 podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
 podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
 
-echo "openshift-v4 installer completed: Stage1 9.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
+echo "openshift-v4 installer completed: Stage1 99.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
 
 echo "Disabling/removing service"
 systemctl disable stage2-containers.service

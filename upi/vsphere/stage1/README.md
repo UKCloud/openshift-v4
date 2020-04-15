@@ -53,5 +53,5 @@ This container removes the bootstrap VM from the loadbalancer pools and changes 
 Since it needs NSX access, this needs to be ran from the same jumpbox as Stage 1 and is included here alongside Stage 1.
 
 ```
-podman run -v ~/deployconfig:/tmp/workingdir:z 9.finalise-install:<tagversion>
+podman run -v ~/deployconfig:/tmp/workingdir:z 99.finalise-install:<tagversion>
 ```
