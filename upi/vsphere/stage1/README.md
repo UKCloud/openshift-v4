@@ -14,7 +14,7 @@ exampleregistry.domain.local:5002/docker-openshift
 
 # Stage 1 deployment guide
 
-Stage 1 needs to be ran from a jumpbox that has access to both the internet, the registry and the vCenter
+Stage 1 needs to be ran from a jumpbox that has access to both the internet, the registry and the vCenter/NSX manager.
  
 `~/deployconfig` directory should be prepared on jumpbox with the following files:
 - `deploy.pem` (private ssh key for pub key listed in config.json)
@@ -42,3 +42,13 @@ podman run -v ~/deployconfig:/tmp/workingdir:z 3a.create-rhel-bastion:<tagversio
 podman run -v ~/deployconfig:/tmp/workingdir:z 3b.configure-rhel-bastion:<tagversion>
 ```
 
+
+## Step "9" - finalise-install (after cluster deployment is completed)
+
+This container removes the bootstrap VM from the loadbalancer pools and changes the 6443 API LB pool to use a HTTPS-type monitor which specifically checks the healthz endpoint on the masters.
+
+Since it needs NSX access, this needs to be ran from the same jumpbox as Stage 1 and is included here alongside Stage 1.
+
+```
+podman run -v ~/deployconfig:/tmp/workingdir:z 9.finalise-install:<tagversion>
+```
