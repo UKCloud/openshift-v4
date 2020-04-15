@@ -37,10 +37,13 @@ podman run -v ~/deployconfig:/tmp/workingdir:z 2.create-config:<tagversion>
 ```
 
 ## Step 3 - create-rhel-bastion and configure-rhel-bastion (create and configure a RHEL bastion)
+
+(Stage 2 containers need to be available in the registry with the same tag version so you may wish to run the build.sh for stage 2 before creating the bastion - the bastion will automatically pull these containers and run them on first boot)
 ```
 podman run -v ~/deployconfig:/tmp/workingdir:z 3a.create-rhel-bastion:<tagversion>
 podman run -v ~/deployconfig:/tmp/workingdir:z 3b.configure-rhel-bastion:<tagversion>
 ```
+
 
 
 ## Step "9" - finalise-install (after Stage 2 cluster deployment is completed)
