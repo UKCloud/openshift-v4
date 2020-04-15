@@ -11,7 +11,7 @@ podman pull --tls-verify=false {{ registry_url }}/4.run-installer:{{ image_tag }
 podman pull --tls-verify=false {{ registry_url }}/6.add-ignition:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/5.ign-webserver:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/7.terraform-deploy:{{ image_tag }}
-podman pull --tls-verify=false {{ registry_url }}/8.post-deployment:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/8.configure-svcs:{{ image_tag }}
 
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
 
@@ -26,7 +26,7 @@ podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ im
 echo "Waiting a minute or two for svcs VMs to start before DNS initialisation"
 sleep 120
 
-podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.post-deployment:{{ image_tag }}
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.configure-svcs:{{ image_tag }}
 
 # Move oc and kubectl into /usr/local/bin
 echo "Install oc command in /usr/local/bin"
