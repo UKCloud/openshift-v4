@@ -1,6 +1,6 @@
 # Stage 1 container build
 
-Procedure below builds the containers and also pushes the relevent version (\<tagversion\>) to a registry
+Procedure below builds the containers and also pushes the new version (\<tagversion\>) to a registry
   
 ```
 $ podman login --tls-verify=false exampleregistry.domain.local:5002/docker-openshift
