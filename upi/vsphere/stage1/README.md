@@ -19,7 +19,7 @@ Stage 1 needs to be ran from a jumpbox that has access to both the internet, the
 `~/deployconfig` directory should be prepared on jumpbox with the following files:
 - `deploy.pem` (private ssh key for pub key listed in config.json)
 - `config.json` (configuration file based on config.json.ukcloudexample)
-- `secrets.json` (secret config file based onsecrets.json.example)
+- `secrets.json` (secret config file based on secrets.json.example)
 
 ## Step 0 (prepare vShield and DFW)
 
