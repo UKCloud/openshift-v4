@@ -14,7 +14,7 @@ exampleregistry.domain.local:5002/docker-openshift
 
 # Stage 1 deployment guide
 
-Stage 1 needs to be ran from a jumpbox that has access to both the internet, the registry and the vCenter/NSX manager.
+Stage 1 needs to be ran from a jumpbox that has access to the internet, the registry and the vCenter/NSX manager.
  
 `~/deployconfig` directory should be prepared on jumpbox with the following files:
 - `deploy.pem` (private ssh key for pub key listed in config.json)
