@@ -39,18 +39,11 @@ retry subscription-manager repos --disable=*
 retry subscription-manager repos \
         --enable=rhel-7-server-rpms \
         --enable=rhel-7-server-extras-rpms \
-        --enable=rhel-7-server-openstack-10-rpms \
-        --enable=rhel-7-server-openstack-12-tools-rpms \
         --enable=rhel-7-server-rh-common-rpms \
         --enable=rhel-7-server-ansible-2.6-rpms \
         --enable=rhel-7-server-satellite-tools-6.5-rpms
 
 retry yum install -y \
-        os-collect-config \
-        python-zaqarclient \
-        os-refresh-config \
-        os-apply-config \
-        openstack-heat-templates \
         python-oslo-log \
         python-psutil \
         ansible
@@ -68,7 +61,11 @@ retry yum install -y \
         sos \
         psacct \
         vim \
+        python-virtualenv \
         tmux
+
+retry yum update -y
+yum clean all
 
 retry systemctl enable rhsmcertd --now
 

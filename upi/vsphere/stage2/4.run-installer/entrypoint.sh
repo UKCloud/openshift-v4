@@ -41,3 +41,6 @@ cat manifests/cloud-provider-config.yaml
 $INSTALLCOMMAND create ignition-configs
 cp worker.ign infra.ign
 chmod 664 *.ign
+
+# Move oc and kubectl commands out of the container so it can be installed in RHEL
+cp /usr/local/bin/oc /usr/local/bin/kubectl /tmp/workingdir

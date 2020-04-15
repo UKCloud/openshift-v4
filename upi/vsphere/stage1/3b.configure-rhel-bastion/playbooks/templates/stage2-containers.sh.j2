@@ -1,0 +1,64 @@
+#!/bin/bash
+# Script to pull stage2 containers from registry and run stage2
+
+{% if registry_username != "" %}
+podman login --tls-verify=false -u "{{ registry_username }}" -p "$(cat /home/core/registry.auth)" https://{{ registry_url }}
+{% endif %}
+
+# 2.create-config is downloaded simply for use during future scaleup but is not ran by this script
+podman pull --tls-verify=false {{ registry_url }}/2.create-config:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/4.run-installer:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/6.add-ignition:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/5.ign-webserver:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/7.terraform-deploy:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/8.configure-svcs:{{ image_tag }}
+
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
+
+podman stop ign-webserver 2> /dev/null
+podman rm ign-webserver 2> /dev/null
+podman run --name ign-webserver -d -v /home/core/deployconfig/bootstrap.ign:/usr/share/nginx/html/bootstrap.ign:z --network host -p 80:80 5.ign-webserver:{{ image_tag }}
+
+podman run -v /home/core/deployconfig:/tmp/workingdir:z 6.add-ignition:{{ image_tag }}
+podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
+
+# Wait a while for svcs machines to start..
+echo "Waiting a minute or two for svcs VMs to start before DNS initialisation"
+sleep 120
+
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.configure-svcs:{{ image_tag }}
+
+# Move oc and kubectl into /usr/local/bin
+echo "Install oc command in /usr/local/bin"
+mv /home/core/deployconfig/oc /usr/local/bin
+mv /home/core/deployconfig/kubectl /usr/local/bin
+chown root /usr/local/bin/oc /usr/local/bin/kubectl
+chmod 755 /usr/local/bin/oc /usr/local/bin/kubectl
+
+echo "Add KUBECONFIG to bash_profile"
+echo "export KUBECONFIG=~/deployconfig/auth/kubeconfig" >> /home/core/.bash_profile
+
+echo "change permissions on auth files"
+chmod 755 /home/core/deployconfig/auth
+chmod 666 /home/core/deployconfig/auth/*
+
+echo "Waiting 10 minutes for cluster to start up before polling..."
+sleep 600
+
+# Remove webserver container
+echo "Remove webserver container"
+podman stop ign-webserver
+podman rm ign-webserver
+
+# Wait for install to complete and then immediately kill off bootstrap
+podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
+podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
+
+echo "openshift-v4 installer completed: Stage1 99.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
+
+echo "Disabling/removing service"
+systemctl disable stage2-containers.service
+rm /etc/systemd/system/stage2-containers.service
+systemctl daemon-reload
+sleep 2
+systemctl reset-failed stage2-containers.service

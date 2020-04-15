@@ -36,21 +36,3 @@
     command: /usr/local/bin/rhel_satellite.sh
     become: yes
  
-  - name: deploy stage2-containers.sh script
-    template:
-      src: templates/stage2-containers.sh.j2
-      dest: /usr/local/bin/stage2-containers.sh
-      owner: root
-      group: root
-      mode: 0755
-      backup: yes
-
-  - name: Create unit file for stage2-containers.service
-    copy:
-      content: "[Unit]\nAfter=console-login-helper-messages-issuegen.service\n[Service]\nType=oneshot\nExecStart=/usr/local/bin/stage2-containers.sh\n[Install]\nWantedBy=multi-user.target\n"
-      dest: /etc/systemd/system/stage2-containers.service
-      owner: root
-      group: root
-      mode: 0644
-
-

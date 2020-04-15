@@ -22,3 +22,15 @@
       user: core
       state: present
       key: "{{ ssh_pub_key }}"
+
+  - name: Disallow root SSH access
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+      state: present
+    notify: Restart ssh
+
+  handlers:
+  - name: Restart sshd
+    service: name=sshd state=restarted
