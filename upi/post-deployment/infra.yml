@@ -19,7 +19,7 @@
     with_items: list_variable_containing_infra_hostnames
 
   - name: Remove worker label from infra nodes
-    command: oc label node "{{ item }}" node-role.kubernetes.io/infra=""
+    command: oc label node "{{ item }}" node-role.kubernetes.io/worker-
     with_items: list_variable_containing_infra_hostnames
 
   - name: Edit ingress controller to schedule ingress pods to infra nodes
