@@ -20,7 +20,7 @@ If the resulting cluster is to have all or some nodes which don't have access to
 `cat ./pull-secret.text | jq .  > ./pull-secret.json`
 1. Encode the username/password necessary to push to the internal registry:
 `echo -n '<user_name>:<password>' | base64 -w0`
-1. Add a registy entry for the internal registry to the pull secret, including the encoded credentials:
+1. Add a registy entry for the internal registry to the pull secret file, including the encoded username/password:
 ```
 "auths": {
 ...
@@ -32,9 +32,10 @@ If the resulting cluster is to have all or some nodes which don't have access to
 ``` 
 
 ### Mirror OpenShift images to internal registry
-1. Ensure that your internal registry's CA is trusted by your client (example uses LE's CA):```
+1. Ensure that your internal registry's CA is trusted by your client (example uses LE's CA):
+```
 sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o /etc/pki/ca-trust/source/anchors/lets-encrypt-x3-cross-signed.pem
 sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
 sudo update-ca-trust
 ```
-1. Do something else
+2. Do something else
