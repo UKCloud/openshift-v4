@@ -20,15 +20,18 @@ If the resulting cluster is to have all or some nodes which don't have access to
 `cat ~/pull-secret.text | jq .  > ~/pull-secret.json`
 1. Encode the username/password necessary to push to the internal registry:
 `echo -n '<user_name>:<password>' | base64 -w0`
-1. Add a new registy entry for the internal registry to the pull secret file, including the encoded username/password:
+1. Add a new registy entry for the internal registry to the pull secret file, including the encoded username/password credentials, taking care to preserve the JSON syntax including commas:
 ```
-"auths": {
+{
+  "auths": {
 ...
+    },
     "exampleregistry.domain.local:5002": { 
       "auth": "<credentials>", 
       "email": "you@example.com"
-  },
-...
+    }
+  }
+}
 ``` 
 
 ### Mirror OpenShift images to internal registry
@@ -57,7 +60,7 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
      
 ## (once completed, take note of the imageContentSources and ImageContentSourcePolicy outputs)     
 ```
-5. Enter the "imageContentSources" block into the config.json file inside the "imagesources" parameter (enter whole text as-is between double-quotes):
+5. Enter the "imageContentSources" block into the `config.json` file inside the "imagesources" parameter (enter whole text as-is between double-quotes):
 ```
   "imagesources": "imageContentSources:
 - mirrors:
@@ -67,7 +70,7 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
   - exampleregistry.domain.local:5002/docker-openshift/os-disconnected
   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev",
 ```
-6. Also add the registry's CA certificate(s) to the "additionalca" parameter in config.json (enter whole text as-is between double-quotes, concatenate certs if needed):
+6. Also add the registry's CA certificate(s) to the "additionalca" parameter in `config.json` (enter whole text as-is between double-quotes, concatenate certs if needed):
 ```
   "additionalca": "-----BEGIN CERTIFICATE-----
 MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/
