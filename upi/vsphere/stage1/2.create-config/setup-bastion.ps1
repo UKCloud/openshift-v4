@@ -100,9 +100,9 @@ if($ClusterConfig.useletsencrypt) {
 # Code to check for custom registry ca
 # Defaults to False
 $global:addregistryca = 'False'
-if($ClusterConfig.registryca) {
-  if($ClusterConfig.registryca -ne '') {
-    $global:registryca = $ClusterConfig.registryca
+if($ClusterConfig.additionalca) {
+  if($ClusterConfig.additionalca -ne '') {
+    $global:registryca = $ClusterConfig.additionalca
     $global:addregistryca = 'True'
   }
 }
