@@ -91,10 +91,15 @@ oc adm -a ${LOCAL_SECRET_JSON} release extract --command=openshift-install "${LO
 mv ./openshift-install ~/deployconfig
 ```
 
-  **TIP** It is possible to identify whether a openshift-install binary is created for a disconnected install by checking the version - it will show the source registry in the release image section:
+  **TIP** It is possible to identify whether an openshift-install binary was created for a disconnected install by checking the version - it will show the source registry in the release image section:
   ```
   $ ~/deployconfig/openshift-install version  
   openshift-install 4.3.9
   built from commit 64fccd954517812eab166d38c7fc5bf71b219b7e
   release image exampleregistry.domain.local:5002/docker-openshift/os-disconnected@sha256:f0fada3c8216dc17affdd3375ff845b838ef9f3d67787d3d42a88dcd0f328eea
   ```
+
+If the deploy is to use anonymous pull to pull the OpenShift containers (to avoid injecting private credentials in the deployment), then the original Pull secret should be added to `secrets.json` (obviously the registry needs to have anon pull enabled). If the credential is required to pull, then the edited pull secret created above should be used in `secrets.json`
+
+
+After that, run Stage 1 as normal...
