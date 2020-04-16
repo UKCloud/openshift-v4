@@ -54,7 +54,18 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
      --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE} \
      --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} \
      --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}
+     
+## (once completed, take note of the imageContentSources and ImageContentSourcePolicy outputs)     
 ```
-(at the end, take note of the imageContentSources and ImageContentSourcePolicy outputs)
+5. Enter the "imageContentSources" block into the config.json file inside the "imagesources" parameter (enter whole text as-is between double-quotes):
+```
+  "imagesources": "imageContentSources:
+- mirrors:
+  - exampleregistry.domain.local:5002/docker-openshift/os-disconnected
+  source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - exampleregistry.domain.local:5002/docker-openshift/os-disconnected
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev",
+```
 
 
