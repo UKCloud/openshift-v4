@@ -91,7 +91,7 @@ oc adm -a ${LOCAL_SECRET_JSON} release extract --command=openshift-install "${LO
 mv ./openshift-install ~/deployconfig
 ```
 
-  *TIP* It is possible to identify whether a openshift-install binary is created for a disconnected install by checking the version - it will show the source registry in the release image section:
+  **TIP** It is possible to identify whether a openshift-install binary is created for a disconnected install by checking the version - it will show the source registry in the release image section:
   ```
   $ ~/deployconfig/openshift-install version  
   openshift-install 4.3.9
