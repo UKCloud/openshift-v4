@@ -99,7 +99,7 @@ mv ./openshift-install ~/deployconfig
   release image exampleregistry.domain.local:5002/docker-openshift/os-disconnected@sha256:f0fada3c8216dc17affdd3375ff845b838ef9f3d67787d3d42a88dcd0f328eea
   ```
 
-If the deploy is to use anonymous pull to pull the OpenShift containers (to avoid injecting private credentials in the deployment), then the original Pull secret should be added to `secrets.json` (obviously the registry needs to have anon pull enabled). If the credential is required to pull, then the edited pull secret created above should be used in `secrets.json`
+If the deploy is to use anonymous pull to pull the OpenShift containers (to avoid injecting private credentials in the deployment), then the original Pull secret (as provided by Red Hat) should be added to `secrets.json` (obviously the registry needs to have anon pull enabled). If the credential is required to pull, then the edited pull secret (including the registry cred) should be used in `secrets.json`
 
 
 After that, run Stage 1 as normal...
