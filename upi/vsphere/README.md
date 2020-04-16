@@ -37,6 +37,7 @@ If the resulting cluster is to have all or some nodes which don't have access to
 ### Mirror OpenShift images to internal registry
 1. Ensure that your internal registry's CA or cert is trusted by your client:
 ```
+# Work out the CA/intermediate certs used by the registry by accessing it in a browser.. annoyingly no openssl command seems able to print roots/intermediates from the truststore!
 vi ~/registryca.pem
 
 sudo cp ~/registryca.pem /etc/pki/ca-trust/source/anchors/
