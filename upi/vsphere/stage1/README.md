@@ -12,7 +12,7 @@ exampleregistry.domain.local:5002/docker-openshift
 ...
 ```
 
-Stage 2 build.sh should also be ran, with the same <tagversion>. To deploy this version, "imagetag" in `config.json` should be set to <tagversion>
+Stage 2 `build.sh` should also be ran, with the same \<tagversion\>. To deploy this version, "imagetag" in `config.json` should be set to \<tagversion\>
 
 
 # Stage 1 deployment guide
