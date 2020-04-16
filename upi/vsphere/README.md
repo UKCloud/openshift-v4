@@ -13,21 +13,25 @@ If the resulting cluster is to have all or some nodes which don't have access to
 
 (Based on https://docs.openshift.com/container-platform/4.3/installing/install_config/installing-restricted-networks-preparations.html#installing-restricted-networks-preparations )
 
+
+### Prepare Pull secret
 1. Obtain a pull secret from Red Hat: https://cloud.redhat.com/openshift/install/pull-secret
 1. Prettyprint the pull secret:
 `cat ./pull-secret.text | jq .  > ./pull-secret.json`
 1. Encode the username/password necessary to push to the internal registry:
 `echo -n '<user_name>:<password>' | base64 -w0`
 1. Add a registy entry for the internal registry to the pull secret, including the encoded credentials:
- ```
- "auths": {
- ...
-     "<local_registry_host_name>:<local_registry_host_port>": { 
-       "auth": "<credentials>", 
-       "email": "you@example.com"
-   },
- ...
- ```
+```
+"auths": {
+...
+    "<local_registry_host_name>:<local_registry_host_port>": { 
+      "auth": "<credentials>", 
+      "email": "you@example.com"
+  },
+...
+``` 
+
+### Mirror OpenShift images to internal registry
 1. Ensure that your internal registry's CA is trusted by your client (example uses LE's CA):
 ```
 sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o /etc/pki/ca-trust/source/anchors/lets-encrypt-x3-cross-signed.pem
