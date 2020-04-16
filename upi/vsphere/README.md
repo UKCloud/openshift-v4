@@ -86,5 +86,7 @@ GkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC
 ```
 oc adm -a ${LOCAL_SECRET_JSON} release extract --command=openshift-install "${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}"
 ```
-2. Move the command into the deployconfig directory alongside the config.json file - the `4.run-installer` will find it and use it in preference to its embedded openshift-install binary: 
-`mv ./openshift-install ~/deployconfig`
+2. Move the command into the deployconfig directory alongside the config.json file - the `4.run-installer` container will find it and use it in preference to its embedded openshift-install binary: 
+```
+mv ./openshift-install ~/deployconfig
+```
