@@ -12,7 +12,7 @@ exampleregistry.domain.local:5002/docker-openshift
 ...
 ```
 
-To deploy this version, "imagetag" in `config.json` should be set to <tagversion>
+To deploy this version, "imagetag" in `config.json` should be set to \<tagversion\>
 
 
 
