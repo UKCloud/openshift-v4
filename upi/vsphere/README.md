@@ -17,7 +17,7 @@ If the resulting cluster is to have all or some nodes which don't have access to
 ### Prepare Pull secret
 1. Obtain a pull secret from Red Hat: https://cloud.redhat.com/openshift/install/pull-secret
 1. Prettyprint the pull secret:
-`cat ./pull-secret.text | jq .  > ./pull-secret.json`
+`cat ~/pull-secret.text | jq .  > ~/pull-secret.json`
 1. Encode the username/password necessary to push to the internal registry:
 `echo -n '<user_name>:<password>' | base64 -w0`
 1. Add a registy entry for the internal registry to the pull secret file, including the encoded username/password:
@@ -38,4 +38,12 @@ sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o 
 sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
 sudo update-ca-trust
 ```
-2. Do something else
+2. Configure shell variables for mirroring:
+```
+export OCP_RELEASE=4.3.9-x86_64
+export LOCAL_REGISTRY='exampleregistry.domain.local:5002' 
+export LOCAL_REPOSITORY='docker-openshift/os-disconnected' 
+export PRODUCT_REPO='openshift-release-dev' 
+export LOCAL_SECRET_JSON='~/pull-secret.json' 
+export RELEASE_NAME="ocp-release" 
+```
