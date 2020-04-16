@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script to locally build stage1 containers
-echo "Enter the image tag version to build:"
+echo "Enter the image tag version to build - this should be entered as \"imagetag\" in config.json:"
 read TAG
 
 echo "Enter the registry url prefix (without trailing /):"

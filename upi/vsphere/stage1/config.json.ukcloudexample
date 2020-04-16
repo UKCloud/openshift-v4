@@ -85,11 +85,11 @@
     }
   ],
   "sshpubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ..... ONO+WJe5kAdO+Quiy/7LdKRxzfYA/OKXjsU7+wHCFX14tD53mao1FP1na0Q== admin@localhost.localdomain",
-  "registryurl": "registry.access.redhat.com",
-  "registryusername": "\\$app",
+  "registryurl": "for pulling stage2 deploy containers eg: exampleregistry.domain.local:5002/docker-openshift",
+  "registryusername": "for pulling stage2 deploy containers eg: \\$app - anon pull will be used if empty",
   "additionalca": "",
   "imagesources": "",
-  "imagetag": "0.5",
+  "imagetag": "0.5-deploycontainerversiontag",
 
   "satellitefqdn": "satellite.ukcloudexample.com",
   "rhnorgid": "SatOrgID",
