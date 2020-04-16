@@ -24,7 +24,7 @@ If the resulting cluster is to have all or some nodes which don't have access to
 ```
 "auths": {
 ...
-    "<local_registry_host_name>:<local_registry_host_port>": { 
+    "exampleregistry.domain.local:5002": { 
       "auth": "<credentials>", 
       "email": "you@example.com"
   },
@@ -38,3 +38,4 @@ sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o 
 sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
 sudo update-ca-trust
 ```
+1. Do something else
