@@ -67,9 +67,9 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
   - exampleregistry.domain.local:5002/docker-openshift/os-disconnected
   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev",
 ```
-6. Also add the registry's CA certificate(s) to the "registryca" parameter in config.json (enter whole text as-is between double-quotes, concatenate certs if needed):
+6. Also add the registry's CA certificate(s) to the "additionalca" parameter in config.json (enter whole text as-is between double-quotes, concatenate certs if needed):
 ```
-  "registryca": "-----BEGIN CERTIFICATE-----
+  "additionalca": "-----BEGIN CERTIFICATE-----
 MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/
 MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT
 DkRTVCBSb290IENBIFgzMB4XDTE2MDMxNzE2NDA0NloXDTIxMDMxNzE2NDA0Nlow
