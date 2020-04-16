@@ -19,15 +19,15 @@ If the resulting cluster is to have all or some nodes which don't have access to
 1. Encode the username/password necessary to push to the internal registry:
 `echo -n '<user_name>:<password>' | base64 -w0`
 1. Add a registy entry for the internal registry to the pull secret, including the encoded credentials:
-```
-"auths": {
-...
-    "<local_registry_host_name>:<local_registry_host_port>": { 
-      "auth": "<credentials>", 
-      "email": "you@example.com"
-  },
-...
-```
+ ```
+ "auths": {
+ ...
+     "<local_registry_host_name>:<local_registry_host_port>": { 
+       "auth": "<credentials>", 
+       "email": "you@example.com"
+   },
+ ...
+ ```
 1. Ensure that your internal registry's CA is trusted by your client (example uses LE's CA):
 ```
 sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o /etc/pki/ca-trust/source/anchors/lets-encrypt-x3-cross-signed.pem
