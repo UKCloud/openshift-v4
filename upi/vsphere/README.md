@@ -20,7 +20,7 @@ If the resulting cluster is to have all or some nodes which don't have access to
 `cat ~/pull-secret.text | jq .  > ~/pull-secret.json`
 1. Encode the username/password necessary to push to the internal registry:
 `echo -n '<user_name>:<password>' | base64 -w0`
-1. Add a registy entry for the internal registry to the pull secret file, including the encoded username/password:
+1. Add a new registy entry for the internal registry to the pull secret file, including the encoded username/password:
 ```
 "auths": {
 ...
@@ -38,7 +38,8 @@ sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o 
 sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
 sudo update-ca-trust
 ```
-2. Configure shell variables for mirroring:
+2. Ensure you are using the same version of the `oc` client command for the version of OpenShift you want to install: `oc version`
+3. Configure shell variables for mirroring:
 ```
 export OCP_RELEASE=4.3.9-x86_64
 export LOCAL_REGISTRY='exampleregistry.domain.local:5002' 
@@ -47,3 +48,4 @@ export PRODUCT_REPO='openshift-release-dev'
 export LOCAL_SECRET_JSON='~/pull-secret.json' 
 export RELEASE_NAME="ocp-release" 
 ```
+
