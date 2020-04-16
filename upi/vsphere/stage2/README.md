@@ -1,16 +1,20 @@
 # Stage 2 container build
 
 Procedure below builds the containers and also pushes the new version (\<tagversion\>) to a registry
-  
+
 ```
 $ podman login --tls-verify=false exampleregistry.domain.local:5002/docker-openshift
 $ ./build.sh
-Enter the image tag version to build:
+Enter the image tag version to build - this should be entered as "imagetag" in config.json:
 <tagversion>
 Enter the registry url prefix (without trailing /):
 exampleregistry.domain.local:5002/docker-openshift
 ...
 ```
+
+To deploy this version, "imagetag" in `config.json` should be set to <tagversion>
+
+
 
 # Stage 2 containers
 
