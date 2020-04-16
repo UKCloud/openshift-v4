@@ -20,15 +20,18 @@ If the resulting cluster is to have all or some nodes which don't have access to
 `cat ~/pull-secret.text | jq .  > ~/pull-secret.json`
 1. Encode the username/password necessary to push to the internal registry:
 `echo -n '<user_name>:<password>' | base64 -w0`
-1. Add a new registy entry for the internal registry to the pull secret file, including the encoded username/password:
+1. Add a new registy entry for the internal registry to the pull secret file, including the encoded username/password credentials, taking care to preserve the JSON syntax including commas:
 ```
-"auths": {
+{
+  "auths": {
 ...
+    },
     "exampleregistry.domain.local:5002": { 
       "auth": "<credentials>", 
       "email": "you@example.com"
-  },
-...
+    }
+  }
+}
 ``` 
 
 ### Mirror OpenShift images to internal registry
