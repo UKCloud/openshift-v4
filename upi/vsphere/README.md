@@ -48,4 +48,13 @@ export PRODUCT_REPO='openshift-release-dev'
 export LOCAL_SECRET_JSON='~/pull-secret.json' 
 export RELEASE_NAME="ocp-release" 
 ```
+4. Run oc to mirror the images:
+```
+oc adm -a ${LOCAL_SECRET_JSON} release mirror \
+     --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE} \
+     --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} \
+     --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}
+```
+(at the end, take note of the imageContentSources and ImageContentSourcePolicy outputs)
+
 
