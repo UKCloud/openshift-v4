@@ -60,7 +60,7 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
      
 ## (once completed, take note of the imageContentSources and ImageContentSourcePolicy outputs)     
 ```
-5. Enter the "imageContentSources" block into the `config.json` file inside the "imagesources" parameter (enter whole text as-is between double-quotes):
+5. Enter the "imageContentSources" block into the `config.json` file inside the "imagesources" parameter (enter whole text as-is between double-quotes without altering indent):
 ```
   "imagesources": "imageContentSources:
 - mirrors:
@@ -70,7 +70,7 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
   - exampleregistry.domain.local:5002/docker-openshift/os-disconnected
   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev",
 ```
-6. Also add the registry's CA certificate(s) to the "additionalca" parameter in `config.json` (enter whole text as-is between double-quotes, concatenate certs if needed):
+6. Also add the registry's CA certificate(s) to the "additionalca" parameter in `config.json` (enter whole text as-is between double-quotes without altering indent, concatenate certs if needed):
 ```
   "additionalca": "-----BEGIN CERTIFICATE-----
 MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/
@@ -81,3 +81,8 @@ GkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC
 ...",
 ```
 
+### Generate a special openshift-install binary
+1. Run the following command to create a custom openshift-install binary for the disconnected install: 
+`oc adm -a ${LOCAL_SECRET_JSON} release extract --command=openshift-install "${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}"`
+1. Move the command into the deployconfig directory alongside the config.json file - the `4.run-installer` will find it and use it in preference to its embedded openshift-install binary: 
+`mv ./openshift-install ~/deployconfig`
