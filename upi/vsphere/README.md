@@ -35,10 +35,13 @@ If the resulting cluster is to have all or some nodes which don't have access to
 ``` 
 
 ### Mirror OpenShift images to internal registry
-1. Ensure that your internal registry's CA is trusted by your client (example uses LE's CA):
+1. Ensure that your internal registry's CA is trusted by your client:
 ```
-sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o /etc/pki/ca-trust/source/anchors/lets-encrypt-x3-cross-signed.pem
-sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
+REGISTRY=exampleregistry.domain.local
+PORT=5002
+
+ex +'g/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <(echo | openssl s_client -showcerts -servername ${REGISTRY} -connect ${REGISTRY}:${PORT} 2>/dev/null) -scq > ~/registryca.pem
+sudo cp ~/registryca.pem /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust
 ```
 2. Ensure you are using the same version of the `oc` client command for the version of OpenShift you want to install: `oc version`
@@ -70,7 +73,7 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
   - exampleregistry.domain.local:5002/docker-openshift/os-disconnected
   source: quay.io/openshift-release-dev/ocp-v4.0-art-dev",
 ```
-6. Also add the registry's CA certificate(s) to the "additionalca" parameter in `config.json` (enter whole text as-is between double-quotes without altering indent, concatenate certs if needed):
+6. Also add the registry's CA certificate(s) (in the example above, we put them in `~/registryca.pem`) to the "additionalca" parameter in `config.json` (enter whole text as-is between double-quotes without altering indent, concatenate certs if needed):
 ```
   "additionalca": "-----BEGIN CERTIFICATE-----
 MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/
