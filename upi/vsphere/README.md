@@ -35,7 +35,7 @@ If the resulting cluster is to have all or some nodes which don't have access to
 ``` 
 
 ### Mirror OpenShift images to internal registry
-1. Ensure that your internal registry's CA is trusted by your client:
+1. Ensure that your internal registry's CA or cert is trusted by your client:
 ```
 REGISTRY=exampleregistry.domain.local
 PORT=5002
