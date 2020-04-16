@@ -32,8 +32,7 @@ If the resulting cluster is to have all or some nodes which don't have access to
 ``` 
 
 ### Mirror OpenShift images to internal registry
-1. Ensure that your internal registry's CA is trusted by your client (example uses LE's CA):
-```
+1. Ensure that your internal registry's CA is trusted by your client (example uses LE's CA):```
 sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o /etc/pki/ca-trust/source/anchors/lets-encrypt-x3-cross-signed.pem
 sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
 sudo update-ca-trust
