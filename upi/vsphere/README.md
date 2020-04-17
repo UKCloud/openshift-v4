@@ -42,6 +42,13 @@ vi ~/registryca.pem
 
 sudo cp ~/registryca.pem /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust
+
+
+# Or maybe if you registry has a cert from Lets Encrypt:
+sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o /etc/pki/ca-trust/source/anchors/lets-encrypt-x3-cross-signed.pem
+sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
+cat /etc/pki/ca-trust/source/anchors/lets* ~/registryca.pem
+sudo update-ca-trust
 ```
 2. Ensure you are using the same version of the `oc` client command for the version of OpenShift you want to install: `oc version`
 3. Configure shell variables for mirroring:
