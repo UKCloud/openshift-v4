@@ -1,4 +1,5 @@
 - hosts: svcs, asvcs, csvcs, esvcs
+  serial: 1
   vars:
     Dig_target: ""  # Add a point which the network can lookup to
   max_fail_percentage: 0
