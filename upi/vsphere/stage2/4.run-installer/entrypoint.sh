@@ -20,7 +20,6 @@ INSTALLCOMMAND=openshift-install
 
 if [ -f "/tmp/workingdir/openshift-install"  ]; then
   INSTALLCOMMAND=/tmp/workingdir/openshift-install
-  chmod +x $INSTALLCOMMAND
   echo "Disconnected openshift-install is being used"
 fi
 
