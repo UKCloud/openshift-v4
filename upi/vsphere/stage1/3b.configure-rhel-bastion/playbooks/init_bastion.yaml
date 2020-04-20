@@ -24,6 +24,7 @@
       dest: /home/core/deployconfig/
       owner: core
       group: core
+      mode: preserve
 
   - name: Deploy /home/core/registry.auth file
     copy:
