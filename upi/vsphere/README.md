@@ -121,7 +121,8 @@ After that, run Stage 1 as normal...
 
 Caveats:
 - The cluster was installed as disconnected
-- This procedure is (currently) not documented by Red Hat so it presumably unsupported
+- The updated containers will be mirrored to the same registry/repo that was used for the original install
+- This procedure is (currently) not documented by Red Hat so is presumably unsupported
 - Tested only for update from 4.3.9 to 4.3.13
 
 ## Mirror the installation for the new version
