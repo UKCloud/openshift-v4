@@ -34,6 +34,9 @@ If the resulting cluster is to have all or some nodes which don't have access to
 }
 ``` 
 
+**NOTE** - As of 4.3.9 if your registry runs on port 443, it is necessary to include the port `:443` on the end of the registry name in the pull secret to mirror the images with the `oc` command. However, this must be removed from the pull secret before it is passed into `openshift-install` (it should just specify the name if the registry is on 443) - otherwise, the container pull will fail when the nodes initialise!
+
+
 ### Mirror OpenShift images to internal registry
 1. Ensure that your internal registry's CA is trusted by your client:
 ```
