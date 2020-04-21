@@ -117,7 +117,11 @@ If the deploy is to use anonymous pull to pull the OpenShift containers (to avoi
 After that, run Stage 1 as normal...
 
 
+### Additional post-deployment steps for disconnected
 
+1. Disable Insights/Telemetry operators by following: https://docs.openshift.com/container-platform/4.3/support/remote_health_monitoring/opting-out-of-remote-health-reporting.html (may be possible to remove relevent pull secret section before deploy???)
+
+2. Follow this procedure to enable OperatorHub to operate disconnected: https://access.redhat.com/documentation/en-us/openshift_container_platform/4.3/html/operators/olm-restricted-networks
 
 
 # Appendix: How to update a disconnected OpenShift install?
