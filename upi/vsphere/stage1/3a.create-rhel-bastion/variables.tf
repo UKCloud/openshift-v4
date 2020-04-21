@@ -223,7 +223,7 @@ variable "useletsencrypt" {
   description = "Switch to enable Lets Encrypt certs. Not required but defined to avoid warning"
 }
 
-variable "registryca" {
+variable "additionalca" {
   type        = string
   description = "ca for accessing disconnected install registry"
 }

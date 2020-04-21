@@ -64,8 +64,8 @@ retry yum install -y \
         python-virtualenv \
         tmux
 
-retry yum update -y
-yum clean all
+#retry yum update -y
+#yum clean all
 
 retry systemctl enable rhsmcertd --now
 

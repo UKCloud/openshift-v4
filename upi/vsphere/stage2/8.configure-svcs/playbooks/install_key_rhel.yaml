@@ -29,7 +29,7 @@
       regexp: "^PermitRootLogin"
       line: "PermitRootLogin no"
       state: present
-    notify: Restart ssh
+    notify: Restart sshd
 
   handlers:
   - name: Restart sshd

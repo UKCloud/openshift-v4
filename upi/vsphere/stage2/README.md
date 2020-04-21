@@ -1,20 +1,28 @@
 # Stage 2 container build
 
 Procedure below builds the containers and also pushes the new version (\<tagversion\>) to a registry
-  
+
 ```
 $ podman login --tls-verify=false exampleregistry.domain.local:5002/docker-openshift
 $ ./build.sh
-Enter the image tag version to build:
+Enter the image tag version to build - this should be entered as "imagetag" in config.json:
 <tagversion>
 Enter the registry url prefix (without trailing /):
 exampleregistry.domain.local:5002/docker-openshift
 ...
 ```
 
+To deploy this version, "imagetag" in `config.json` should be set to \<tagversion\>
+
+
+
 # Stage 2 containers
 
 These containers are ran on the bastion created by Stage 1 (typically automatically, ran by the `/usr/local/bin/stage2-containers.sh` script which is triggered as a oneshot systemd service called `stage2-containers.service`)
+
+Once the bastion is deployed, you can ssh to it and then run:
+`journalctl -f -u stage2-containers.service`
+to monitor the stage2 process.
 
 ## 4.run-installer
 This runs `openshift-install` command. By default it uses the version of `openshift-install` which is embedded into the container at install time; however, if `openshift-install` exists in the deployconfig directory, it is used in preference. This allows the disconnected install version of `openshift-install` to be utilised instead.
