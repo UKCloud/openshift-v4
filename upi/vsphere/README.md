@@ -149,7 +149,7 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
      --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} \
      --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}
 ```
-In the completion output, locate the hash of the container tagged with `:<version>-x86_64`, eg:
+In the completion output, locate the hash of the container image tagged with `:<version>-x86_64`, eg:
 ```
 ...
 sha256:e1ebc7295248a8394afb8d8d918060a7cc3de12c491283b317b80b26deedfe61 exampleregistry.domain.local:5002/docker-openshift/os-disconnected:4.3.13-x86_64
@@ -158,7 +158,7 @@ sha256:e1ebc7295248a8394afb8d8d918060a7cc3de12c491283b317b80b26deedfe61 exampler
 
 ## Trigger the update inside the cluster
 
-1. Edit the ClusterVersion object:  `oc edit ClusterVersion version` to add the following to the "spec:" section, specifying the hash and new version:
+1. Edit the ClusterVersion instance:  `oc edit ClusterVersion version` to add the following to the "spec:" section, specifying the hash and new version:
 ```yaml
 spec:
     ...
