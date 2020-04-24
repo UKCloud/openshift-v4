@@ -1,0 +1,3 @@
+---
+- include: default_project.yaml
+- include: ingress_controller.yaml

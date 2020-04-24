@@ -1,0 +1,52 @@
+- hosts: localhost 
+  tasks:
+  - name: Create default nodeSelector to target workers
+    k8s:
+      state: present
+      definition:
+        apiVersion: config.openshift.io/v1
+        kind: Scheduler
+        metadata:
+          name: cluster
+        spec:
+          defaultNodeSelector: node-role.kubernetes.io/worker=""
+          mastersSchedulable: false
+        policy:
+          name: ""
+
+  - name: label infra nodes
+    command: oc label node "{{ item }}" node-role.kubernetes.io/infra=""
+    with_items: "{{ infras }}"
+
+  - name: Remove worker label from infra nodes
+    command: oc label node "{{ item }}" node-role.kubernetes.io/worker-
+    with_items: "{{ infras }}"
+
+  - name: Edit ingress controller to schedule ingress pods to infra nodes
+    k8s:
+      state: present
+      merge_type: merge
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          name: default
+          namespace: openshift-ingress-operator
+        spec:
+          nodePlacement:
+            nodeSelector:
+              matchLabels:
+                node-role.kubernetes.io/infra: ""
+
+  - name: Edit cluster config
+    k8s:
+      state: present
+      merge_type: merge
+      definition:
+        apiVersion: imageregistry.operator.openshift.io/v1
+        kind: Config
+        metadata:
+          name: cluster
+        spec:
+          nodeSelector:
+            node-role.kubernetes.io/infra: ""

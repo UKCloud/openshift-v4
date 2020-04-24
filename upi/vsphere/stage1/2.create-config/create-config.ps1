@@ -24,7 +24,7 @@ try
 }
 catch
 {
- Write-Output "secret.json cannot be parsed. Is it valid JSON?"
+ Write-Output "secrets.json cannot be parsed. Is it valid JSON?"
  Exit
 }
 
@@ -69,6 +69,22 @@ $global:cupstreamdns1 = $ClusterConfig.combined.upstreamdns1
 $global:cupstreamdns2 = $ClusterConfig.combined.upstreamdns2
 $global:eupstreamdns1 = $ClusterConfig.elevated.upstreamdns1
 $global:eupstreamdns2 = $ClusterConfig.elevated.upstreamdns2
+
+$global:aingresscontrollername = $ClusterConfig.assured.ingresscontroller_name
+$global:aingresscontrollerdomain = $ClusterConfig.assured.ingresscontroller_domain
+$global:aingresscontrollerisdefault = $ClusterConfig.assured.ingresscontroller_isdefault
+$global:apubingresscontrollername = $ClusterConfig.assured_public.ingresscontroller_name
+$global:apubingresscontrollerdomain = $ClusterConfig.assured_public.ingresscontroller_domain
+$global:apubingresscontrollerisdefault = $ClusterConfig.assured_public.ingresscontroller_isdefault
+$global:cingresscontrollername = $ClusterConfig.combined.ingresscontroller_name
+$global:cingresscontrollerdomain = $ClusterConfig.combined.ingresscontroller_domain
+$global:cingresscontrollerisdefault = $ClusterConfig.combined.ingresscontroller_isdefault
+$global:eingresscontrollername = $ClusterConfig.elevated.ingresscontroller_name
+$global:eingresscontrollerdomain = $ClusterConfig.elevated.ingresscontroller_domain
+$global:eingresscontrollerisdefault = $ClusterConfig.elevated.ingresscontroller_isdefault
+$global:epubingresscontrollername = $ClusterConfig.elevated_public.ingresscontroller_name
+$global:epubingresscontrollerdomain = $ClusterConfig.elevated_public.ingresscontroller_domain
+$global:epubingresscontrollerisdefault = $ClusterConfig.elevated_public.ingresscontroller_isdefault
 
 $global:satellitefqdn = $ClusterConfig.satellitefqdn
 $global:rhnorgid = $ClusterConfig.rhnorgid

@@ -128,7 +128,10 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.9.9.9"
+    "externalvip": "51.9.9.9",
+    "ingresscontroller_name": "assured",
+    "ingresscontroller_domain": "assured.domain",
+    "ingresscontroller_isdefault": false
   },
   "assured_public": {
     "vsphere_resourcepool": "ocp4test",
@@ -140,7 +143,10 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.9.9.9"
+    "externalvip": "51.9.9.9",
+    "ingresscontroller_name": "assuredpublic",
+    "ingresscontroller_domain": "assuredpublic.domain",
+    "ingresscontroller_isdefault": false
   },
   "combined": {
     "vsphere_resourcepool": "ocp4test",
@@ -152,7 +158,10 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.10.9.9"
+    "externalvip": "51.10.9.9",
+    "ingresscontroller_name": "combined",
+    "ingresscontroller_domain": "combined.domain",
+    "ingresscontroller_isdefault": true
   },
   "elevated": {
     "vsphere_resourcepool": "ocp4test",
@@ -164,7 +173,10 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.11.9.9"
+    "externalvip": "51.11.9.9",
+    "ingresscontroller_name": "elevated",
+    "ingresscontroller_domain": "elevated.domain",
+    "ingresscontroller_isdefault": false
   },
   "elevated_public": {
     "vsphere_resourcepool": "ocp4test",
@@ -176,7 +188,10 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.11.9.9"
+    "externalvip": "51.11.9.9",
+    "ingresscontroller_name": "elevatedpublic",
+    "ingresscontroller_domain": "elevatedpublic.domain",
+    "ingresscontroller_isdefault": false
   },
   "ignition": {
     "master_ignition": "",

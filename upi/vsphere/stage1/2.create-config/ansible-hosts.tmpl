@@ -75,6 +75,23 @@ domain_suffix=<%= $clusterid %>.<%= $basedomain %>
 management_external_lb_ip=<%= $externalvip %>
 management_internal_lb_ip=<%= $internalvip %>
 
+ingressControllers:
+  - name: <%= $aingresscontrollername %>
+    domain: <%= $aingresscontrollerdomain %>
+    isdefault: <%= $aingresscontrollerisdefault %>
+  - name: <%= $apubingresscontrollername %>
+    domain: <%= $apubingresscontrollerdomain %>
+    isdefault: <%= $apubingresscontrollerisdefault %>
+  - name: <%= $cingresscontrollername %>
+    domain: <%= $cingresscontrollerdomain %>
+    isdefault: <%= $cingresscontrollerisdefault %>
+  - name: <%= $eingresscontrollername %>
+    domain: <%= $eingresscontrollerdomain %>
+    isdefault: <%= $eingresscontrollerisdefault %>
+  - name: <%= $epubingresscontrollername %>
+    domain: <%= $epubingresscontrollerdomain %> 
+    isdefault: <%= $epubingresscontrollerisdefault %>
+
 dns_username=<%= $dnsusername %>
 dns_password=<%= $dnsuserpassword %>
 
