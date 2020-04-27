@@ -1,2 +1,2 @@
-K8S_AUTH_KUBECONFIG=$KUBECONFIG
+export K8S_AUTH_KUBECONFIG=/tmp/workingdir/auth/kubeconfig
 ansible-playbook -i /tmp/workingdir/ansible-hosts /usr/local/playbooks/post_deployment.yaml

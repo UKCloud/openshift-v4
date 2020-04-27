@@ -4,7 +4,7 @@
       tasks:
       - name: Get default ingress controller
         set_fact:
-          defaultIngressController: "{{ ingressControllers | to_json | from_json | json_query(defaultIngressControllerQuery) }}"
+          defaultIngressController: "{{ ingress_controllers | to_json | from_json | json_query(defaultIngressControllerQuery) }}"
         vars:
           defaultIngressControllerQuery: "[?isdefault].name"
 
@@ -23,7 +23,7 @@
         command: "oc label nodes {{ nodesRaw.stdout_lines | to_json | from_json | json_query(hostQuery) | join(' ')}} securitydomain={{ item.name }}"
         vars:
           hostQuery: "[?contains(@,'worker-{{ item.name }}')]"
-        with_items: "{{ ingressControllers }}"
+        with_items: "{{ ingress_controllers }}"
     
       - name: Create ingresscontrollers
         k8s:
@@ -50,4 +50,4 @@
               #  name: "{{ item.name }}-certs"
               endpointPublishingStrategy:
                 type: HostNetwork
-        with_items: "{{ ingressControllers }}"
+        with_items: "{{ ingress_controllers }}"
