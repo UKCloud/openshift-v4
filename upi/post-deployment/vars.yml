@@ -1,4 +1,0 @@
-securityDomains:
-  - name: securitydomain1
-    domain: domain.example
-defaultSecurityDomain: securitydomain1
