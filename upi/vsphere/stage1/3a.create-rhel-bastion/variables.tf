@@ -253,4 +253,113 @@ variable "rheltemplatepw" {
   description = "root password for the RHEL template. Not required but defined to avoid warning"
 }
 
-// Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf
+### Variables specific to UKCloud Internal Deployments
+
+variable "assured" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_datastore = string,
+                        defaultgw = string,
+                        upstreamdns1 = string,
+                        upstreamdns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Assured-specific parameters"
+}
+
+variable "assured_public" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_datastore = string,
+                        defaultgw = string,
+                        upstreamdns1 = string,
+                        upstreamdns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Assured-public-specific parameters"
+}
+
+variable "combined" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_datastore = string,
+                        defaultgw  = string,
+                        upstreamdns1 = string,
+                        upstreamdns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Combined-specific parameters"
+}
+
+variable "elevated" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_datastore = string,
+                        defaultgw  = string,
+                        upstreamdns1 = string,
+                        upstreamdns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Elevated-specific parameters"
+}
+
+variable "elevated_public" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_datastore = string,
+                        defaultgw  = string,
+                        upstreamdns1 = string,
+                        upstreamdns2 = string,
+                        num_cpu = string,
+                        memory = string,
+                        disk_size = string })
+  description = "Elevated-public-specific parameters"
+}
+
+variable "assuredworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "assuredsvcs" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "assuredpublicworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "combinedworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "combinedsvcs" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "elevatedworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "elevatedsvcs" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+
+variable "elevatedpublicworkers" {
+  type        = list(object({hostname = string,
+                        ipaddress = string}))
+  default     = [{ hostname="",ipaddress="" }]
+}
+

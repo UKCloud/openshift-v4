@@ -1,0 +1,36 @@
+---
+- hosts: bastion
+  vars:
+    ansible_ssh_user: root
+    ansible_password: "{{ rhel_template_pw }}"
+  tasks:
+  - name: Create core user
+    user:
+      name: core
+      groups: wheel
+
+  - name: Enable passwordless sudo for core user
+    copy:
+      content: "core ALL=(ALL) NOPASSWD:ALL"
+      dest: "/etc/sudoers.d/core"
+      owner: "root"
+      group: "root"
+      mode: "0440"
+
+  - name: Install public key to allow access
+    authorized_key:
+      user: core
+      state: present
+      key: "{{ ssh_pub_key }}"
+     
+  - name: Disallow root SSH access
+    lineinfile: 
+      dest: /etc/ssh/sshd_config
+      regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+      state: present
+    notify: Restart sshd
+
+  handlers:
+  - name: Restart sshd
+    service: name=sshd state=restarted
