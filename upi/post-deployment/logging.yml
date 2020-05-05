@@ -8,10 +8,10 @@
        kind: Namespace
        metadata:
          name: openshift-operators-redhat
-       annotations:
-         openshift.io/node-selector: ""
-       labels:
-         openshift.io/cluster-monitoring: "true"
+         annotations:
+           openshift.io/node-selector: ""
+         labels:
+           openshift.io/cluster-monitoring: "true"
 
   - name: Create OperatorGroup
     k8s:
