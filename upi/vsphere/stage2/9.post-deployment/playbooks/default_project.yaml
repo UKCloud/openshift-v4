@@ -1,20 +1,21 @@
 ---
-    - hosts: localhost
-    
-      tasks:
-      - name: Create default project template
-        k8s: 
-          state: present
-          definition: "{{ lookup('file', 'templates/project-template.yaml') | from_yaml }}"
-    
-      - name: Patch config.openshift.io to use default project template
-        k8s:
-          state: present
-          definition:
-            apiVersion: config.openshift.io/v1
-            kind: Project
-            metadata:
-              name: cluster
-            spec:
-              projectRequestTemplate:
-                name: project-request
+- hosts: localhost
+
+  tasks:
+  - name: Create default project template
+    k8s: 
+      state: present
+      definition: "{{ lookup('file', 'templates/project_template.yaml') | from_yaml }}"
+
+  - name: Patch config.openshift.io to use default project template
+    k8s:
+      state: present
+      definition:
+        apiVersion: config.openshift.io/v1
+        kind: Project
+        metadata:
+          name: cluster
+        spec:
+          projectRequestMessage: To request a new project, please contact ASR team.
+          projectRequestTemplate:
+            name: project-request-defaults

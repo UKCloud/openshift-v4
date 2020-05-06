@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: project-request
+  name: project-request-defaults
   namespace: openshift-config
 objects:
 - apiVersion: project.openshift.io/v1
@@ -32,6 +32,17 @@ objects:
   - apiGroup: rbac.authorization.k8s.io
     kind: User
     name: ${PROJECT_ADMIN_USER}
+- apiVersion: "v1"
+  kind: "LimitRange"
+  metadata:
+    name: "core-resource-limits"
+    namespace: ${PROJECT_NAME}
+  spec:
+    limits:
+      - type: "Container"
+        defaultRequest:
+          cpu: "200m"
+          memory: "100Mi"
 parameters:
 - name: PROJECT_NAME
 - name: PROJECT_DISPLAYNAME

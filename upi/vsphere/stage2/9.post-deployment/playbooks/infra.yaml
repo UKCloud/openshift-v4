@@ -1,3 +1,4 @@
+---
 - hosts: localhost 
   tasks:
   - name: Create default nodeSelector to target workers
@@ -14,18 +15,33 @@
         policy:
           name: ""
 
-  - name: label infra nodes
-    command: oc label node "{{ item }}" node-role.kubernetes.io/infra=""
-    with_items: "{{ infras }}"
+  - name: Get nodes
+    k8s_facts:
+      kind: Node
+    register: nodes
 
-  - name: Remove worker label from infra nodes
-    command: oc label node "{{ item }}" node-role.kubernetes.io/worker-
-    with_items: "{{ infras }}"
+  - name: Build nodeLabelRaw dicts
+    set_fact:
+      infraNodes: '{{ infraNodes | default([]) + [ nodes | to_json | from_json | json_query(infraNodesQuery) ] }}'
+    vars:
+      infraNodesQuery: "resources[?contains(metadata.name,'infra-')].metadata.name"
 
-  - name: Edit ingress controller to schedule ingress pods to infra nodes
+  - name: Add infra node-role and remove worker node-role from infra nodes
     k8s:
       state: present
-      merge_type: merge
+      definition:
+        apiVersion: v1
+        kind: Node
+        metadata:
+          name: "{{ item }}"
+          labels:
+            node-role.kubernetes.io/infra: ""
+            node-role.kubernetes.io/worker:
+    with_items: "{{ infraNodes }}"
+
+  - name: Schedule default ingresscontroller pods to infra nodes
+    k8s:
+      state: present
       definition:
         apiVersion: operator.openshift.io/v1
         kind: IngressController
@@ -38,10 +54,9 @@
               matchLabels:
                 node-role.kubernetes.io/infra: ""
 
-  - name: Edit cluster config
+  - name: Schedule registry to infra nodes
     k8s:
       state: present
-      merge_type: merge
       definition:
         apiVersion: imageregistry.operator.openshift.io/v1
         kind: Config
@@ -50,3 +65,36 @@
         spec:
           nodeSelector:
             node-role.kubernetes.io/infra: ""
+
+  - name: Create cluster-monitoring configmap
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: cluster-monitoring-config
+          namespace: openshift-monitoring
+        data:
+          config.yaml: |+
+            alertmanagerMain:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            prometheusK8s:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            prometheusOperator:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            grafana:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            k8sPrometheusAdapter:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            kubeStateMetrics:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            telemeterClient:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""

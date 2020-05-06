@@ -70,21 +70,17 @@ $global:cupstreamdns2 = $ClusterConfig.combined.upstreamdns2
 $global:eupstreamdns1 = $ClusterConfig.elevated.upstreamdns1
 $global:eupstreamdns2 = $ClusterConfig.elevated.upstreamdns2
 
+$global:defaultingresscontroller = $ClusterConfig.ingresscontroller_default
 $global:aingresscontrollername = $ClusterConfig.assured.ingresscontroller_name
 $global:aingresscontrollerdomain = $ClusterConfig.assured.ingresscontroller_domain
-$global:aingresscontrollerisdefault = $ClusterConfig.assured.ingresscontroller_isdefault.ToString().ToLower()
 $global:apubingresscontrollername = $ClusterConfig.assured_public.ingresscontroller_name
 $global:apubingresscontrollerdomain = $ClusterConfig.assured_public.ingresscontroller_domain
-$global:apubingresscontrollerisdefault = $ClusterConfig.assured_public.ingresscontroller_isdefault.ToString().ToLower()
 $global:cingresscontrollername = $ClusterConfig.combined.ingresscontroller_name
 $global:cingresscontrollerdomain = $ClusterConfig.combined.ingresscontroller_domain
-$global:cingresscontrollerisdefault = $ClusterConfig.combined.ingresscontroller_isdefault.ToString().ToLower()
 $global:eingresscontrollername = $ClusterConfig.elevated.ingresscontroller_name
 $global:eingresscontrollerdomain = $ClusterConfig.elevated.ingresscontroller_domain
-$global:eingresscontrollerisdefault = $ClusterConfig.elevated.ingresscontroller_isdefault.ToString().ToLower()
 $global:epubingresscontrollername = $ClusterConfig.elevated_public.ingresscontroller_name
 $global:epubingresscontrollerdomain = $ClusterConfig.elevated_public.ingresscontroller_domain
-$global:epubingresscontrollerisdefault = $ClusterConfig.elevated_public.ingresscontroller_isdefault.ToString().ToLower()
 
 $global:satellitefqdn = $ClusterConfig.satellitefqdn
 $global:rhnorgid = $ClusterConfig.rhnorgid
@@ -103,6 +99,10 @@ $global:imagetag = $ClusterConfig.imagetag
 $global:vcenteruser = $SecretConfig.vcentervolumeprovisioner.username
 $global:vcenterpassword = $SecretConfig.vcentervolumeprovisioner.password
 $global:pullsecret = $SecretConfig.rhpullsecret | ConvertTo-Json
+$global:objectstorageaccesskey = $SecretConfig.objectstorage.accesskey
+$global:objectstoragesecretkey = $SecretConfig.objectstorage.secretkey
+$global:objectstoragebucketname = $SecretConfig.objectstorage.bucketname
+$global:objectstorageregionendpoint = $SecretConfig.objectstorage.regionendpoint
 
 if($ClusterConfig.useletsencrypt) {
   if($ClusterConfig.useletsencrypt -eq 'True') {
