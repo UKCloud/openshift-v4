@@ -1,5 +1,5 @@
 # FROM ansible-runner:latest
-FROM docker.io/ansible/ansible-runner:latest
+FROM docker.io/ansible/ansible-runner@sha256:607c86d1d7436cf937b285603b5335076140cd0ecb550741ca2c30e7bb00cca3
 
 ADD ./playbooks /usr/local/playbooks
 COPY ./pip-requirements.txt /usr/local/pip-requirements.txt

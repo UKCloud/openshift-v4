@@ -191,6 +191,14 @@ variable "dns" {
   description = "dns creds for LetsEncrypt"
 }
 
+variable "objectstorage" {
+  type        = object({accesskey = string,
+                        secretkey = string,
+                        bucketname = string,
+                        regionendpoint = string})
+  description = ""
+}
+
 // Add params to avoid warning/error
 
 variable "rhpullsecret" {
@@ -251,6 +259,11 @@ variable "rhnactivationkey" {
 variable "rheltemplatepw" {
   type        = string
   description = "root password for the RHEL template. Not required but defined to avoid warning"
+}
+
+variable "ingresscontroller_default" {
+  type        = string
+  description = "Name of default ingress controller to label existing namespaces containing default routes. Not required but defined to avoid warning"
 }
 
 // Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf

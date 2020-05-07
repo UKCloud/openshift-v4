@@ -31,7 +31,7 @@ module "bastion" {
   instance_count   = 1
   num_cpu          = 1
   memory           = 2048
-  disk_size        = 60
+  disk_size        = 100
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   datastore        = var.management.vsphere_datastore
   folder           = var.vsphere.vsphere_folder
