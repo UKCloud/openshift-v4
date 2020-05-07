@@ -196,7 +196,7 @@ variable "objectstorage" {
                         secretkey = string,
                         bucketname = string,
                         regionendpoint = string})
-  description = ""
+  description = "Object storage credentials for Image Registry"
 }
 
 // Add params to avoid warning/error

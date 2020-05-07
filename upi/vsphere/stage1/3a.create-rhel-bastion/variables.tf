@@ -191,6 +191,14 @@ variable "dns" {
   description = "dns creds for LetsEncrypt"
 }
 
+variable "objectstorage" {
+  type        = object({accesskey = string,
+                        secretkey = string,
+                        bucketname = string,
+                        regionendpoint = string})
+  description = "Object storage credentials for Image Registry"
+}
+
 // Add params to avoid warning/error
 
 variable "rhpullsecret" {

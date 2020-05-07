@@ -145,8 +145,10 @@
       label_selectors:
         - name = cluster-logging-operator 
     register: operatorPodStatus
-    until: operatorPodStatus.resources[0].status.phase == "Running"
-    retries: 15
+    until:
+      - operatorPodStatus.resources | length > 0
+      - operatorPodStatus.resources[0].status.phase == "Running"
+    retries: 20
     delay: 3
 
   - name: Create ClusterLogging object
