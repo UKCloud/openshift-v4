@@ -26,7 +26,6 @@
           name: cluster
         spec:
           storage:
-            emptyDir:
             s3:
               bucket: "{{ objectstorage_bucketname }}"
               region: "us-east1"
