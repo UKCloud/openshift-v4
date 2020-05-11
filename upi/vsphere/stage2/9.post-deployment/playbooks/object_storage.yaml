@@ -25,6 +25,7 @@
         metadata:
           name: cluster
         spec:
+          managementState: Managed
           storage:
             s3:
               bucket: "{{ objectstorage_bucketname }}"
