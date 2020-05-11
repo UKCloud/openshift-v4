@@ -25,7 +25,7 @@ podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ im
 
 # Wait a while for svcs machines to start..
 echo "Waiting a minute or two for svcs VMs to start before DNS initialisation"
-sleep 120
+sleep 80
 
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.configure-svcs:{{ image_tag }}
 
