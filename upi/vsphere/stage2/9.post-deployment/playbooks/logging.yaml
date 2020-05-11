@@ -168,14 +168,14 @@
           curation:
             curator:
               nodeSelector:
-                node-role.kubernetes.io/infra: ''
+                node-role.kubernetes.io/infra: ""
               schedule: 0 1 * * *
             type: curator
           logStore:
             elasticsearch:
               nodeCount: 1
               nodeSelector:
-                node-role.kubernetes.io/infra: ''
+                node-role.kubernetes.io/infra: ""
               redundancyPolicy: ZeroRedundancy
               resources:
                 limits:
@@ -192,6 +192,6 @@
           visualization:
             kibana:
               nodeSelector:
-                node-role.kubernetes.io/infra: ''
+                node-role.kubernetes.io/infra: ""
               replicas: 1
             type: kibana

@@ -10,7 +10,7 @@
         metadata:
           name: cluster
         spec:
-          defaultNodeSelector: node-role.kubernetes.io/worker=""
+          defaultNodeSelector: node-role.kubernetes.io/worker=
           mastersSchedulable: false
         policy:
           name: ""
