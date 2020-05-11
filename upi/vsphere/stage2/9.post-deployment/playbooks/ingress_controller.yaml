@@ -1,18 +1,14 @@
 ---
 - hosts: localhost
 
+  vars:
+    namespaces:
+      - "openshift-authentication"
+      - "openshift-console"
+      - "openshift-logging"
+      - "openshift-monitoring"
+
   tasks:
-  - name: Get all existing routes
-    k8s_facts:
-      kind: Route
-    register: routes
-
-  - name: Get namespaces for all existing routes
-    set_fact:
-      namespaces: "{{ routes | to_json | from_json | json_query(namespacesQuery) | unique }}"
-    vars:
-      namespacesQuery: "resources[*].metadata.namespace"
-
   - name: Label namespaces so existing routes get picked up on appropriate ingresscontroller
     k8s:
       state: present
