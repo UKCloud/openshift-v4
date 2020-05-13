@@ -1,4 +1,0 @@
-- hosts: localhost
-  tasks:
-
-# use oc get nodes to take names of infra nodes and put them into a variable file to iterate over later

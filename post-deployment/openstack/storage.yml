@@ -1,0 +1,73 @@
+- hosts: localhost
+
+  tasks:
+  - name: Unset default storage class from standard SC
+    k8s:
+      state: present
+      definition:
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: standard
+          annotations:
+            storageclass.kubernetes.io/is-default-class: false
+
+  - name: Create tier 1 SC
+    k8s:
+      state: present
+      definition:
+        allowVolumeExpansion: true
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: tier1
+          namespace: ""
+        parameters:
+          availability: nova
+          type: TIER1
+        provisioner: kubernetes.io/cinder
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+
+  - name: Create tier 2 SC
+    k8s:
+      state: present
+      definition:
+        allowVolumeExpansion: true
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: tier2
+          namespace: ""
+          annotations:
+            storageclass.kubernetes.io/is-default-class: true
+        parameters:
+          availability: nova
+          type: TIER2
+        provisioner: kubernetes.io/cinder
+        reclaimPolicy: Delete
+        volumeBindingMode: Immediate
+
+  - name: Get nodes
+    k8s_facts:
+      kind: Node
+    register: k8s_nodes
+
+  - name: Build node name dict
+    set_fact:
+      nodes: '{{ nodes | default([]) + [ k8s_nodes | to_json | from_json | json_query(nodesQuery) ] }}'
+    vars:
+      nodesQuery: "resources[*].metadata.name"
+
+  - name: Add empty region label and change zone to nova
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Node
+        metadata:
+          name: "{{ item }}"
+          labels:
+            failure-domain.beta.kubernetes.io/region: ""
+            failure-domain.beta.kubernetes.io/zone: "nova"
+    with_items: "{{ nodes }}"

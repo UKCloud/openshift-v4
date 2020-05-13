@@ -1,5 +1,3 @@
-# General parameters
-version: <ocp version>
 # SSO parameters
 ssoSecret: <secret>
 ssoClientID: <client ID>
@@ -8,7 +6,6 @@ ssoLogoutURL: <logout URL>
 # Object storage parameters
 bucketName: <object store bucket>
 regionEndpoint: <object storage region endpoint>
-region: <region of object store>
 accessKey: <access key>
 secretKey: <secret key>
 # Optional add ons

@@ -1,7 +1,0 @@
-- hosts: localhost
-  tasks:
-  - name: Create secret with s3 access key and secret key
-    command: oc create secret generic image-registry-private-configuration-user --from-literal=REGISTRY_STORAGE_S3_ACCESSKEY="{{ accessKey }}" --from-literal=REGISTRY_STORAGE_S3_SECRETKEY="{{ secretKey }}" --namespace openshift-image-registry
-# Convert next task to k8s module as patches can be done with merge_type: merge
-  - name: Patch s3 details into image registry
-    command: oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"s3":{"bucket": "{{ bucketName }}","regionEndpoint": "{{ regionEndpoint }}","region": "{{ region }}" }}}}'
