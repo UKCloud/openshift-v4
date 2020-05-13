@@ -261,9 +261,5 @@ variable "rheltemplatepw" {
   description = "root password for the RHEL template. Not required but defined to avoid warning"
 }
 
-variable "ingresscontroller_default" {
-  type        = string
-  description = "Name of default ingress controller to label existing namespaces containing default routes. Not required but defined to avoid warning"
-}
 
 // Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf

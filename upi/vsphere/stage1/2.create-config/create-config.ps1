@@ -70,7 +70,7 @@ $global:cupstreamdns2 = $ClusterConfig.combined.upstreamdns2
 $global:eupstreamdns1 = $ClusterConfig.elevated.upstreamdns1
 $global:eupstreamdns2 = $ClusterConfig.elevated.upstreamdns2
 
-$global:defaultingresscontroller = $ClusterConfig.ingresscontroller_default
+$global:managementingresscontroller = $ClusterConfig.management.ingresscontroller_name
 $global:aingresscontrollername = $ClusterConfig.assured.ingresscontroller_name
 $global:aingresscontrollerdomain = $ClusterConfig.assured.ingresscontroller_domain
 $global:apubingresscontrollername = $ClusterConfig.assured_public.ingresscontroller_name

@@ -18,8 +18,9 @@
         metadata:
           name: "{{ item }}"
           labels:
-            securitydomain: "{{ default_ingress_controller }}"
+            securitydomain: "combined"
     with_items: "{{ namespaces }}"
+
 
   - name: Get nodes
     k8s_facts:
@@ -59,3 +60,33 @@
       state: present
       definition: "{{ lookup('template', 'templates/ingress_controller.j2') }}"
     with_items: "{{ ingress_controllers }}"
+
+
+  - name: Label default IngressController to accept combined route (when default management_ingress_controller=default)
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: IngressController
+        metadata:
+          name: "default"
+          namespace: openshift-ingress-operator
+          labels:
+            securitydomain: "combined"
+    when: management_ingress_controller == "default"
+
+
+  - name: Scale default IngressController to zero (when default ingress isn't needed)
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: IngressController
+        metadata:
+          name: "default"
+          namespace: openshift-ingress-operator
+          labels:
+            securitydomain: "I dont accept any routes"
+        spec:
+          replicas: 0
+    when: management_ingress_controller != "default"

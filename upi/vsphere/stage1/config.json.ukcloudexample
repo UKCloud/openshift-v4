@@ -95,8 +95,6 @@
   "rhnorgid": "SatOrgID",
   "rhnactivationkey": "SatActivationKey",
   
-  "ingresscontroller_default": "combined",
-
   "vsphere": {
     "vsphere_server": "vcenter ip / name",
     "vsphere_cluster": "cluster name",
@@ -119,6 +117,7 @@
     "upstreamdns2": "1.0.0.1",
     "internalvip": "10.50.1.1",
     "externalvip": "51.10.9.9"
+    "ingresscontroller_name": "combined"
   },
   "assured": {
     "vsphere_resourcepool": "ocp4test",

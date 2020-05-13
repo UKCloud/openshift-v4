@@ -75,7 +75,7 @@ domain_suffix=<%= $clusterid %>.<%= $basedomain %>
 management_external_lb_ip=<%= $externalvip %>
 management_internal_lb_ip=<%= $internalvip %>
 
-default_ingress_controller=<%= $defaultingresscontroller %>
+management_ingress_controller=<%= $managementingresscontroller %>
 
 ingress_controllers=[{"name": "<%= $aingresscontrollername %>", "domain": "<%= $aingresscontrollerdomain %>", "replicas": <%= $aworkers.Count %>},{"name": "<%= $apubingresscontrollername %>", "domain": "<%= $apubingresscontrollerdomain %>", "replicas": <%= $apubworkers.Count %>},{"name": "<%= $cingresscontrollername %>", "domain": "<%= $cingresscontrollerdomain %>", "replicas": <%= $cworkers.Count %>},{"name": "<%= $eingresscontrollername %>", "domain": "<%= $eingresscontrollerdomain %>", "replicas": <%= $eworkers.Count %>},{"name": "<%= $epubingresscontrollername %>", "domain": "<%= $epubingresscontrollerdomain %>", "replicas": <%= $epubworkers.Count %>}]
 
