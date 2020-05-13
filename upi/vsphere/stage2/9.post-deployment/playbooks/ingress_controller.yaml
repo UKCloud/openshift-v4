@@ -71,8 +71,6 @@
         metadata:
           name: "default"
           namespace: openshift-ingress-operator
-          labels:
-            securitydomain: "combined"
         spec:
           namespaceSelector:
             matchLabels:
