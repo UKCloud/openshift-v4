@@ -73,6 +73,10 @@
           namespace: openshift-ingress-operator
           labels:
             securitydomain: "combined"
+        spec:
+          namespaceSelector:
+            matchLabels:
+              securitydomain: "combined"
     when: management_ingress_controller == "default"
 
 
@@ -85,8 +89,9 @@
         metadata:
           name: "default"
           namespace: openshift-ingress-operator
-          labels:
-            securitydomain: "I dont accept any routes"
         spec:
+          namespaceSelector:
+            matchLabels:
+              securitydomain: "I dont accept any routes"
           replicas: 0
     when: management_ingress_controller != "default"
