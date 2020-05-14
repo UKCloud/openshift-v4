@@ -62,7 +62,7 @@
     with_items: "{{ ingress_controllers }}"
 
 
-  - name: Label default IngressController to accept combined route (when default management_ingress_controller=default)
+  - name: Label default IngressController to accept combined routes (when default management_ingress_controller=default)
     k8s:
       state: present
       definition:
