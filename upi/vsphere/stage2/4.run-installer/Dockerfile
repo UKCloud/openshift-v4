@@ -7,6 +7,7 @@ RUN wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/re
     wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux-$version.tar.gz ;\
     wget -np https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-install-linux-$version.tar.gz ;\
     tar -xvzf /tmp/openshift-client-linux-$version.tar.gz -C /usr/local/bin ;\
-    tar -xvzf /tmp/openshift-install-linux-$version.tar.gz -C /usr/local/bin ;
+    tar -xvzf /tmp/openshift-install-linux-$version.tar.gz -C /usr/local/bin ;\
+    rm -f /tmp/openshift-client-linux-$version.tar.gz /tmp/openshift-install-linux-$version.tar.gz ;
 WORKDIR /tmp/workingdir
 ENTRYPOINT /usr/local/4.run-installer/entrypoint.sh

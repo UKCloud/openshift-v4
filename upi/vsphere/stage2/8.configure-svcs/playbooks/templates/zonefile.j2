@@ -63,4 +63,3 @@ _etcd-server-ssl._tcp IN SRV 0 10 2380 etcd-{{ loop.index - 1 }}
 {% for hostname in groups.bootstrap %}
 {{ hostname.split('.')[0] }}  IN      A       {{ hostvars[hostname].ip }}
 {% endfor %}
-

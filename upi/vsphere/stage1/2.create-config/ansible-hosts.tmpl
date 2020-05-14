@@ -75,6 +75,10 @@ domain_suffix=<%= $clusterid %>.<%= $basedomain %>
 management_external_lb_ip=<%= $externalvip %>
 management_internal_lb_ip=<%= $internalvip %>
 
+management_ingress_controller=<%= $managementingresscontroller %>
+
+ingress_controllers=[{"name": "<%= $aingresscontrollername %>", "domain": "<%= $aingresscontrollerdomain %>", "replicas": <%= $aworkers.Count %>},{"name": "<%= $apubingresscontrollername %>", "domain": "<%= $apubingresscontrollerdomain %>", "replicas": <%= $apubworkers.Count %>},{"name": "<%= $cingresscontrollername %>", "domain": "<%= $cingresscontrollerdomain %>", "replicas": <%= $cworkers.Count %>},{"name": "<%= $eingresscontrollername %>", "domain": "<%= $eingresscontrollerdomain %>", "replicas": <%= $eworkers.Count %>},{"name": "<%= $epubingresscontrollername %>", "domain": "<%= $epubingresscontrollerdomain %>", "replicas": <%= $epubworkers.Count %>}]
+
 dns_username=<%= $dnsusername %>
 dns_password=<%= $dnsuserpassword %>
 
@@ -89,6 +93,11 @@ registry_url=<%= $registryurl %>
 registry_username=<%= $registryusername %>
 registry_token=<%= $registrytoken %>
 image_tag=<%= $imagetag %>
+
+objectstorage_accesskey=<%= $objectstorageaccesskey %>
+objectstorage_secretkey=<%= $objectstoragesecretkey %>
+objectstorage_bucketname=<%= $objectstoragebucketname %>
+objectstorage_regionendpoint=<%= $objectstorageregionendpoint %>
 
 ansible_ssh_user=core
 ansible_become=yes

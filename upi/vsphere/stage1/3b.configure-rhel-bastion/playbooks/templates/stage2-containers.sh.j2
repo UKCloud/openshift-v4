@@ -12,6 +12,7 @@ podman pull --tls-verify=false {{ registry_url }}/6.add-ignition:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/5.ign-webserver:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/7.terraform-deploy:{{ image_tag }}
 podman pull --tls-verify=false {{ registry_url }}/8.configure-svcs:{{ image_tag }}
+podman pull --tls-verify=false {{ registry_url }}/9.post-deployment:{{ image_tag }}
 
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
 
@@ -24,7 +25,7 @@ podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ im
 
 # Wait a while for svcs machines to start..
 echo "Waiting a minute or two for svcs VMs to start before DNS initialisation"
-sleep 120
+sleep 80
 
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.configure-svcs:{{ image_tag }}
 
@@ -54,7 +55,21 @@ podman rm ign-webserver
 podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
 podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
 
-echo "openshift-v4 installer completed: Stage1 99.finalise-install now needs to be ran from outside to remove bootstrap from LB pools and change monitors"
+export KUBECONFIG=/home/core/deployconfig/auth/kubeconfig
+echo "Waiting 2 minutes for nodes to initialise before approving csrs..."
+sleep 120
+echo "Approving first set of csrs..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
+sleep 30
+echo "Approving second set of csrs..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
+
+echo "Waiting 8 minutes more for Cluster Operators to stabilise before running post-deployment..."
+sleep 480
+
+podman run  -v /home/core/deployconfig:/tmp/workingdir:z 9.post-deployment:{{ image_tag }}
+
+echo "openshift-v4 installer completed: Stage1 99.finalise-install now needs to be run from outside to remove bootstrap from LB pools and change monitors"
 
 echo "Disabling/removing service"
 systemctl disable stage2-containers.service

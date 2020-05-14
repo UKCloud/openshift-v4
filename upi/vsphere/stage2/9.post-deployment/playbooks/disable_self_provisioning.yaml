@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: Remove system:authenticated:oauth from self-provisioners
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          annotations:
+            rbac.authorization.kubernetes.io/autoupdate: "false"
+          name: self-provisioners
+        subjects: null
