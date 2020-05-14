@@ -1,0 +1,23 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: No
+  tasks:
+  - name: ensure the ConfigMap with the ukcloud logo exists
+    k8s:
+      state: present
+      definition: "{{ lookup('file', 'files/configmap_ukcloud_logo.yml') }}"
+
+  - name: ensure the cluster console config has the customised logo configured
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: Console
+        metadata:
+          name: cluster
+        spec:
+          customization:
+            customLogoFile:
+              key: ukcloud-logo.png
+              name: console-ukcloud-logo
