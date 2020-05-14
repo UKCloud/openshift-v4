@@ -90,6 +90,6 @@
         spec:
           namespaceSelector:
             matchLabels:
-              securitydomain: "I dont accept any routes"
+              securitydomain: "Idontacceptanyroutes"
           replicas: 0
     when: management_ingress_controller != "default"
