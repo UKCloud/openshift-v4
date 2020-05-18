@@ -10,3 +10,20 @@ accessKey: <access key>
 secretKey: <secret key>
 # Optional add ons
 logging: <boolean>
+# DNS Forwarding - omit or set to {} to disable
+dnsforwardingzones: 
+  - name: foo-dns
+    zones: 
+      - foo.com
+    forwardPlugin:
+      upstreams: 
+        - 1.1.1.1
+        - 2.2.2.2
+  - name: bar-dns
+    zones:
+      - bar.com
+      - example.com
+    forwardPlugin:
+      upstreams:
+        - 3.3.3.3
+        - 4.4.4.4:5454

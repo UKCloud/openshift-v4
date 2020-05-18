@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
-
+  connection: local
+  gather_facts: false
   tasks:
   - name: Configure DNS forwarding for specific zones
     k8s:
@@ -13,15 +14,4 @@
         spec:
           servers:
             "{{ dnsforwardingzones }}"
-    when: dnsforwardingzones is defined
-
-  - name: Unconfigure DNS forwarding if necessary
-    k8s:
-      state: present
-      definition:
-        apiVersion: operator.openshift.io/v1
-        kind: DNS
-        metadata:
-          name: default
-        spec: {}
-    when: dnsforwardingzones is not defined
+    when: dnsforwardingzones is defined and dnsforwardingzones|length != 0
