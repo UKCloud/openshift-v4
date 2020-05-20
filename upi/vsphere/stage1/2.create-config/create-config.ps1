@@ -24,7 +24,7 @@ try
 }
 catch
 {
- Write-Output "secret.json cannot be parsed. Is it valid JSON?"
+ Write-Output "secrets.json cannot be parsed. Is it valid JSON?"
  Exit
 }
 
@@ -70,6 +70,18 @@ $global:cupstreamdns2 = $ClusterConfig.combined.upstreamdns2
 $global:eupstreamdns1 = $ClusterConfig.elevated.upstreamdns1
 $global:eupstreamdns2 = $ClusterConfig.elevated.upstreamdns2
 
+$global:managementingresscontroller = $ClusterConfig.management.ingresscontroller_name
+$global:aingresscontrollername = $ClusterConfig.assured.ingresscontroller_name
+$global:aingresscontrollerdomain = $ClusterConfig.assured.ingresscontroller_domain
+$global:apubingresscontrollername = $ClusterConfig.assured_public.ingresscontroller_name
+$global:apubingresscontrollerdomain = $ClusterConfig.assured_public.ingresscontroller_domain
+$global:cingresscontrollername = $ClusterConfig.combined.ingresscontroller_name
+$global:cingresscontrollerdomain = $ClusterConfig.combined.ingresscontroller_domain
+$global:eingresscontrollername = $ClusterConfig.elevated.ingresscontroller_name
+$global:eingresscontrollerdomain = $ClusterConfig.elevated.ingresscontroller_domain
+$global:epubingresscontrollername = $ClusterConfig.elevated_public.ingresscontroller_name
+$global:epubingresscontrollerdomain = $ClusterConfig.elevated_public.ingresscontroller_domain
+
 $global:satellitefqdn = $ClusterConfig.satellitefqdn
 $global:rhnorgid = $ClusterConfig.rhnorgid
 $global:rhnactivationkey = $ClusterConfig.rhnactivationkey
@@ -87,6 +99,10 @@ $global:imagetag = $ClusterConfig.imagetag
 $global:vcenteruser = $SecretConfig.vcentervolumeprovisioner.username
 $global:vcenterpassword = $SecretConfig.vcentervolumeprovisioner.password
 $global:pullsecret = $SecretConfig.rhpullsecret | ConvertTo-Json
+$global:objectstorageaccesskey = $SecretConfig.objectstorage.accesskey
+$global:objectstoragesecretkey = $SecretConfig.objectstorage.secretkey
+$global:objectstoragebucketname = $SecretConfig.objectstorage.bucketname
+$global:objectstorageregionendpoint = $SecretConfig.objectstorage.regionendpoint
 
 if($ClusterConfig.useletsencrypt) {
   if($ClusterConfig.useletsencrypt -eq 'True') {

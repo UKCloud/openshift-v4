@@ -38,3 +38,6 @@ This runs the actual terraform that creates bootstrap, masters, workers, and svc
 
 ## 8.configure-svcs
 This ansible-based container configures a core user on the RHEL svc VMs, registers them with satellite, installs packages and then configures and installs CoreDNS on them as a systemd service to make them act as internal cluster DNS.
+
+## 9.post-deployment
+This ansible-based container applies post-deployment configuration to the cluster including: modifying the default project template, disabling self-provisioning of projects, relabelling infra nodes and scheduling infrastructure pods to them, configuring the internal image registry to use object storage, creating additional ingress controllers per security domain and scheduling them to the appropriate node, and finally deploying cluster logging.

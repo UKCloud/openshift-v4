@@ -1,0 +1,95 @@
+---
+- hosts: localhost
+
+  vars:
+    namespaces:
+      - "openshift-authentication"
+      - "openshift-console"
+      - "openshift-logging"
+      - "openshift-monitoring"
+
+  tasks:
+  - name: Label namespaces so existing routes get picked up on appropriate ingresscontroller
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: "{{ item }}"
+          labels:
+            securitydomain: "combined"
+    with_items: "{{ namespaces }}"
+
+
+  - name: Get nodes
+    k8s_facts:
+      kind: Node
+    register: nodes
+
+  - name: Build nodeLabelRaw dicts
+    set_fact:
+      nodeLabelRaw: '{{ nodeLabelRaw | default({}) | combine ( { "nodes": nodes | to_json | from_json | json_query(nodeLabelRawQuery), "securitydomain": item.name } ) }}'
+    vars:
+      nodeLabelRawQuery: "resources[?contains(metadata.name,'worker-{{ item.name }}')].metadata.name"
+    with_items: "{{ ingress_controllers }}"
+    register: nodeLabelsRaw
+  
+  - name: Flatten nodeLabelsRaw
+    set_fact:
+      nodeLabels: "{{ nodeLabelsRaw.results | to_json | from_json | json_query(nodeLabelsQuery) }}"
+    vars:
+      nodeLabelsQuery: "[*].ansible_facts.nodeLabelRaw"
+
+  - name: Label nodes
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Node
+        metadata:
+          name: "{{ item.1 }}"
+          labels:
+            securitydomain: "{{ item.0.securitydomain }}"
+    with_subelements:
+      - "{{ nodeLabels }}"
+      - "nodes"
+
+  - name: Create ingresscontrollers
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/ingress_controller.j2') }}"
+    with_items: "{{ ingress_controllers }}"
+
+
+  - name: Label default IngressController to accept combined routes (when default management_ingress_controller=default)
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: IngressController
+        metadata:
+          name: "default"
+          namespace: openshift-ingress-operator
+        spec:
+          namespaceSelector:
+            matchLabels:
+              securitydomain: "combined"
+    when: management_ingress_controller == "default"
+
+
+  - name: Scale default IngressController to zero (when default ingress isn't needed)
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: IngressController
+        metadata:
+          name: "default"
+          namespace: openshift-ingress-operator
+        spec:
+          namespaceSelector:
+            matchLabels:
+              securitydomain: "Idontacceptanyroutes"
+          replicas: 0
+    when: management_ingress_controller != "default"

@@ -191,6 +191,14 @@ variable "dns" {
   description = "dns creds for LetsEncrypt"
 }
 
+variable "objectstorage" {
+  type        = object({accesskey = string,
+                        secretkey = string,
+                        bucketname = string,
+                        regionendpoint = string})
+  description = "Object storage credentials for Image Registry"
+}
+
 // Add params to avoid warning/error
 
 variable "rhpullsecret" {
@@ -252,5 +260,6 @@ variable "rheltemplatepw" {
   type        = string
   description = "root password for the RHEL template. Not required but defined to avoid warning"
 }
+
 
 // Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf

@@ -9,7 +9,7 @@ This deployment code is split into two stages:
 
 ## Preparation for disconnected installation
 
-If the resulting cluster is to have all or some nodes which don't have access to the Internet, it is necessary to populate an private registry with the container images which make up OpenShift. This needs to be performed on a jumpbox/workstation which has access to both the Internet and the ability to push to the private registry.
+If the resulting cluster is to have all or some nodes which don't have access to the Internet, it is necessary to populate a private registry with the container images which make up OpenShift. This needs to be performed on a jumpbox/workstation which has access to both the Internet and the ability to push to the private registry.
 
 (Based on https://docs.openshift.com/container-platform/4.3/installing/install_config/installing-restricted-networks-preparations.html#installing-restricted-networks-preparations )
 
@@ -47,7 +47,7 @@ sudo cp ~/registryca.pem /etc/pki/ca-trust/source/anchors/
 sudo update-ca-trust
 
 
-# Or maybe if you registry has a cert from Lets Encrypt:
+# Or maybe if your registry has a cert from Lets Encrypt:
 sudo curl https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt -o /etc/pki/ca-trust/source/anchors/lets-encrypt-x3-cross-signed.pem
 sudo curl https://letsencrypt.org/certs/letsencryptauthorityx3.pem.txt -o /etc/pki/ca-trust/source/anchors/letsencryptauthorityx3.pem
 cat /etc/pki/ca-trust/source/anchors/lets* > ~/registryca.pem

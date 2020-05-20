@@ -117,6 +117,7 @@
     "upstreamdns2": "1.0.0.1",
     "internalvip": "10.50.1.1",
     "externalvip": "51.10.9.9"
+    "ingresscontroller_name": "combined"
   },
   "assured": {
     "vsphere_resourcepool": "ocp4test",
@@ -128,7 +129,9 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.9.9.9"
+    "externalvip": "51.9.9.9",
+    "ingresscontroller_name": "assured",
+    "ingresscontroller_domain": "assured.domain"
   },
   "assured_public": {
     "vsphere_resourcepool": "ocp4test",
@@ -140,7 +143,9 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.9.9.9"
+    "externalvip": "51.9.9.9",
+    "ingresscontroller_name": "assuredpublic",
+    "ingresscontroller_domain": "assuredpublic.domain"
   },
   "combined": {
     "vsphere_resourcepool": "ocp4test",
@@ -152,7 +157,9 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.10.9.9"
+    "externalvip": "51.10.9.9",
+    "ingresscontroller_name": "combined",
+    "ingresscontroller_domain": "combined.domain"
   },
   "elevated": {
     "vsphere_resourcepool": "ocp4test",
@@ -164,7 +171,9 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.11.9.9"
+    "externalvip": "51.11.9.9",
+    "ingresscontroller_name": "elevated",
+    "ingresscontroller_domain": "elevated.domain"
   },
   "elevated_public": {
     "vsphere_resourcepool": "ocp4test",
@@ -176,7 +185,9 @@
     "num_cpu": "2",
     "memory": "8192",
     "disk_size": "60",
-    "externalvip": "51.11.9.9"
+    "externalvip": "51.11.9.9",
+    "ingresscontroller_name": "elevatedpublic",
+    "ingresscontroller_domain": "elevatedpublic.domain"
   },
   "ignition": {
     "master_ignition": "",
