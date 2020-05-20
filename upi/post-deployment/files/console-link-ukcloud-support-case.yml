@@ -3,6 +3,6 @@ kind: ConsoleLink
 metadata:
   name: ukcloud-support-case
 spec:
-  href: 'https://portal.ukcloud.com/support/ivanti'
+  href: 'https://portal.skyscapecloud.com/support/ivanti'
   location: HelpMenu
   text: UKCloud Support Case
