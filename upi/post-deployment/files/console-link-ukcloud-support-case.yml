@@ -1,0 +1,8 @@
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: ukcloud-support-case
+spec:
+  href: 'https://portal.ukcloud.com/support/ivanti'
+  location: HelpMenu
+  text: UKCloud Support Case
