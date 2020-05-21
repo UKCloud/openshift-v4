@@ -1,0 +1,8 @@
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: ukcloud-docs
+spec:
+  href: 'https://docs.ukcloud.com/articles/openshift/oshift-home.html'
+  location: HelpMenu
+  text: UKCloud OpenShift Docs

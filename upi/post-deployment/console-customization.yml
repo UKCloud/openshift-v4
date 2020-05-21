@@ -6,7 +6,7 @@
   - name: ensure the ConfigMap with the ukcloud logo exists
     k8s:
       state: present
-      definition: "{{ lookup('file', 'files/configmap_ukcloud_logo.yml') }}"
+      definition: "{{ lookup('file', 'files/configmap-ukcloud-logo.yml') }}"
 
   - name: ensure the cluster console config has the customised logo configured
     k8s:
@@ -21,3 +21,11 @@
             customLogoFile:
               key: ukcloud-logo.png
               name: console-ukcloud-logo
+
+  - name: ensure ConsoleLink CRDs are present
+    k8s:
+      state: present
+      definition: "{{ lookup('file', item) }}"
+    with_fileglob:
+    - "files/console-link-*.yml"
+
