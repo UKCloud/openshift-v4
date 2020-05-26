@@ -1,8 +1,8 @@
+---
 - hosts: localhost
-
   tasks:
   - name: Retrieve OpenShift version
-    k8s_facts:
+    k8s_info:
       kind: ClusterVersion
     register: clusterVersion
   
@@ -138,7 +138,7 @@
           sourceNamespace: openshift-marketplace
 
   - name: Wait for operator pod to be Ready
-    k8s_facts:
+    k8s_info:
       kind: Pod
       namespace: openshift-logging
       label_selectors:
@@ -185,7 +185,7 @@
                   memory: 512Mi
                 storage:
                   size: 100G
-                  storageClassName: thin
+                  storageClassName: tier2
             type: elasticsearch
           managementState: Managed
           visualization:

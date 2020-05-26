@@ -1,7 +1,8 @@
-- include_tasks: sso.yml
-- include_tasks: object-storage.yml
-- include_tasks: infra.yml
-- include_tasks: logging.yml
+---
+- import_playbook: sso.yml
+- import_playbook: object-storage.yml
+- import_playbook: infra.yml
+- import_playbook: storage.yml
+- import_playbook: logging.yml
   when: logging
-- include_tasks: storage.yml
-- include_tasks: dns-forwarding.yml
+- import_playbook: dns-forwarding.yml

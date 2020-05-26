@@ -1,3 +1,4 @@
+---
 - hosts: localhost
   tasks:
   - name: Create secret with s3 access key and secret key
@@ -14,7 +15,7 @@
           namespace: openshift-image-registry
         type: Opaque
 
-  - name: Patch s3 details into image registry and remove swift config
+  - name: Patch s3 details into image registry and remove swift/emptyDir config
     k8s:
       state: present
       definition:
@@ -26,6 +27,7 @@
           managementState: Managed
           storage:
             swift:
+            emptyDir:
             s3:
               bucket: "{{ bucketName }}"
               region: "us-east1"

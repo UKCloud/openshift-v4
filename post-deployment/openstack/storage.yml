@@ -1,5 +1,5 @@
+---
 - hosts: localhost
-
   tasks:
   - name: Unset default storage class from standard SC
     k8s:
@@ -10,7 +10,7 @@
         metadata:
           name: standard
           annotations:
-            storageclass.kubernetes.io/is-default-class: false
+            storageclass.kubernetes.io/is-default-class: "false"
 
   - name: Create tier 1 SC
     k8s:
@@ -21,7 +21,8 @@
         kind: StorageClass
         metadata:
           name: tier1
-          namespace: ""
+          annotations:
+            storageclass.kubernetes.io/is-default-class: "false"
         parameters:
           availability: nova
           type: TIER1
@@ -29,7 +30,7 @@
         reclaimPolicy: Delete
         volumeBindingMode: Immediate
 
-  - name: Create tier 2 SC
+  - name: Create tier 2 SC and set as default
     k8s:
       state: present
       definition:
@@ -38,9 +39,8 @@
         kind: StorageClass
         metadata:
           name: tier2
-          namespace: ""
           annotations:
-            storageclass.kubernetes.io/is-default-class: true
+            storageclass.kubernetes.io/is-default-class: "true"
         parameters:
           availability: nova
           type: TIER2
@@ -49,7 +49,7 @@
         volumeBindingMode: Immediate
 
   - name: Get nodes
-    k8s_facts:
+    k8s_info:
       kind: Node
     register: k8s_nodes
 
