@@ -1,0 +1,51 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  labels:
+    machine.openshift.io/cluster-api-cluster: "{{ infrastructureId }}"
+  name: "{{ infrastructureId }}-infra"
+  namespace: openshift-machine-api
+spec:
+  replicas: {{ infraMachineSetScale }}
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: "{{ infrastructureId }}"
+      machine.openshift.io/cluster-api-machineset: "{{ infrastructureId }}-infra"
+  template:
+    metadata:
+      labels:
+        machine.openshift.io/cluster-api-cluster: "{{ infrastructureId }}"
+        machine.openshift.io/cluster-api-machine-role: infra
+        machine.openshift.io/cluster-api-machine-type: infra 
+        machine.openshift.io/cluster-api-machineset: "{{ infrastructureId }}-infra"
+    spec:
+      metadata:
+        labels:
+          node-role.kubernetes.io/infra: ""
+      providerSpec:
+        value:
+          apiVersion: openstackproviderconfig.openshift.io/v1alpha1
+          cloudName: openstack
+          cloudsSecret:
+            name: openstack-cloud-credentials
+            namespace: openshift-machine-api
+          flavor: ocp.m1.medium
+          image: "{{ infrastructureId }}-rhcos"
+          kind: OpenstackProviderSpec
+          networks:
+          - filter: {}
+            subnets:
+            - filter:
+                name: "{{ infrastructureId }}-nodes"
+                tags: "openshiftClusterID={{ infrastructureId }}"
+          securityGroups:
+          - filter: {}
+            name: "{{ infrastructureId }}-worker"
+          serverMetadata:
+            Name: "{{ infrastructureId }}-infra"
+            openshiftClusterID: "{{ infrastructureId }}"
+          tags:
+          - "openshiftClusterID={{ infrastructureId }}"
+          trunk: true
+          userDataSecret:
+            name: infra-user-data

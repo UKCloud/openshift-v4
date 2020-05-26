@@ -1,29 +1,140 @@
 - hosts: localhost
+  
+  vars:
+    infraMachineSetScale: 3
 
   tasks:
-  - name: Get nodes
-    k8s_facts:
-      kind: Node
-    register: nodes
+  - name: Get infrastructure
+    k8s_info:
+      kind: Infrastructure
+      name: cluster
+    register: infrastructure
 
-  - name: Build nodeLabelRaw dicts
+  - name: Get infrastructureName
     set_fact:
-      infraNodes: '{{ infraNodes | default([]) + [ nodes | to_json | from_json | json_query(infraNodesQuery) ] }}'
+      infrastructureId: '{{ infrastructure | json_query(infrastructureIdQuery) }}'
     vars:
-      infraNodesQuery: "resources[?contains(metadata.name,'{{ nonce? }}-infra-')].metadata.name"
+      infrastructureIdQuery: "resources[0].status.infrastructureName"
 
-  - name: Add infra node-role and remove worker node-role from infra nodes
+  - name: Create MachineConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfig
+        metadata:
+          labels:
+            machineconfiguration.openshift.io/role: infra
+          name: 02-infra-kubelet
+        spec:
+          config:
+            ignition:
+              version: 2.2.0
+            systemd:
+              units:
+              - dropins:
+                - name: 20-infra-nodelabel.conf
+                  contents: |
+                    [Service]
+                    ExecStart=
+                    ExecStart=/usr/bin/hyperkube \
+                        kubelet \
+                          --config=/etc/kubernetes/kubelet.conf \
+                          --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig \
+                          --kubeconfig=/var/lib/kubelet/kubeconfig \
+                          --container-runtime=remote \
+                          --container-runtime-endpoint=/var/run/crio/crio.sock \
+                          --runtime-cgroups=/system.slice/crio.service \
+                          --node-labels=node-role.kubernetes.io/infra,node.openshift.io/os_id=${ID} \
+                          --minimum-container-ttl-duration=6m0s \
+                          --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec \
+                          --cloud-provider=openstack \
+                          --cloud-config=/etc/kubernetes/cloud.conf \
+                          --v=${KUBELET_LOG_LEVEL}
+                enabled: true
+                name: kubelet.service
+
+  - name: Create MachineConfigPool
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfigPool
+        metadata:
+          name: infra
+        spec:
+          machineConfigSelector:
+            matchExpressions:
+              - { key: machineconfiguration.openshift.io/role, operator: In, values: [ worker, infra ] }
+          nodeSelector:
+            matchLabels:
+              node-role.kubernetes.io/infra: ""
+
+  - name: Get worker-user-data secret
+    k8s_info:
+      kind: Secret
+      name: worker-user-data
+      namespace: openshift-machine-api
+    register: workerUserData
+
+  - name: Get userData
+    set_fact:
+      userData: '{{ workerUserData | to_json | from_json | json_query(userDataQuery) | b64decode }}'
+    vars: 
+      userDataQuery: "resources[0].data.userData"
+
+  - name: Retrieve and modify ignition endpoint
+    set_fact:
+      ignitionEndpoint: "{{ userData | to_json | from_json | json_query(ignitionEndpointQuery) | replace('worker','infra') }}"
+    vars: 
+      ignitionEndpointQuery: "ignition.config.append[0].source"
+
+  - name: Insert changed ignition endpoint
+    set_fact:
+      infraUserData: '{{ userData | combine({"ignition": {"config": {"append":[{"source": ignitionEndpoint, "verification":{}}]}}}, recursive=True) }}'
+
+  - name: Create infra-user-data secret
     k8s:
       state: present
       definition:
         apiVersion: v1
-        kind: Node
         metadata:
-          name: "{{ item }}"
-          labels:
-            node-role.kubernetes.io/infra: ""
-            node-role.kubernetes.io/worker:
-    with_items: "{{ infraNodes }}"
+          name: infra-user-data
+          namespace: openshift-machine-api
+        data:
+          disableTemplating: dHJ1ZQo=
+          userData: "{{ infraUserData | to_json | b64encode }}"
+        kind: Secret
+        type: Opaque
+
+  - name: Create infra machineset
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/machineset.j2') }}"
+
+  - name: Wait for nodes to exist
+    k8s_info:
+      kind: Node
+      label_selectors:
+        - node-role.kubernetes.io/infra =
+    register: infraNodeStatus
+    until:
+      - infraNodeStatus.resources | length == infraMachineSetScale
+    retries: 60
+    delay: 10
+
+  - name: Get infra nodes
+    k8s_info:
+      kind: Node
+      label_selectors:
+        - node-role.kubernetes.io/infra =
+    register: nodes
+
+  - name: Build infraNode dict
+    set_fact:
+      infraNodes: '{{ infraNodes | default([]) + [ nodes | to_json | from_json | json_query(infraNodesQuery) ] }}'
+    vars:
+      infraNodesQuery: "resources[*].metadata.name"
 
   - name: Schedule default ingresscontroller pods to infra nodes
     k8s:
