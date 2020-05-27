@@ -2,7 +2,7 @@
 - hosts: localhost
   
   vars:
-    infraMachineSetScale: 3
+    infraMachineSetScale: 2
 
   tasks:
   - name: Get infrastructure

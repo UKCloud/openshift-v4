@@ -15,7 +15,7 @@
           namespace: openshift-image-registry
         type: Opaque
 
-  - name: Patch s3 details into image registry and remove swift/emptyDir config
+  - name: Patch s3 details into image registry and remove pvc config
     k8s:
       state: present
       definition:
@@ -26,8 +26,7 @@
         spec:
           managementState: Managed
           storage:
-            swift:
-            emptyDir:
+            pvc:
             s3:
               bucket: "{{ bucketName }}"
               region: "us-east1"

@@ -71,3 +71,13 @@
             failure-domain.beta.kubernetes.io/region: ""
             failure-domain.beta.kubernetes.io/zone: "nova"
     with_items: "{{ nodes }}"
+
+  - name: Remove image registry PVC created during IPI deployment
+    k8s:
+      state: absent
+      definition:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: image-registry-storage
+          namespace: openshift-image-registry

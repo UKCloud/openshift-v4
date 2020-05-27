@@ -160,37 +160,37 @@
           name: "instance"
           namespace: "openshift-logging"
         spec:
+          managementState: "Managed"
           collection:
             logs:
+              type: "fluentd"
               fluentd: {}
-              type: fluentd
           curation:
+            type: "curator"
             curator:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
               schedule: 0 1 * * *
-            type: curator
           logStore:
+            type: "elasticsearch"
             elasticsearch:
               nodeCount: 1
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
-              redundancyPolicy: ZeroRedundancy
+              redundancyPolicy: "ZeroRedundancy"
+              storage:
+                size: "200G"
+                storageClassName: "tier2"
               resources:
                 limits:
-                  cpu: 4000m
-                  memory: 6Gi
+                  cpu: "1"
+                  memory: "12Gi"
                 requests:
-                  cpu: 100m
-                  memory: 512Mi
-                storage:
-                  size: 100G
-                  storageClassName: tier2
-            type: elasticsearch
-          managementState: Managed
+                  cpu: "1"
+                  memory: "12Gi"
           visualization:
+            type: "kibana"
             kibana:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
               replicas: 1
-            type: kibana
