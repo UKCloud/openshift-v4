@@ -51,3 +51,13 @@
         spec:
           authentication:
             logoutRedirect: "{{ ssoLogoutURL }}"
+
+  - name: Delete kubeadmin user
+    k8s:
+      state: absent
+      definition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kubeadmin
+          namespace: kube-system
