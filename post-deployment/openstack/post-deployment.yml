@@ -6,3 +6,4 @@
 - import_playbook: logging.yml
   when: logging
 - import_playbook: dns-forwarding.yml
+- import_playbook: console-customization.yml
