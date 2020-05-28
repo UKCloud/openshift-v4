@@ -44,73 +44,16 @@ variable "master_disk_size" {
   default = "60"
 }
 
-//////////
-// Worker Tenant machine variables
-//////////
-
-variable "worker_small_num_cpu" {
-  type = string
-  default = "2"
-}
-
-variable "worker_small_memory" {
-  type = string
-  description = "RAM size in megabytes"
-  default = "8192"
-}
-
-variable "worker_small_disk_size" {
-  type = string
-  description = "Disk size in gigabytes"
-  default = "60"
-}
-
-// Medium Workers
-variable "worker_medium_num_cpu" {
-  type = string
-  default = "4"
-}
-
-variable "worker_medium_memory" {
-  type = string
-  description = "RAM size in megabytes"
-  default = "16384"
-}
-
-variable "worker_medium_disk_size" {
-  type = string
-  description = "Disk size in gigabytes"
-  default = "60"
-}
-
-// Large Workers
-variable "worker_large_num_cpu" {
-  type = string
-  default = "8"
-}
-
-variable "worker_large_memory" {
-  type = string
-  description = "RAM size in megabytes"
-  default = "32768"
-}
-
-variable "worker_large_disk_size" {
-  type = string
-  description = "Disk size in gigabytes"
-  default = "60"
-}
-
 // Infra Workers
 variable "infra_num_cpu" {
   type = string
-  default = "2"
+  default = "4"
 }
 
 variable "infra_memory" {
   type = string
   description = "RAM size in megabytes"
-  default = "8192"
+  default = "16384"
 }
 
 variable "infra_disk_size" {
@@ -131,7 +74,7 @@ variable "svc_num_cpu" {
 variable "svc_memory" {
   type = string
   description = "RAM size in megabytes"
-  default = "2048"
+  default = "1024"
 }
 
 variable "svc_disk_size" {
@@ -171,57 +114,21 @@ variable "bootstrap" {
 variable "svcs" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+  default     = [{ hostname="",ipaddress=""}]
 }
 
 
 variable "masters" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
+  default     = [{ hostname="",ipaddress=""}]
 }
 
 
 variable "infras" {
   type        = list(object({hostname = string,
                         ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
-}
-
-
-variable "smallworkers" {
-  type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
-}
-
-variable "mediumworkers" {
-  type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
-}
-
-variable "largeworkers" {
-  type        = list(object({hostname = string,
-                        ipaddress = string}))
-  default     = [{ hostname="",ipaddress="" }]
-}
-
-variable "network" {
-  type        = object({networkip = string, 
-                        maskprefix = string, 
-                        defaultgw = string, 
-                        upstreamdns1 = string, 
-                        upstreamdns2 = string })
-  description = "Network parameters"
-}
-
-// network_cidr = $networkip + "/" + $maskprefix
-
-
-variable "loadbalancer" {
-  type        = object({externalvip = string,
-                        internalvip = string})
+  default     = [{ hostname="",ipaddress=""}]
 }
 
 variable "sshpubkey" {
@@ -232,15 +139,25 @@ variable "sshpubkey" {
 variable "vsphere" {
   type        = object({vsphere_server = string, 
                         vsphere_cluster = string, 
-                        vsphere_resourcepool = string, 
-                        vsphere_folder = string, 
                         vsphere_datacenter = string, 
-                        vsphere_datastore = string, 
-                        vsphere_network = string, 
-			vsphere_portgroup = string,
-                        rhcos_template = string})
-  description = "vSphere-specific parameters"
+                        vsphere_folder = string,
+                        vsphere_network = string,
+                        vsphere_portgroup = string,
+                        networkip = string,
+                        maskprefix = string,
+                        rhcos_template = string,
+                        rhel_template = string})
+  description = "Shared vSphere parameters"
 }
+
+variable "management" {
+  type        = object({vsphere_resourcepool = string,
+                        vsphere_datastore = string,
+                        defaultgw = string,
+                        upstreamdns1 = string,
+                        upstreamdns2 = string})
+  description = "Network and vSphere parameters for management VMs"
+}  
 
 // Ignition config
 
@@ -268,9 +185,81 @@ variable "vcentervolumeprovisioner" {
   description = "vCenter creds for cloud provider volume provisioning"
 }
 
-// Add rhpullsecret to avoid warning/error
+variable "dns" {
+  type        = object({username = string,
+                        password = string})
+  description = "dns creds for LetsEncrypt"
+}
+
+variable "objectstorage" {
+  type        = object({accesskey = string,
+                        secretkey = string,
+                        bucketname = string,
+                        regionendpoint = string})
+  description = "Object storage credentials for Image Registry"
+}
+
+// Add params to avoid warning/error
 
 variable "rhpullsecret" {
   type        = map
   description = "RH pull secret. Not required but defined to avoid warning"
 }
+
+variable "registrytoken" {
+  type        = string
+  description = "registry token. Not required but defined to avoid warning"
+}
+
+variable "registryurl" {
+  type        = string
+  description = "registry url. Not required but defined to avoid warning"
+}
+
+variable "imagetag" {
+  type        = string
+  description = "image version tag. Not required but defined to avoid warning"
+}
+
+variable "registryusername" {
+  type        = string
+  description = "Username to connect to registry. Not required but defined to avoid warning"
+}
+
+variable "useletsencrypt" {
+  type        = string
+  description = "Switch to enable Lets Encrypt certs. Not required but defined to avoid warning"
+}
+
+variable "additionalca" {
+  type        = string
+  description = "ca for accessing disconnected install registry"
+}
+
+variable "imagesources" {
+  type        = string
+  description = "sources string for disconnected"
+}
+
+variable "satellitefqdn" {
+  type        = string
+  description = "Address of satellite server to sub RHEL. Not required but defined to avoid warning"
+}
+
+variable "rhnorgid" {
+  type        = string
+  description = "Org ID for satellite server to sub RHEL. Not required but defined to avoid warning"
+}
+
+variable "rhnactivationkey" {
+  type        = string
+  description = "Activation Key for satellite server to sub RHEL. Not required but defined to avoid warning"
+}
+
+variable "rheltemplatepw" {
+  type        = string
+  description = "root password for the RHEL template. Not required but defined to avoid warning"
+}
+
+
+// Additional variables for UKC Assured/Elevated deployments are contained in ukcloud.tf

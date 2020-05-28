@@ -1,0 +1,159 @@
+---
+
+- hosts: localhost
+  vars:
+    dns_server1: "{{ man_dns_server1 }}"
+    dns_server2: "{{ man_dns_server2 }}"
+  tasks:
+  - name: Create /tmp/workingdir/dns/ directory
+    file:
+      path: /tmp/workingdir/dns/
+      state: directory
+
+  - name: Make a Zonefile
+    template:
+      src: templates/zonefile.j2
+      dest: /tmp/workingdir/dns/{{ domain_suffix }}.zone
+
+  - name: Make a mgmt Corefile config
+    template:
+      src: templates/Corefile.j2
+      dest: /tmp/workingdir/dns/manCorefile
+
+  - name: Make a Unit file for coredns.service
+    template:
+      src: templates/coredns.service.j2
+      dest: /tmp/workingdir/dns/coredns.service
+
+
+
+- hosts: localhost
+  vars:
+    dns_server1: "{{ assured_dns_server1 }}"
+    dns_server2: "{{ assured_dns_server2 }}"
+  tasks:
+  - name: Make an assured Corefile config
+    template:
+      src: templates/Corefile.j2
+      dest: /tmp/workingdir/dns/assCorefile
+      
+
+- hosts: localhost
+  vars:
+    dns_server1: "{{ combined_dns_server1 }}"
+    dns_server2: "{{ combined_dns_server2 }}"
+  tasks:
+  - name: Make a combined Corefile config
+    template:
+      src: templates/Corefile.j2
+      dest: /tmp/workingdir/dns/comCorefile
+      
+- hosts: localhost
+  vars:
+    dns_server1: "{{ elevated_dns_server1 }}"
+    dns_server2: "{{ elevated_dns_server2 }}"
+  tasks:
+  - name: Make an elevated Corefile config
+    template:
+      src: templates/Corefile.j2
+      dest: /tmp/workingdir/dns/eleCorefile
+      
+- hosts: svcs
+  gather_facts: false
+  tasks:
+  - name: Create /etc/coredns directory
+    raw: mkdir -p /etc/coredns
+
+  - name: Push Zonefile
+    raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
+
+  - name: Push Corefile
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/manCorefile') }}" > /etc/coredns/Corefile
+
+  - name: Push Unit file
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
+
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+
+  - name: Pull CoreDNS container
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
+
+  - name: Flush firewall rules and Enable coredns.service
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
+
+
+    
+- hosts: asvcs
+  gather_facts: false
+  tasks:
+  - name: Create /etc/coredns directory
+    raw: mkdir -p /etc/coredns
+
+  - name: Push Zonefile
+    raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
+
+  - name: Push Corefile
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/assCorefile') }}" > /etc/coredns/Corefile
+
+  - name: Push Unit file
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
+
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+
+  - name: Pull CoreDNS container
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
+
+  - name: Flush firewall rules and Enable coredns.service
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
+
+
+- hosts: csvcs
+  gather_facts: false
+  tasks:
+  - name: Create /etc/coredns directory
+    raw: mkdir -p /etc/coredns
+
+  - name: Push Zonefile
+    raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
+
+  - name: Push Corefile
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/comCorefile') }}" > /etc/coredns/Corefile
+
+  - name: Push Unit file
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
+
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+
+  - name: Pull CoreDNS container
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
+
+  - name: Flush firewall rules and Enable coredns.service
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service
+
+
+- hosts: esvcs
+  gather_facts: false
+  tasks:
+  - name: Create /etc/coredns directory
+    raw: mkdir -p /etc/coredns
+
+  - name: Push Zonefile
+    raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
+
+  - name: Push Corefile
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/eleCorefile') }}" > /etc/coredns/Corefile
+
+  - name: Push Unit file
+    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
+
+  - name: Login to registry to pull image
+    raw: podman login  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+
+  - name: Pull CoreDNS container
+    raw: podman pull {{ registry_url }}/coredns:{{ image_tag }}
+
+  - name: Flush firewall rules and Enable coredns.service
+    raw: sudo systemctl stop coredns.service; sudo systemctl daemon-reload; sudo systemctl enable coredns.service; sudo systemctl start coredns.service

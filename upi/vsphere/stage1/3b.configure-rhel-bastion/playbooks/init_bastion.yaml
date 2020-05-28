@@ -1,0 +1,57 @@
+---
+- hosts: bastion
+  tasks:
+  - name: deploy stage2-containers.sh script
+    template:
+      src: templates/stage2-containers.sh.j2
+      dest: /usr/local/bin/stage2-containers.sh
+      owner: root
+      group: root
+      mode: 0700
+      backup: yes
+
+  - name: Create unit file for stage2-containers.service
+    copy:
+      content: "[Unit]\nAfter=console-login-helper-messages-issuegen.service\n[Service]\nType=oneshot\nExecStart=/usr/local/bin/stage2-containers.sh\n[Install]\nWantedBy=multi-user.target\n"
+      dest: /etc/systemd/system/stage2-containers.service
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Deploy /home/core/deployconfig directory
+    copy:
+      src: /tmp/workingdir/
+      dest: /home/core/deployconfig/
+      owner: core
+      group: core
+      mode: preserve
+
+  - name: Deploy /home/core/registry.auth file
+    copy:
+      content: "{{ registry_token }}"
+      dest: /home/core/registry.auth
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Fix permissions on secrets.json
+    file:
+      path: /home/core/deployconfig/secrets.json
+      owner: root
+      group: root
+      mode: 0600
+
+  - name: Fix permissions on deploy.pem
+    file:
+      path: /home/core/deployconfig/deploy.pem
+      owner: root
+      group: root
+      mode: 0600
+
+  - name: Start stage2-containers.service to trigger stage2
+    systemd:
+      state: started
+      daemon_reload: yes
+      no_block: yes
+      name: stage2-containers
+

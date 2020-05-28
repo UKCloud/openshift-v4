@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+
+  vars:
+    certDirectory: "/root/{{ domain_suffix }}"
+
+  tasks:
+    - name: Create secret for cert in openshift-config
+      shell: /usr/local/bin/oc create secret tls api-certs --kubeconfig=/root/auth/kubeconfig --cert {{ certDirectory }}/fullchain.pem --key {{ certDirectory }}/privkey.pem -n openshift-config -o json --dry-run | /usr/local/bin/oc replace --force=true --kubeconfig=/root/auth/kubeconfig -f -
+      args:
+        chdir: "/root"
+
+    - name: Create secret for cert in openshift-ingress
+      shell: /usr/local/bin/oc create secret tls ingress-certs --kubeconfig=/root/auth/kubeconfig --cert {{ certDirectory }}/fullchain.pem --key {{ certDirectory }}/privkey.pem -n openshift-ingress -o json --dry-run | /usr/local/bin/oc replace --force=true --kubeconfig=/root/auth/kubeconfig -f -
+      args:
+        chdir: "/root"
+
+    - name: Patch apiserver to ensure cert is used
+      shell: "/usr/local/bin/oc patch apiserver cluster --kubeconfig=/root/auth/kubeconfig --type=merge -p '{\"spec\":{\"servingCerts\": {\"namedCertificates\": [{\"names\": [\"api.{{ domain_suffix }}\"], \"servingCertificate\": {\"name\": \"api-certs\"}}]}}}'"
+      args:
+        chdir: "/root"
+
+    - name: Patch ingress-operator to ensure cert is used
+      shell: "/usr/local/bin/oc patch ingresscontroller.operator default --kubeconfig=/root/auth/kubeconfig --type=merge -p --type=merge -p '{\"spec\":{\"defaultCertificate\": {\"name\": \"ingress-certs\"}}}' -n openshift-ingress-operator"
+      args:
+        chdir: "/root"

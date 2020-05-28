@@ -1,0 +1,31 @@
+apiVersion: v1
+baseDomain: "<%= $basedomain %>"
+metadata:
+  name: "<%= $clusterid %>"
+compute:
+- hyperthreading: Enabled
+  name: worker
+  replicas: 3
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  replicas: 3 
+networking:
+  machineCIDR: "<%= $machinecidr %>"
+platform:
+  vsphere:
+    vCenter: "<%= $vcenterserver %>"
+    username: "<%= $vcenteruser %>"
+    password: "<%= $vcenterpassword %>"
+    datacenter: "<%= $vcenterdatacenter %>"
+    defaultDatastore: "<%= $defaultdatastore %>"
+pullsecret: '<%= $pullsecret %>'
+sshKey: '<%= $sshpubkey %>'
+
+<% if($addregistryca -eq 'True' ) { %>
+additionalTrustBundle: |
+  <%= $registryca.replace("`n","`n  ") %>
+<% } %>
+<% if($addimagesources -eq 'True' ) { %>
+<%= $imagesources %>
+<% } %>

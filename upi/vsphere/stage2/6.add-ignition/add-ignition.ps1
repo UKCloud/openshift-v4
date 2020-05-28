@@ -13,8 +13,6 @@ param (
     [string]$svcign = "svc.ign"
 )
 
-
-
 # Read in the configs
 try
 {
@@ -22,7 +20,7 @@ try
 }
 catch
 {
- Write-Output "config.json cannot be parsed"
+ Write-Output "config.json cannot be parsed. Is it valid JSON?"
  Exit
 }
 

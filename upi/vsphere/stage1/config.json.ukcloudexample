@@ -1,0 +1,199 @@
+{
+  "clusterid": "ocp4test",
+  "basedomain": "cna.ukcloud.uk",
+  "useletsencrypt": "False",
+  "bastion": {
+    "hostname": "bastion-0",
+    "ipaddress": "10.50.1.254"
+  },
+  "bootstrap": {
+    "hostname": "bootstrap-0",
+    "ipaddress": "10.50.1.250"
+  },
+  "svcs": [
+    {
+      "hostname": "svc-0",
+      "ipaddress": "10.50.1.15"
+    },
+    {
+      "hostname": "svc-1",
+      "ipaddress": "10.50.1.16"
+    }
+  ],
+  "masters": [
+    {
+      "hostname": "master-0",
+      "ipaddress": "10.50.1.10"
+    },
+    {
+      "hostname": "master-1",
+      "ipaddress": "10.50.1.11"
+    },
+    {
+      "hostname": "master-2",
+      "ipaddress": "10.50.1.12"
+    }
+  ],
+  "infras": [
+    {
+      "hostname": "infra-0",
+      "ipaddress": "10.50.1.20"
+    },
+    {
+      "hostname": "infra-1",
+      "ipaddress": "10.50.1.21"
+    }
+  ],
+  "smallworkers": [],
+  "mediumworkers": [],
+  "largeworkers": [],
+  "assuredworkers": [
+    {
+      "hostname": "worker-assured-0",
+      "ipaddress": "10.60.1.25"
+    },
+    {
+      "hostname": "worker-assured-1",
+      "ipaddress": "10.60.1.26"
+    }
+  ],
+  "assuredsvcs": [],
+  "combinedworkers": [
+    {
+      "hostname": "worker-combined-0",
+      "ipaddress": "10.80.1.25"
+    }
+  ],
+  "combinedsvcs": [],
+  "elevatedworkers": [
+    {
+      "hostname": "worker-elevated-0",
+      "ipaddress": "10.90.1.25"
+    }
+  ],
+  "elevatedsvcs": [],
+  "assuredpublicworkers": [
+    {
+      "hostname": "worker-assuredpublic-0",
+      "ipaddress": "10.70.1.25"
+    }
+  ],
+  "elevatedpublicworkers": [
+    {
+      "hostname": "worker-elevatedpublic-0",
+      "ipaddress": "10.100.1.25"
+    }
+  ],
+  "sshpubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA ..... ONO+WJe5kAdO+Quiy/7LdKRxzfYA/OKXjsU7+wHCFX14tD53mao1FP1na0Q== admin@localhost.localdomain",
+  "registryurl": "for pulling stage2 deploy containers eg: exampleregistry.domain.local:5002/docker-openshift",
+  "registryusername": "for pulling stage2 deploy containers eg: \\$app - anon pull will be used if empty",
+  "additionalca": "",
+  "imagesources": "",
+  "imagetag": "0.5-deploycontainerversiontag",
+
+  "satellitefqdn": "satellite.ukcloudexample.com",
+  "rhnorgid": "SatOrgID",
+  "rhnactivationkey": "SatActivationKey",
+  
+  "vsphere": {
+    "vsphere_server": "vcenter ip / name",
+    "vsphere_cluster": "cluster name",
+    "vsphere_datacenter": "Datacenter",
+    "vsphere_folder": "ocp4test",
+    "vsphere_network": "dvs.VCDVSNetworkName36370-cb31-40c1-8cc6-036a3b8e1e39",
+    "vsphere_transportzone": "PvDC.VXLAN-NP",
+    "vsphere_portgroup": "vxw-dvs-32-virtualwire-5-sid-16001-dvs.VCDVSNetworkname36370-c",
+    "networkip": "10.50.1.0",
+    "maskprefix": "24",
+    "rhcos_template": "rhcos-4.3.0-template",
+    "rhel_template": "RHEL77"
+  },
+  "management": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "defaultgw": "10.50.1.1",
+    "upstreamdns1": "1.1.1.1",
+    "upstreamdns2": "1.0.0.1",
+    "internalvip": "10.50.1.1",
+    "externalvip": "51.10.9.9"
+    "ingresscontroller_name": "combined"
+  },
+  "assured": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "defaultgw": "10.50.1.2",
+    "upstreamdns1": "10.50.1.15",
+    "upstreamdns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60",
+    "externalvip": "51.9.9.9",
+    "ingresscontroller_name": "assured",
+    "ingresscontroller_domain": "assured.domain"
+  },
+  "assured_public": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "defaultgw": "10.50.1.2",
+    "upstreamdns1": "10.50.1.15",
+    "upstreamdns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60",
+    "externalvip": "51.9.9.9",
+    "ingresscontroller_name": "assuredpublic",
+    "ingresscontroller_domain": "assuredpublic.domain"
+  },
+  "combined": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "defaultgw": "10.80.1.1",
+    "upstreamdns1": "10.50.1.15",
+    "upstreamdns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60",
+    "externalvip": "51.10.9.9",
+    "ingresscontroller_name": "combined",
+    "ingresscontroller_domain": "combined.domain"
+  },
+  "elevated": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "defaultgw": "10.50.1.3",
+    "upstreamdns1": "10.50.1.15",
+    "upstreamdns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60",
+    "externalvip": "51.11.9.9",
+    "ingresscontroller_name": "elevated",
+    "ingresscontroller_domain": "elevated.domain"
+  },
+  "elevated_public": {
+    "vsphere_resourcepool": "ocp4test",
+    "vsphere_datastore": "datastorename",
+    "vsphere_edge": "vse-VSHIELDNAME (ddddddd-eeee-ffff-22224-33382140355)",
+    "defaultgw": "10.50.1.3",
+    "upstreamdns1": "10.50.1.15",
+    "upstreamdns2": "10.50.1.16",
+    "num_cpu": "2",
+    "memory": "8192",
+    "disk_size": "60",
+    "externalvip": "51.11.9.9",
+    "ingresscontroller_name": "elevatedpublic",
+    "ingresscontroller_domain": "elevatedpublic.domain"
+  },
+  "ignition": {
+    "master_ignition": "",
+    "worker_ignition": "",
+    "infra_ignition": "",
+    "svc_ignition": "",
+    "bootstrap_ignition_url": ""
+  }
+}

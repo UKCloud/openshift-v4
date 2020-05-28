@@ -1,0 +1,20 @@
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  namespace: openshift-ingress-operator
+  name: "{{ item.name }}"
+spec:
+  domain: "{{ item.domain }}"
+  namespaceSelector:
+    matchLabels:
+      securitydomain: "{{ item.name }}"
+  nodePlacement:
+    nodeSelector:
+      matchLabels:
+        securitydomain: "{{ item.name }}"
+  replicas: {{ item.replicas }}
+  tolerations:
+  - effect: NoSchedule
+    operator: Exists
+  endpointPublishingStrategy:
+    type: HostNetwork

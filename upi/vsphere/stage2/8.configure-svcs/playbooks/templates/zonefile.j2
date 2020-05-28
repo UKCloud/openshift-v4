@@ -1,0 +1,65 @@
+$ORIGIN {{ domain_suffix }}.
+$TTL 60s
+@    IN    SOA    dns1.{{ domain_suffix }}.    hostmaster.{{ domain_suffix }}. (
+            {{ ansible_date_time.epoch }} ; serial
+            21600      ; refresh after 6 hours
+            3600       ; retry after 1 hour
+            604800     ; expire after 1 week
+            86400 )    ; minimum TTL of 1 day
+
+
+    IN    NS    dns1.{{ domain_suffix }}.
+    IN    NS    dns2.{{ domain_suffix }}.
+
+{% for hostname in groups.svcs %}
+dns{{ loop.index }}         IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+api          IN      A       {{ management_external_lb_ip }}
+api-int      IN      A       {{ management_internal_lb_ip }}
+
+*.apps       IN      A       {{ management_external_lb_ip }}
+
+{% for hostname in groups.masters %}
+etcd-{{ loop.index - 1 }}       IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.masters %}
+_etcd-server-ssl._tcp IN SRV 0 10 2380 etcd-{{ loop.index - 1 }}
+{% endfor %}
+
+{% for hostname in groups.masters %}
+{{ hostname.split('.')[0] }}     IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.workers %}
+{{ hostname.split('.')[0] }}   IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.infras %}
+{{ hostname.split('.')[0] }}  IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.svcs %}
+{{ hostname.split('.')[0] }}        IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.asvcs %}
+{{ hostname.split('.')[0] }}        IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.csvcs %}
+{{ hostname.split('.')[0] }}        IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.esvcs %}
+{{ hostname.split('.')[0] }}        IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.bastion %}
+{{ hostname.split('.')[0] }}  IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
+
+{% for hostname in groups.bootstrap %}
+{{ hostname.split('.')[0] }}  IN      A       {{ hostvars[hostname].ip }}
+{% endfor %}
