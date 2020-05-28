@@ -1,7 +1,13 @@
-setup.sh will ensure that clouds.yaml is in the correct place for OpenStack modules to work. (Possibly use this script to deal with setting up OCP authentication too in future)
+Ensure you have set the `KUBECONFIG` variable in your shell referencing a valid kubeconfig file path so the Ansible k8s module can connect:
 
-To run postdeployment code:
+```
+export KUBECONFIG=/path/to/kubeconfig
+```
 
+To run post-deployment code:
+
+```
 ansible-playbook post-deployment.yml -e "@vars.yml"
+```
 
-Alternatively you can run through each playbook included in the above seperately ensuring to use vars.yml with each.
+Alternatively you can run through each playbook included in the above separately ensuring to use vars.yml with each.
