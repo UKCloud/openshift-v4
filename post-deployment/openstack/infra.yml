@@ -124,19 +124,6 @@
     retries: 60
     delay: 10
 
-  - name: Get infra nodes
-    k8s_info:
-      kind: Node
-      label_selectors:
-        - node-role.kubernetes.io/infra =
-    register: k8s_infraNodes
-
-  - name: Build infraNode dict
-    set_fact:
-      infraNodes: '{{ infraNodes | default([]) + [ k8s_infraNodes | to_json | from_json | json_query(infraNodesQuery) ] }}'
-    vars:
-      infraNodesQuery: "resources[*].metadata.name"
-
   - name: Schedule default ingresscontroller pods to infra nodes
     k8s:
       state: present
