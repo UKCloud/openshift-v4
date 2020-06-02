@@ -3,7 +3,7 @@
 - import_playbook: infra.yml
 - import_playbook: storage.yml
 - import_playbook: logging.yml
-  when: logging
+  when: logging | bool
 - import_playbook: dns-forwarding.yml
 - import_playbook: console-customization.yml
 - import_playbook: sso.yml
