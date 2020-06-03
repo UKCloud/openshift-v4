@@ -57,7 +57,7 @@ echo "Waiting 2 minutes for nodes to initialise before approving csrs..."
 sleep 120
 echo "Approving first set of csrs..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
-sleep 30
+sleep 60
 echo "Approving second set of csrs..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 
