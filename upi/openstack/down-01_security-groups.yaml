@@ -1,0 +1,15 @@
+# Required Python packages:
+#
+# ansible
+# openstacksdk
+
+- import_playbook: common.yaml
+
+- hosts: all
+  gather_facts: no
+
+  tasks:
+  - name: 'Remove the cluster security groups'
+    os_delete_network_resources:
+      resource: "security_group"
+      tags: "{{ [cluster_id_tag] }}"

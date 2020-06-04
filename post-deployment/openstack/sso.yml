@@ -1,0 +1,63 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Create SSO secret
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        data:
+          clientSecret: "{{ ssoSecret | b64encode }}"
+        kind: Secret
+        metadata:
+          name: idp-secret
+          namespace: openshift-config
+        type: Opaque
+
+  - name: Create OAuth resource
+    k8s:
+      state: present
+      definition:
+        apiVersion: config.openshift.io/v1
+        kind: OAuth
+        metadata: 
+          name: cluster
+        spec: 
+          identityProviders: 
+          - name: ukcloud-sso
+            mappingMethod: claim 
+            type: OpenID 
+            openID: 
+              clientID: "{{ ssoClientID }}"
+              clientSecret: 
+                name: idp-secret
+              claims: 
+                preferredUsername: 
+                - preferred_username 
+                name: 
+                - name
+                email: 
+                - email
+              issuer: "{{ ssoIssuer }}"
+  
+  - name: Patch logout redirect into console
+    k8s:
+      state: present
+      definition:
+        apiVersion: config.openshift.io/v1
+        kind: Console
+        metadata:
+          name: cluster
+        spec:
+          authentication:
+            logoutRedirect: "{{ ssoLogoutURL }}"
+
+  - name: Delete kubeadmin user
+    k8s:
+      state: absent
+      definition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kubeadmin
+          namespace: kube-system

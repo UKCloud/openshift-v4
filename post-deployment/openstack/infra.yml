@@ -1,0 +1,240 @@
+---
+- hosts: localhost
+  
+  vars:
+    infraMachineSetScale: 2
+
+  tasks:
+  - name: Get infrastructure
+    k8s_info:
+      kind: Infrastructure
+      name: cluster
+    register: infrastructure
+
+  - name: Get infrastructureName
+    set_fact:
+      infrastructureId: '{{ infrastructure | json_query(infrastructureIdQuery) }}'
+    vars:
+      infrastructureIdQuery: "resources[0].status.infrastructureName"
+
+  - name: Create MachineConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfig
+        metadata:
+          labels:
+            machineconfiguration.openshift.io/role: infra
+          name: 02-infra-kubelet
+        spec:
+          config:
+            ignition:
+              version: 2.2.0
+            systemd:
+              units:
+              - dropins:
+                - name: 20-infra-nodelabel.conf
+                  contents: |
+                    [Service]
+                    ExecStart=
+                    ExecStart=/usr/bin/hyperkube \
+                        kubelet \
+                          --config=/etc/kubernetes/kubelet.conf \
+                          --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig \
+                          --kubeconfig=/var/lib/kubelet/kubeconfig \
+                          --container-runtime=remote \
+                          --container-runtime-endpoint=/var/run/crio/crio.sock \
+                          --runtime-cgroups=/system.slice/crio.service \
+                          --node-labels=node-role.kubernetes.io/infra,node.openshift.io/os_id=${ID} \
+                          --minimum-container-ttl-duration=6m0s \
+                          --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec \
+                          --cloud-provider=openstack \
+                          --cloud-config=/etc/kubernetes/cloud.conf \
+                          --v=${KUBELET_LOG_LEVEL}
+                enabled: true
+                name: kubelet.service
+
+  - name: Create MachineConfigPool
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfigPool
+        metadata:
+          name: infra
+        spec:
+          machineConfigSelector:
+            matchExpressions:
+              - { key: machineconfiguration.openshift.io/role, operator: In, values: [ worker, infra ] }
+          nodeSelector:
+            matchLabels:
+              node-role.kubernetes.io/infra: ""
+
+  - name: Get worker-user-data secret
+    k8s_info:
+      kind: Secret
+      name: worker-user-data
+      namespace: openshift-machine-api
+    register: workerUserData
+
+  - name: Get userData
+    set_fact:
+      userData: '{{ workerUserData | to_json | from_json | json_query(userDataQuery) | b64decode }}'
+    vars: 
+      userDataQuery: "resources[0].data.userData"
+
+  - name: Retrieve and modify ignition endpoint
+    set_fact:
+      ignitionEndpoint: "{{ userData | to_json | from_json | json_query(ignitionEndpointQuery) | replace('worker','infra') }}"
+    vars: 
+      ignitionEndpointQuery: "ignition.config.append[0].source"
+
+  - name: Insert changed ignition endpoint
+    set_fact:
+      infraUserData: '{{ userData | combine({"ignition": {"config": {"append":[{"source": ignitionEndpoint, "verification":{}}]}}}, recursive=True) }}'
+
+  - name: Create infra-user-data secret
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        metadata:
+          name: infra-user-data
+          namespace: openshift-machine-api
+        data:
+          disableTemplating: dHJ1ZQo=
+          userData: "{{ infraUserData | to_json | b64encode }}"
+        kind: Secret
+        type: Opaque
+
+  - name: Create infra machineset
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/machineset.j2') }}"
+
+  - name: Wait for nodes to exist
+    k8s_info:
+      kind: Node
+      label_selectors:
+        - node-role.kubernetes.io/infra =
+    register: infraNodeStatus
+    until:
+      - infraNodeStatus.resources | length == infraMachineSetScale
+    retries: 60
+    delay: 10
+
+  - name: Schedule default ingresscontroller pods to infra nodes
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          name: default
+          namespace: openshift-ingress-operator
+        spec:
+          nodePlacement:
+            nodeSelector:
+              matchLabels:
+                node-role.kubernetes.io/infra: ""
+
+  - name: Schedule registry to infra nodes
+    k8s:
+      state: present
+      definition:
+        apiVersion: imageregistry.operator.openshift.io/v1
+        kind: Config
+        metadata:
+          name: cluster
+        spec:
+          nodeSelector:
+            node-role.kubernetes.io/infra: ""
+
+  - name: Create cluster-monitoring configmap
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: cluster-monitoring-config
+          namespace: openshift-monitoring
+        data:
+          config.yaml: |+
+            alertmanagerMain:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            prometheusK8s:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            prometheusOperator:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            grafana:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            k8sPrometheusAdapter:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            kubeStateMetrics:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            telemeterClient:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            openshiftStateMetrics:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+
+  - name: Create scheduler policy configmap
+    k8s:
+      state: present
+      definition:  
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: scheduler-policy
+          namespace: openshift-config
+        data:
+          policy.cfg: |
+            {
+                "kind" : "Policy",
+                "apiVersion" : "v1",
+                "predicates" : [
+                        {"name" : "NoDiskConflict"},
+                        {"name" : "MaxEBSVolumeCount"},
+                        {"name" : "MaxAzureDiskVolumeCount"},
+                        {"name" : "MaxGCEPDVolumeCount"},
+                        {"name" : "MatchInterPodAffinity"},
+                        {"name" : "PodToleratesNodeTaints"},
+                        {"name" : "CheckNodeUnschedulable"},
+                        {"name" : "CheckVolumeBinding"},
+                        {"name" : "GeneralPredicates"},
+                        {"name" : "MaxCSIVolumeCountPred"}
+                        ],
+                "priorities" : [
+                        {"name" : "BalancedResourceAllocation", "weight" : 1},
+                        {"name" : "ImageLocalityPriority", "weight" : 1},
+                        {"name" : "InterPodAffinityPriority", "weight" : 1},
+                        {"name" : "LeastRequestedPriority", "weight" : 1},
+                        {"name" : "NodeAffinityPriority", "weight" : 1},
+                        {"name" : "NodePreferAvoidPodsPriority", "weight" : 1},
+                        {"name" : "SelectorSpreadPriority", "weight" : 1},
+                        {"name" : "TaintTolerationPriority", "weight" : 1}
+                        ]
+              }
+
+  - name: Create default nodeSelector to target workers and amend scheduler policy to mitigate volume zone issue
+    k8s:
+      state: present
+      definition:
+        apiVersion: config.openshift.io/v1
+        kind: Scheduler
+        metadata:
+          name: cluster
+        spec:
+          defaultNodeSelector: node-role.kubernetes.io/worker=
+          mastersSchedulable: false
+          policy:
+            name: "scheduler-policy"

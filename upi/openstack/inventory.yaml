@@ -1,0 +1,31 @@
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: "{{ansible_playbook_python}}"
+
+      # User-provided values
+      os_subnet_range: '10.0.0.0/16'
+      os_flavor_master: 'ocp.m1.medium'
+      os_flavor_infra: 'ocp.m1.medium'
+      os_flavor_worker: 'ocp.m1.medium'
+      os_image_rhcos: 'rhcos-openstack-4.3'
+      os_external_network: '<external_network>'
+      # OpenShift API floating IP address
+      os_api_fip: '<IP>'
+      # OpenShift Ingress floating IP address
+      os_ingress_fip: '<IP>'
+
+      os_region_name: ''
+      # Name of the SDN.
+      # Possible values are OpenshiftSDN or Kuryr.
+      os_networking_type: 'OpenshiftSDN'
+
+      # Number of provisioned Control Plane nodes
+      # 3 is the minimum number for a fully-functional cluster.
+      os_cp_nodes_number: 3
+
+      # Number of provisioned Compute nodes.
+      # 3 is the minimum number for a fully-functional cluster.
+      os_infra_nodes_number: 3
+      os_compute_nodes_number: 0
