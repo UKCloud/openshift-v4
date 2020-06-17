@@ -165,7 +165,7 @@
       permanent: yes
       immediate: yes
       state: enabled
-  		
+
   - name: Enable port 53 inbound in firewalld (UDP)
     firewalld:
       port: 53/udp
