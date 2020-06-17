@@ -61,7 +61,7 @@ sleep 60
 echo "Approving second set of csrs..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 sleep 60
-echo "Approving csrsi again to be sure..."
+echo "Approving csrs again to be sure..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 
 
