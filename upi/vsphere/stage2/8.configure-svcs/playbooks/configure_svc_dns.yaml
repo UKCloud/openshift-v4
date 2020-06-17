@@ -168,7 +168,7 @@
   		
   - name: Enable port 53 inbound in firewalld (UDP)
     firewalld:
-      port: 53/tcp
+      port: 53/udp
       zone: public
       permanent: yes
       immediate: yes
