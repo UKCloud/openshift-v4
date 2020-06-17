@@ -60,9 +60,13 @@ echo "Approving first set of csrs..."
 sleep 60
 echo "Approving second set of csrs..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
+sleep 60
+echo "Approving csrsi again to be sure..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 
-echo "Waiting 8 minutes more for Cluster Operators to stabilise before running post-deployment..."
-sleep 480
+
+echo "Waiting 7 minutes more for Cluster Operators to stabilise before running post-deployment..."
+sleep 420
 
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 9.post-deployment:{{ image_tag }}
 
