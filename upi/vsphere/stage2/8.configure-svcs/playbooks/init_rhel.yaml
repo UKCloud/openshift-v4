@@ -36,5 +36,17 @@
     command: /usr/local/bin/rhel_satellite.sh
     become: yes
 
+  - name: Glob for host keys
+    find:
+      paths: /etc/ssh
+      patterns: ssh_host_*
+    register: files_to_delete
+
+  - name: Delete host keys
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items: "{{ files_to_delete.files }}"
+
   - name: Reboot the servers to complete the updates
     reboot:
