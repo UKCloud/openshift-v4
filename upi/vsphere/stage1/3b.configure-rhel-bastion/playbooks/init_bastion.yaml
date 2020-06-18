@@ -34,6 +34,11 @@
       group: root
       mode: 0644
 
+  - name: Put SELinux in permissive mode
+    selinux:
+      policy: targeted
+      state: permissive    
+
   - name: Fix permissions on secrets.json
     file:
       path: /home/core/deployconfig/secrets.json
