@@ -35,3 +35,6 @@
   - name: run rhel-satellite.sh script
     command: /usr/local/bin/rhel_satellite.sh
     become: yes
+
+  - name: Reboot the servers to complete the updates
+    reboot:
