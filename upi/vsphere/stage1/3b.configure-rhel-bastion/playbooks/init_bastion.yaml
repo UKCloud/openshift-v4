@@ -39,6 +39,14 @@
       policy: targeted
       state: permissive    
 
+  - name: Enable port 80 inbound in firewalld (TCP)
+    firewalld:
+      port: 80/tcp
+      zone: public
+      permanent: yes
+      immediate: yes
+      state: enabled
+      
   - name: Fix permissions on secrets.json
     file:
       path: /home/core/deployconfig/secrets.json
