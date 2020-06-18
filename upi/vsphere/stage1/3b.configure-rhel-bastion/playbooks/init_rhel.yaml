@@ -36,3 +36,6 @@
     command: /usr/local/bin/rhel_satellite.sh
     become: yes
  
+
+  - name: Reboot the server to complete the updates
+    reboot:
