@@ -20,7 +20,7 @@
       group: root
       mode: 0644
       backup: yes
-	  
+
 - hosts: csvcs
   tasks:
   - name: deploy csvcs resolv.conf template
