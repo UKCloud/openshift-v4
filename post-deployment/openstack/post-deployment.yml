@@ -7,4 +7,6 @@
 - import_playbook: dns-forwarding.yml
 - import_playbook: console-customization.yml
 - import_playbook: sso.yml
+  when: not staging | bool
 - import_playbook: ingress.yml
+  when: not staging | bool
