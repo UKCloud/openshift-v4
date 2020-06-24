@@ -1,0 +1,31 @@
+---
+- hosts: localhost
+
+  vars:
+    routes:
+      - name: "console"
+        namespace: "openshift-console"
+      - name: "kibana"
+        namespace: "openshift-logging"
+      - name: "alertmanager-main"
+        namespace: "openshift-monitoring"
+      - name: "grafana"
+        namespace: "openshift-monitoring"
+      - name: "prometheus-k8s"
+        namespace: "openshift-monitoring"
+      - name: "thanos-querier"
+        namespace: "openshift-monitoring"
+
+  tasks:
+    - name: Enable HSTS on routes
+      k8s:
+        state: present
+        definition:
+          apiVersion: route.openshift.io/v1
+          kind: Route
+          metadata:
+            annotations:
+              haproxy.router.openshift.io/hsts_header: max-age=31536000
+            name: "{{ item.name }}"
+            namespace: "{{ item.namespace }}"
+      with_items: "{{ routes }}"
