@@ -19,7 +19,7 @@ cp install-config.yaml .install-config.yaml.bak
 INSTALLCOMMAND=openshift-install
 
 if [ -f "/tmp/workingdir/openshift-install"  ]; then
-  INSTALLCOMMAND=/tmp/workingdir/openshift-install
+  cp /tmp/workingdir/openshift-install /usr/local/bin
   echo "Disconnected openshift-install is being used"
 fi
 
