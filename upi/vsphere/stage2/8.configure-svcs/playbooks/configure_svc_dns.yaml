@@ -99,6 +99,7 @@
 
   - name: Login to registry to pull image
     raw: podman login --tls-verify=false  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+    when: registry_username != ""
 
   - name: Pull CoreDNS container
     raw: podman pull --tls-verify=false {{ registry_url }}/coredns:{{ image_tag }}
@@ -124,6 +125,7 @@
 
   - name: Login to registry to pull image
     raw: podman login --tls-verify=false  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+    when: registry_username != ""
 
   - name: Pull CoreDNS container
     raw: podman pull --tls-verify=false {{ registry_url }}/coredns:{{ image_tag }}
@@ -149,6 +151,7 @@
 
   - name: Login to registry to pull image
     raw: podman login --tls-verify=false  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+    when: registry_username != ""
 
   - name: Pull CoreDNS container
     raw: podman pull --tls-verify=false {{ registry_url }}/coredns:{{ image_tag }}
