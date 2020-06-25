@@ -77,7 +77,7 @@
               securitydomain: "combined"
           nodePlacement:
             matchLabels:
-              securitydomain:         
+              securitydomain: null
     when: management_ingress_controller == "default"
 
 
