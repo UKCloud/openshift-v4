@@ -75,6 +75,9 @@
           namespaceSelector:
             matchLabels:
               securitydomain: "combined"
+          nodePlacement:
+            matchLabels:
+              securitydomain:         
     when: management_ingress_controller == "default"
 
 
