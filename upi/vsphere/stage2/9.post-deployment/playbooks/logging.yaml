@@ -109,6 +109,7 @@
           labels:
             openshift.io/cluster-logging: "true"
             openshift.io/cluster-monitoring: "true"
+            securitydomain: "combined"            
 
   - name: Create cluster-logging operator group
     k8s:

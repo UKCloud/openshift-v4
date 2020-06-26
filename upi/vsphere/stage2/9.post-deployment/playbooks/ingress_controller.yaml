@@ -5,7 +5,6 @@
     namespaces:
       - "openshift-authentication"
       - "openshift-console"
-      - "openshift-logging"
       - "openshift-monitoring"
 
   tasks:
