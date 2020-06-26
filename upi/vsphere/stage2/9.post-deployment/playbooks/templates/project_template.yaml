@@ -12,6 +12,7 @@ objects:
       openshift.io/description: ${PROJECT_DESCRIPTION}
       openshift.io/display-name: ${PROJECT_DISPLAYNAME}
       openshift.io/requester: ${PROJECT_REQUESTING_USER}
+      openshift.io/node-selector: "securitydomain=undefined"
     labels:
       securitydomain: undefined
     creationTimestamp: null
