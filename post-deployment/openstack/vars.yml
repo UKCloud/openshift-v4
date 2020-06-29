@@ -10,8 +10,8 @@ accessKey: <access key>
 secretKey: <secret key>
 # Optional add ons
 logging: <boolean>
-## Set to true when deploying a development cluster
-staging: <boolean>
+## Set to true when deploying a development cluster, otherwise defaults to false
+#staging: true
 # DNS Forwarding - omit or set to {} to disable
 dnsforwardingzones: 
   - name: foo-dns
