@@ -178,6 +178,9 @@
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
               redundancyPolicy: ZeroRedundancy
+              storage:
+                size: 100G
+                storageClassName: thin
               resources:
                 limits:
                   cpu: 4000m
@@ -185,9 +188,6 @@
                 requests:
                   cpu: 100m
                   memory: 512Mi
-                storage:
-                  size: 100G
-                  storageClassName: thin
             type: elasticsearch
           managementState: Managed
           visualization:
