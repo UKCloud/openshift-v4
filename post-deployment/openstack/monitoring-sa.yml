@@ -1,0 +1,47 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Create monitoring service account
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: monitoring
+          namespace: openshift-monitoring
+
+  - name: Add cluster-reader permissions to monitoring sa
+    command: oc adm policy add-cluster-role-to-user cluster-reader -z monitoring -n openshift-monitoring
+
+  - name: Register monitor var
+    k8s_info:
+      api_version: v1
+      kind: ServiceAccount
+      name: monitoring
+      namespace: openshift-monitoring
+    register: monitor_sa
+
+  - set_fact:
+      token_secret: "{{ monitor_sa.resources[0].secrets | to_json | from_json | json_query(jmesquery) }}"
+    vars:
+      jmesquery: "[?contains(name, 'token')].name | [0]"
+
+  - name: Get token
+    k8s_info:
+      api_version: v1
+      kind: secret
+      name: "{{ token_secret }}"
+      namespace: openshift-monitoring
+    register: token_json
+
+  - name: Verify token
+    uri:
+      url: https://api.{{ domainSuffix }}:6443/api/v1/nodes
+      return_content: yes
+      headers:
+        Authorization: "Bearer {{ token_json.resources[0].data.token | b64decode }}"
+
+  - name: Token to be added to monitoring_auth_token field in SINT
+    debug:
+      msg: "{{ token_json.resources[0].data.token | b64decode }}"
