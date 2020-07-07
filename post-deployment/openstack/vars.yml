@@ -1,3 +1,4 @@
+domainSuffix: <domain suffix>
 # SSO parameters
 ssoSecret: <secret>
 ssoClientID: <client ID>
