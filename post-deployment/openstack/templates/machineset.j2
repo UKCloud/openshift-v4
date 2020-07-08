@@ -30,11 +30,11 @@ spec:
             name: openstack-cloud-credentials
             namespace: openshift-machine-api
           flavor: ocp.m1.medium
-      {% if imageName is defined %}
+{% if imageName is defined %}
           image: "{{ imageName }}"
-      {% else %}
+{% else %}
           image: "{{ infrastructureId }}-rhcos"
-      {% endif %}
+{% endif %}
           kind: OpenstackProviderSpec
           networks:
           - filter: {}
