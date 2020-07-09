@@ -63,7 +63,9 @@ echo "Approving second set of csrs..."
 sleep 60
 echo "Approving csrs again to be sure..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
-
+sleep 60
+echo "Approving csrs one last time to be sure..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 
 echo "Waiting 7 minutes more for Cluster Operators to stabilise before running post-deployment..."
 sleep 420
