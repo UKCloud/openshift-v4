@@ -1,0 +1,71 @@
+---
+- hosts: localhost
+
+  vars:
+    secrets:
+      - name: "api-certs"
+        namespace: "openshift-config"
+      - name: "ingress-certs"
+        namespace: "openshift-ingress"
+
+  tasks:
+  - name: Create acme-certs service account
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: acme-certs
+          namespace: default
+
+  - name: Create acme-certs roles
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: Role
+        metadata:
+          name: acme-certs
+          namespace: "{{ item.namespace }}"
+        rules:
+        - apiGroups: [""]
+          resources: ["secrets"]
+          resourceNames: ["{{ item.name }}"]
+          verbs: ["get", "list", "update"]
+    with_items: "{{ secrets }}"
+
+  - name: Create acme-certs rolebindings
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: "acme-certs"
+          namespace: "{{ item.namespace }}"
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: Role
+          name: acme-certs
+        subjects:
+        - kind: ServiceAccount
+          name: acme-certs
+          namespace: default
+    with_items: "{{ secrets }}"
+
+  - name: Retrieve acme-certs token
+    command: oc serviceaccounts get-token acme-certs -n default
+    register: acme_token
+
+  - name: Verify token
+    uri:
+      url: "https://api.{{ domainSuffix }}:6443/api/v1/namespaces/{{ item.namespace }}/secrets/{{ item.name }}"
+      return_content: yes
+      headers:
+        Authorization: "Bearer {{ acme_token.stdout }}"
+    with_items: "{{ secrets }}"
+
+  - name: Output acme-certs token
+    debug:
+      msg: "{{ acme_token.stdout }}"
