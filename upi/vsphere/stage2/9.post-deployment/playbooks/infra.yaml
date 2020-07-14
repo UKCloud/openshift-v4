@@ -136,6 +136,7 @@
                           --minimum-container-ttl-duration=6m0s \
                           --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec \
                           --cloud-provider=vsphere \
+                          --cloud-config=/etc/kubernetes/cloud.conf \
                           --v=${KUBELET_LOG_LEVEL}	
                 enabled: true
                 name: kubelet.service
