@@ -189,6 +189,13 @@
                   cpu: 100m
                   memory: 512Mi
             type: elasticsearch
+            retentionPolicy: 
+              application:
+                maxAge: 1d
+              infra:
+                maxAge: 7d
+              audit:
+                maxAge: 7d
           managementState: Managed
           visualization:
             kibana:
