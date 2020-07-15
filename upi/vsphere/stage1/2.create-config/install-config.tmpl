@@ -5,13 +5,13 @@ metadata:
 compute:
 - hyperthreading: Enabled
   name: worker
-  replicas: 3
+  replicas: 0
 controlPlane:
   hyperthreading: Enabled
   name: master
   replicas: 3 
-networking:
-  machineCIDR: "<%= $machinecidr %>"
+#networking:
+#  machineCIDR: "<%= $machinecidr %>"
 platform:
   vsphere:
     vCenter: "<%= $vcenterserver %>"
