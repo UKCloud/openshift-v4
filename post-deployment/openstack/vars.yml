@@ -1,3 +1,4 @@
+imageName: <Name of image if using one in glance. If you want the installer to upload comment this variable out>
 domainSuffix: <domain suffix>
 # SSO parameters
 ssoSecret: <secret>
