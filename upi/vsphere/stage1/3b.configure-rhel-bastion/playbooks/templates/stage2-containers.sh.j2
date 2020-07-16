@@ -53,12 +53,15 @@ podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home
 podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
 
 export KUBECONFIG=/home/core/deployconfig/auth/kubeconfig
-echo "Waiting 2.5 minutes for nodes to initialise before approving csrs..."
-sleep 150
+echo "Waiting 4 minutes for nodes to initialise before approving csrs..."
+sleep 240
 echo "Approving first set of csrs..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 sleep 60
 echo "Approving second set of csrs..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
+sleep 60
+echo "Approving csrs again to be sure..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 sleep 60
 echo "Approving csrs again to be sure..."
