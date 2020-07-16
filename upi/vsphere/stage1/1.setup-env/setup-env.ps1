@@ -66,8 +66,8 @@ $dfgwip = [IPAddress] $global:defaultgw
 $maskip = [IPAddress] $global:longmask
 $netip = [IPAddress] ($dfgwip.Address -band $maskip.Address)
 
-# Calculate 200th IP in our subnet
-$startoffset = [IPAddress] "0.0.0.200"
+# Calculate 230th IP in our subnet
+$startoffset = [IPAddress] "0.0.0.230"
 $dhcpstartip = [IPAddress] "0"
 $dhcpstartip.Address = $netip.Address + $startoffset.Address
 

@@ -93,6 +93,13 @@ GkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC
 ...",
 ```
 
+7. Process the `config.json` through jq to sanitise and verify the json syntax:
+
+```
+$ mv config.json config.json.bak; cat config.json.bak | jq . > config.json
+```
+
+
 ### Generate a special openshift-install binary
 1. Run the following command to create a custom openshift-install binary for the disconnected install: 
 ```
