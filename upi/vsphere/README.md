@@ -133,47 +133,6 @@ After that, run Stage 1 as normal...
 
 # Appendix: How to update a disconnected OpenShift install?
 
-Caveats:
-- The cluster was installed as disconnected
-- The updated containers will be mirrored to the same registry/repo that was used for the original install
-- This procedure is (currently) not documented by Red Hat so is presumably unsupported
-- Tested only for update from 4.3.9 to 4.3.13
+https://docs.openshift.com/container-platform/4.4/updating/updating-restricted-network-cluster.html
 
-## Mirror new version of OpenShift container images to the private registry
-1. Configure shell variables for mirroring:
-```
-export OCP_RELEASE=4.3.13-x86_64
-export LOCAL_REGISTRY='exampleregistry.domain.local:5002' 
-export LOCAL_REPOSITORY='docker-openshift/os-disconnected' 
-export PRODUCT_REPO='openshift-release-dev' 
-export LOCAL_SECRET_JSON='~/pull-secret.json' 
-export RELEASE_NAME="ocp-release" 
-```
-2. Run oc to mirror the images:
-```
-oc adm -a ${LOCAL_SECRET_JSON} release mirror \
-     --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE} \
-     --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} \
-     --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}
-```
-In the completion output, locate the hash of the container image tagged with `:<version>-x86_64`, eg:
-```
-...
-sha256:e1ebc7295248a8394afb8d8d918060a7cc3de12c491283b317b80b26deedfe61 exampleregistry.domain.local:5002/docker-openshift/os-disconnected:4.3.13-x86_64
-...
-```
-
-## Trigger the update inside the cluster
-
-1. Edit the ClusterVersion instance:  `oc edit ClusterVersion version` to add the following to the "spec:" section, specifying the hash and new version:
-```yaml
-spec:
-    ...
-    desiredUpdate:
-      force: true
-      image: exampleregistry.domain.local:5002/docker-openshift/os-disconnected@sha256:e1ebc7295248a8394afb8d8d918060a7cc3de12c491283b317b80b26deedfe61
-      version: 4.3.13
-    ...
-```
-
-2. The cluster will attempt to download and perform the update! If the update fails then the "desiredUpdate:" section can be removed and the cluster should hopefully heal back to its previous version.
+https://docs.openshift.com/container-platform/4.5/updating/updating-restricted-network-cluster.html
