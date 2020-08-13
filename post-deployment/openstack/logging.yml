@@ -137,12 +137,29 @@
           source: redhat-operators
           sourceNamespace: openshift-marketplace
 
+  - name: Wait 2 minutes for MachineConfigPool status to stabilise because cloud-provider-config has been changed
+    pause:
+      seconds: 120
+    when: cloudproviderConfigchanged is defined and cloudproviderConfigchanged
+
+  - name: Wait for MachineConfigPools to all become Updated
+    k8s_info:
+      kind: MachineConfigPool
+    register: machineConfigPoolStatus
+    until:
+      - machineConfigPoolStatus.resources | length > 0
+      - machineConfigPoolStatus.resources[0].status.readyMachineCount == machineConfigPoolStatus.resources[0].status.machineCount
+      - machineConfigPoolStatus.resources[1].status.readyMachineCount is not defined or machineConfigPoolStatus.resources[1].status.readyMachineCount == machineConfigPoolStatus.resources[1].status.machineCount
+      - machineConfigPoolStatus.resources[2].status.readyMachineCount is not defined or machineConfigPoolStatus.resources[2].status.readyMachineCount == machineConfigPoolStatus.resources[2].status.machineCount
+    retries: 200
+    delay: 3
+
   - name: Wait for operator pod to be Ready
     k8s_info:
       kind: Pod
       namespace: openshift-logging
       label_selectors:
-        - name = cluster-logging-operator 
+        - name = cluster-logging-operator
     register: operatorPodStatus
     until:
       - operatorPodStatus.resources | length > 0
