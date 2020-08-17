@@ -32,7 +32,7 @@
         - apiGroups: [""]
           resources: ["secrets"]
           resourceNames: ["{{ item.name }}"]
-          verbs: ["get", "list", "update"]
+          verbs: ["get", "list", "patch"]
     with_items: "{{ secrets }}"
 
   - name: Create acme-certs rolebindings
