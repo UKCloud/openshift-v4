@@ -8,3 +8,4 @@
 - import_playbook: console-customization.yml
 - import_playbook: sso.yml
 - import_playbook: monitoring-sa.yml
+- import_playbook: acme-sa.yml
