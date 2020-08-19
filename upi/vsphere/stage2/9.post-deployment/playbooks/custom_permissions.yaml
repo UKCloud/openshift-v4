@@ -1,0 +1,124 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: Create grafana-dashboard-admin ClusterRole
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: grafana-dashboard-admin
+        rules:
+          - apiGroups:
+              - integreatly.org
+            resources:
+              - grafanadashboards
+              - grafanadashboards/finalizers
+            verbs: ['create', 'delete', 'get', 'list', 'update', 'watch']
+
+  - name: Create monitor-crd-edit ClusterRole
+    k8s:
+      state: present
+      definition:
+        kind: ClusterRole
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: monitor-crd-edit
+        rules:
+          - apiGroups: ["monitoring.coreos.com"]
+            resources: ["prometheusrules", "servicemonitors", "podmonitors"]
+            verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+  - name: Create namespace-admin ClusterRole
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: namespace-admin
+        rules:
+          - apiGroups:
+            - ""
+            resources:
+            - namespaces
+            verbs:
+            - get
+            - list
+            - watch
+            - patch
+            - update
+
+  - name: Create ClusterRoleBinding monitor-crd-edit-devops
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: monitor-crd-edit-devops
+        roleRef:
+          name: monitor-crd-edit
+          kind: ClusterRole
+          apiGroup: ""
+        subjects:
+          - kind: Group
+            name: devops-team
+
+  - name: Create ClusterRoleBinding grafana-dashboard-admin-devops
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: grafana-dashboard-admin-devops
+        roleRef:
+          name: grafana-dashboard-admin
+          kind: ClusterRole
+          apiGroup: ""
+        subjects:
+          - kind: Group
+            name: devops-team
+
+  - name: Create ClusterRoleBinding cluster-reader-automation
+    k8s:
+      state: present
+      definition:
+        kind: ClusterRoleBinding
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: cluster-reader-automation
+        subjects:
+          - kind: ServiceAccount
+            name: helm
+            namespace: continuous-integration
+          - kind: ServiceAccount
+            name: jenkins
+            namespace: continuous-integration
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: cluster-reader
+
+  - name: Create ClusterRoleBinding view-automation
+    k8s:
+      state: present
+      definition:
+        kind: ClusterRoleBinding
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: view-automation
+        subjects:
+          - kind: ServiceAccount
+            name: helm
+            namespace: continuous-integration
+          - kind: ServiceAccount
+            name: jenkins
+            namespace: continuous-integration
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: view
