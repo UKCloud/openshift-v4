@@ -23,13 +23,11 @@ podman run --name ign-webserver -d -v /home/core/deployconfig/bootstrap.ign:/usr
 podman run -v /home/core/deployconfig:/tmp/workingdir:z 6.add-ignition:{{ image_tag }}
 podman run -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
 
-# Wait a while for svcs machines to start..
 echo "Waiting a minute or two for svcs VMs to start before DNS initialisation"
 sleep 80
 
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 8.configure-svcs:{{ image_tag }}
 
-# Move oc and kubectl into /usr/local/bin
 echo "Install oc command in /usr/local/bin"
 mv /home/core/deployconfig/oc /usr/local/bin
 mv /home/core/deployconfig/kubectl /usr/local/bin
@@ -46,26 +44,34 @@ chmod 666 /home/core/deployconfig/auth/*
 echo "Waiting 10 minutes for cluster to start up before polling..."
 sleep 600
 
-# Remove webserver container
 echo "Remove webserver container"
 podman stop ign-webserver
 podman rm ign-webserver
 
-# Wait for install to complete and then immediately kill off bootstrap
+# Wait for install to complete and then remove bootstrap VM
 podman run --entrypoint="/usr/local/4.run-installer/waitforcomplete.sh" -v /home/core/deployconfig:/tmp/workingdir:z 4.run-installer:{{ image_tag }}
 podman run --entrypoint="./removebootstrap.sh" -v /home/core/deployconfig:/tmp/workingdir:z 7.terraform-deploy:{{ image_tag }}
 
 export KUBECONFIG=/home/core/deployconfig/auth/kubeconfig
-echo "Waiting 2 minutes for nodes to initialise before approving csrs..."
-sleep 120
+echo "Waiting 4 minutes for nodes to initialise before approving csrs..."
+sleep 240
 echo "Approving first set of csrs..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
-sleep 30
+sleep 60
 echo "Approving second set of csrs..."
 /usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
+sleep 60
+echo "Approving csrs again to be sure..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
+sleep 60
+echo "Approving csrs again to be sure..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
+sleep 60
+echo "Approving csrs one last time to be sure..."
+/usr/local/bin/oc get csr -o name | xargs /usr/local/bin/oc adm certificate approve
 
-echo "Waiting 8 minutes more for Cluster Operators to stabilise before running post-deployment..."
-sleep 480
+echo "Waiting 7 minutes more for Cluster Operators to stabilise before running post-deployment..."
+sleep 420
 
 podman run  -v /home/core/deployconfig:/tmp/workingdir:z 9.post-deployment:{{ image_tag }}
 

@@ -6,12 +6,12 @@ read TAG
 echo "Enter the registry url prefix (without trailing /):"
 read PREFIX
 
-podman build ./4.run-installer -t ${PREFIX}/4.run-installer:${TAG} --no-cache
-podman build ./5.ign-webserver -t ${PREFIX}/5.ign-webserver:${TAG} --no-cache
-podman build ./6.add-ignition -t ${PREFIX}/6.add-ignition:${TAG} --no-cache
-podman build ./7.terraform-deploy -t ${PREFIX}/7.terraform-deploy:${TAG} --no-cache
-podman build ./8.configure-svcs -t ${PREFIX}/8.configure-svcs:${TAG} --no-cache
-podman build ./9.post-deployment -t ${PREFIX}/9.post-deployment:${TAG} --no-cache
+podman build --format=docker ./4.run-installer -t ${PREFIX}/4.run-installer:${TAG} --no-cache
+podman build --format=docker ./5.ign-webserver -t ${PREFIX}/5.ign-webserver:${TAG} --no-cache
+podman build --format=docker ./6.add-ignition -t ${PREFIX}/6.add-ignition:${TAG} --no-cache
+podman build --format=docker ./7.terraform-deploy -t ${PREFIX}/7.terraform-deploy:${TAG} --no-cache
+podman build --format=docker ./8.configure-svcs -t ${PREFIX}/8.configure-svcs:${TAG} --no-cache
+podman build --format=docker ./9.post-deployment -t ${PREFIX}/9.post-deployment:${TAG} --no-cache
 
 read -p "Press [Enter] to push images to registry, or [Ctrl-C] to cancel"
 

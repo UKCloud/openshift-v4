@@ -47,14 +47,3 @@ podman run -v ~/deployconfig:/tmp/workingdir:z 3a.create-rhel-bastion:<tagversio
 podman run -v ~/deployconfig:/tmp/workingdir:z 3b.configure-rhel-bastion:<tagversion>
 ```
 
-
-
-## Step "9" - finalise-install (after Stage 2 cluster deployment is completed)
-
-This container removes the bootstrap VM from the loadbalancer pools and changes the 6443 API LB pool to use a HTTPS-type monitor which specifically checks the healthz endpoint on the masters.
-
-Since it needs NSX access, this needs to be ran from the same jumpbox as Stage 1 and is included here alongside Stage 1.
-
-```
-podman run -v ~/deployconfig:/tmp/workingdir:z 99.finalise-install:<tagversion>
-```

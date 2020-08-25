@@ -1,6 +1,39 @@
 ---
 - hosts: localhost
   tasks:
+  - name: Get cloud-provider-config ConfigMap
+    k8s_info:
+      kind: ConfigMap
+      name: cloud-provider-config
+      namespace: openshift-config
+    register: cloudproviderconfigConfigMap
+
+  - name: Get cloud-provider-config data
+    set_fact:
+      cloudproviderConfig: '{{ cloudproviderconfigConfigMap.resources[0].data.config }}'
+
+  - name: Note in a fact whether cloud-provider-config will be changed
+    set_fact:
+      cloudproviderConfigchanged: true
+    when: not cloudproviderConfig is search("ignore-volume-az")
+
+  - name: Alter cloud-provider-config to include ignore-volume-az if it isnt there already
+    k8s:
+      state: present
+      definition:
+        kind: ConfigMap
+        apiVersion: v1
+        metadata:
+          name: cloud-provider-config
+          namespace: openshift-config
+        data:
+          config: |
+            {{ cloudproviderConfig }}
+            [BlockStorage]
+            ignore-volume-az = yes
+    when: not cloudproviderConfig is search("ignore-volume-az")
+
+
   - name: Unset default storage class from standard SC
     k8s:
       state: present
@@ -47,30 +80,6 @@
         provisioner: kubernetes.io/cinder
         reclaimPolicy: Delete
         volumeBindingMode: Immediate
-
-  - name: Get nodes
-    k8s_info:
-      kind: Node
-    register: k8s_nodes
-
-  - name: Build node name dict
-    set_fact:
-      nodes: '{{ nodes | default([]) + [ k8s_nodes | to_json | from_json | json_query(nodesQuery) ] }}'
-    vars:
-      nodesQuery: "resources[*].metadata.name"
-
-  - name: Add empty region label and change zone to nova
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Node
-        metadata:
-          name: "{{ item }}"
-          labels:
-            failure-domain.beta.kubernetes.io/region: ""
-            failure-domain.beta.kubernetes.io/zone: "nova"
-    with_items: "{{ nodes }}"
 
   - name: Remove image registry PVC created during IPI deployment
     k8s:

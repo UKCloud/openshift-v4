@@ -109,6 +109,7 @@
           labels:
             openshift.io/cluster-logging: "true"
             openshift.io/cluster-monitoring: "true"
+            securitydomain: "combined"            
 
   - name: Create cluster-logging operator group
     k8s:
@@ -177,6 +178,9 @@
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
               redundancyPolicy: ZeroRedundancy
+              storage:
+                size: 100G
+                storageClassName: thin
               resources:
                 limits:
                   cpu: 4000m
@@ -184,10 +188,14 @@
                 requests:
                   cpu: 100m
                   memory: 512Mi
-                storage:
-                  size: 100G
-                  storageClassName: thin
             type: elasticsearch
+            retentionPolicy: 
+              application:
+                maxAge: 1d
+              infra:
+                maxAge: 7d
+              audit:
+                maxAge: 7d
           managementState: Managed
           visualization:
             kibana:

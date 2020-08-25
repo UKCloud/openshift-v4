@@ -1,4 +1,48 @@
 ---
+- hosts: svcs
+  tasks:
+  - name: deploy svcs resolv.conf template
+    template:
+      src: templates/svcresolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+
+- hosts: asvcs
+  tasks:
+  - name: deploy asvcs resolv.conf template
+    template:
+      src: templates/asvcresolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+
+- hosts: csvcs
+  tasks:
+  - name: deploy csvcs resolv.conf template
+    template:
+      src: templates/csvcresolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+
+- hosts: esvcs
+  tasks:
+  - name: deploy esvcs resolv.conf template
+    template:
+      src: templates/esvcresolv.conf.j2
+      dest: /etc/resolv.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes	 
+
 - hosts: svcs, asvcs, csvcs, esvcs
   tasks:
   - name: make NetworkManager keep out of DNS
@@ -14,15 +58,6 @@
       mode: 0644
       backup: yes
     
-  - name: deploy resolv.conf template
-    template:
-      src: templates/resolv.conf.j2
-      dest: /etc/resolv.conf
-      owner: root
-      group: root
-      mode: 0644
-      backup: yes
-
   - name: deploy rhel-satellite.sh script
     template:
       src: templates/rhel_satellite.sh.j2
@@ -35,3 +70,18 @@
   - name: run rhel-satellite.sh script
     command: /usr/local/bin/rhel_satellite.sh
     become: yes
+
+  - name: Glob for host keys
+    find:
+      paths: /etc/ssh
+      patterns: ssh_host_*
+    register: files_to_delete
+
+  - name: Delete host keys
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items: "{{ files_to_delete.files }}"
+
+  - name: Reboot the servers to complete the updates
+    reboot:

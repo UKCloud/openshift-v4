@@ -5,7 +5,6 @@
     namespaces:
       - "openshift-authentication"
       - "openshift-console"
-      - "openshift-logging"
       - "openshift-monitoring"
 
   tasks:
@@ -31,7 +30,7 @@
     set_fact:
       nodeLabelRaw: '{{ nodeLabelRaw | default({}) | combine ( { "nodes": nodes | to_json | from_json | json_query(nodeLabelRawQuery), "securitydomain": item.name } ) }}'
     vars:
-      nodeLabelRawQuery: "resources[?contains(metadata.name,'worker-{{ item.name }}')].metadata.name"
+      nodeLabelRawQuery: "resources[?contains(metadata.name,'worker-{{ item.name }}-')].metadata.name"
     with_items: "{{ ingress_controllers }}"
     register: nodeLabelsRaw
   
@@ -75,6 +74,10 @@
           namespaceSelector:
             matchLabels:
               securitydomain: "combined"
+          nodePlacement:
+            nodeSelector:
+              matchLabels:
+                securitydomain:
     when: management_ingress_controller == "default"
 
 

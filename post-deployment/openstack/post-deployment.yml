@@ -3,10 +3,12 @@
 - import_playbook: infra.yml
 - import_playbook: storage.yml
 - import_playbook: logging.yml
-  when: logging | bool
+  when: logging | bool  
 - import_playbook: dns-forwarding.yml
 - import_playbook: console-customization.yml
 - import_playbook: sso.yml
   when: not staging | default(false) | bool
 - import_playbook: ingress.yml
   when: not staging | default(false) | bool
+- import_playbook: monitoring-sa.yml
+- import_playbook: acme-sa.yml
