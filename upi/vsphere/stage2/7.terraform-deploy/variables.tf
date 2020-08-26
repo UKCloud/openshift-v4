@@ -41,7 +41,7 @@ variable "master_memory" {
 
 variable "master_disk_size" {
   type = string
-  default = "60"
+  default = "100"
 }
 
 // Infra Workers
@@ -59,7 +59,7 @@ variable "infra_memory" {
 variable "infra_disk_size" {
   type = string
   description = "Disk size in gigabytes"
-  default = "60"
+  default = "100"
 }
 
 
