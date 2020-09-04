@@ -45,8 +45,9 @@
                           --kubeconfig=/var/lib/kubelet/kubeconfig \
                           --container-runtime=remote \
                           --container-runtime-endpoint=/var/run/crio/crio.sock \
-                          --runtime-cgroups=/system.slice/crio.service \
                           --node-labels=node-role.kubernetes.io/infra,node.openshift.io/os_id=${ID} \
+                          --node-ip=${KUBELET_NODE_IP} \
+                          --address=${KUBELET_NODE_IP} \
                           --minimum-container-ttl-duration=6m0s \
                           --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec \
                           --cloud-provider=openstack \
