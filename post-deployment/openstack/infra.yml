@@ -17,6 +17,45 @@
     vars:
       infrastructureIdQuery: "resources[0].status.infrastructureName"
 
+  - name: Create MachineConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfig
+        metadata:
+          labels:
+            machineconfiguration.openshift.io/role: infra
+          name: 02-infra-kubelet
+        spec:
+          config:
+            ignition:
+              version: 2.2.0
+            systemd:
+              units:
+              - dropins:
+                - name: 20-infra-nodelabel.conf
+                  contents: |
+                    [Service]
+                    ExecStart=
+                    ExecStart=/usr/bin/hyperkube \
+                        kubelet \
+                          --config=/etc/kubernetes/kubelet.conf \
+                          --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig \
+                          --kubeconfig=/var/lib/kubelet/kubeconfig \
+                          --container-runtime=remote \
+                          --container-runtime-endpoint=/var/run/crio/crio.sock \
+                          --node-labels=node-role.kubernetes.io/infra,node.openshift.io/os_id=${ID} \
+                          --node-ip=${KUBELET_NODE_IP} \
+                          --address=${KUBELET_NODE_IP} \
+                          --minimum-container-ttl-duration=6m0s \
+                          --volume-plugin-dir=/etc/kubernetes/kubelet-plugins/volume/exec \
+                          --cloud-provider=openstack \
+                          --cloud-config=/etc/kubernetes/cloud.conf \
+                          --v=${KUBELET_LOG_LEVEL}
+                enabled: true
+                name: kubelet.service
+
   - name: Create MachineConfigPool
     k8s:
       state: present
