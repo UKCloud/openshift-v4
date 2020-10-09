@@ -33,6 +33,9 @@
           resources: ["secrets"]
           resourceNames: ["{{ item.name }}"]
           verbs: ["get", "list", "patch"]
+        - apiGroups: [""]
+          resources: ["secrets"]
+          verbs: ["create"]
     with_items: "{{ secrets }}"
 
   - name: Create acme-certs rolebindings
@@ -60,11 +63,11 @@
 
   - name: Verify token
     uri:
-      url: "https://api.{{ domainSuffix }}:6443/api/v1/namespaces/{{ item.namespace }}/secrets/{{ item.name }}"
+      url: "https://api.{{ domainSuffix }}:6443/api/v1"
       return_content: yes
+      validate_certs: no
       headers:
         Authorization: "Bearer {{ acme_token.stdout }}"
-    with_items: "{{ secrets }}"
 
   - name: Output acme-certs token
     debug:

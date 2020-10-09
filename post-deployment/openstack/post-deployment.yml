@@ -9,6 +9,5 @@
 - import_playbook: sso.yml
   when: not staging | default(false) | bool
 - import_playbook: ingress.yml
-  when: not staging | default(false) | bool
 - import_playbook: monitoring-sa.yml
 - import_playbook: acme-sa.yml
