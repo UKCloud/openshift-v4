@@ -34,7 +34,7 @@ yum install -y katello-agent
 openshiftPoolId=$(subscription-manager list --available --matches='Red Hat OpenShift Container Platform for Certified Cloud and Service Providers' | awk '/System Type:\s*Physical/' RS='\n\n' | awk '/Pool ID/ {print $NF}')
 
 # setup repos & install software packages
-retry subscription-manager attach --pool=$openshiftPoolId
+subscription-manager attach --pool=$openshiftPoolId
 retry subscription-manager repos --disable=*
 
 retry subscription-manager repos \
