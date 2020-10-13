@@ -2,5 +2,5 @@
 - import_playbook: default_project.yaml
 - import_playbook: disable_self_provisioning.yaml
 - import_playbook: infra.yaml
-- import_playbook: object_storage.yaml
+  #- import_playbook: object_storage.yaml
 - import_playbook: ingress_controller.yaml
