@@ -58,4 +58,3 @@
             name: "{{ item.name }}"
             namespace: "{{ item.namespace }}"
       with_items: "{{ routes }}"
-      when: not staging | default(false) | bool
