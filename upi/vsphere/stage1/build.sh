@@ -6,10 +6,10 @@ read TAG
 echo "Enter the registry url prefix (without trailing /):"
 read PREFIX
 
-podman build ./1.setup-env -t ${PREFIX}/1.setup-env:${TAG} --no-cache
+podman build --format=docker ./1.setup-env -t ${PREFIX}/1.setup-env:${TAG} --no-cache
 podman build --format=docker ./2.create-config -t ${PREFIX}/2.create-config:${TAG} --no-cache
-podman build ./3a.create-rhel-bastion -t ${PREFIX}/3a.create-rhel-bastion:${TAG} --no-cache
-podman build ./3b.configure-rhel-bastion -t ${PREFIX}/3b.configure-rhel-bastion:${TAG} --no-cache
+podman build --format=docker ./3a.create-rhel-bastion -t ${PREFIX}/3a.create-rhel-bastion:${TAG} --no-cache
+podman build --format=docker ./3b.configure-rhel-bastion -t ${PREFIX}/3b.configure-rhel-bastion:${TAG} --no-cache
 
 podman tag docker.io/coredns/coredns:latest ${PREFIX}/coredns:${TAG}
 
