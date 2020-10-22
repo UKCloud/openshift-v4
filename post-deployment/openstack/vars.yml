@@ -12,6 +12,8 @@ accessKey: <access key>
 secretKey: <secret key>
 # Optional add ons
 logging: <boolean>
+# Opsview host name format cnaxxxxx-<customer>
+opsviewName: <name>
 ## Set to true when deploying a development cluster, otherwise defaults to false
 #staging: true
 # DNS Forwarding - omit or set to {} to disable
