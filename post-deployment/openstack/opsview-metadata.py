@@ -23,6 +23,9 @@ def Vars():
     return domain, api, name
 
 def generateJson(domain, api, name):
+    '''
+    Creates monitoring metadata json and prints this for the user.
+    '''
     metadata = {}
 
     metadata['alias'] = ""
