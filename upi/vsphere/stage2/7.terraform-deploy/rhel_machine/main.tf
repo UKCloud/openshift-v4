@@ -30,7 +30,7 @@ resource "vsphere_virtual_machine" "vm" {
   wait_for_guest_net_routable = "false"
 
   lifecycle {
-    ignore_changes = [datastore_id, cpu_reservation, cpu_share_count, cpu_share_level, num_cores_per_socket, num_cpus, memory_hot_add_enabled, memory_limit, memory_reservation, memory_share_count, memory_share_level, ]
+    ignore_changes = [disk, datastore_id, cpu_reservation, cpu_share_count, cpu_share_level, num_cores_per_socket, num_cpus, memory_hot_add_enabled, memory_limit, memory_reservation, memory_share_count, memory_share_level, ]
   }
 
   network_interface {
