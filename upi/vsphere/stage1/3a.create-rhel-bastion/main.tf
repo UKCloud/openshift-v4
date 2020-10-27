@@ -30,7 +30,7 @@ module "bastion" {
   names            = [var.bastion.hostname]
   instance_count   = 1
   num_cpu          = 1
-  memory           = 2048
+  memory           = 4096
   disk_size        = 100
   resource_pool_id = data.vsphere_resource_pool.management_pool.id
   datastore        = var.management.vsphere_datastore
