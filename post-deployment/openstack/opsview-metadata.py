@@ -10,7 +10,7 @@ def Vars():
 
     Outputs:
         name: Name of the host to be set up in opsview.
-        domaain: Domain suffix of openshift cluster.
+        domain: Domain suffix of openshift cluster.
         api: API address of openshift cluster.
     '''
     with open('vars.yml') as f:
@@ -59,7 +59,4 @@ def generateJson(domain, api, name):
 d, a, n = Vars()
 
 generateJson(d, a, n)
-    
-    
-    
 
