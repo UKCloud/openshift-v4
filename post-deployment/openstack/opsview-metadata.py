@@ -18,7 +18,8 @@ def Vars():
 
     domain = data['domainSuffix']
     api = 'api.{}'.format(domain)
-    name = data['opsviewName'] 
+    name = data['opsviewName']
+    logging = data['logging'] 
 
     return domain, api, name
 
@@ -31,8 +32,8 @@ def generateJson(domain, api, name):
     metadata['alias'] = ""
     metadata['check_command'] = "Always assumed to be UP"
     metadata['variables'] = []
-    metadata['host_group'] = {"name": "UKCloud OpenShift"}
-    metadata['host_templates'] = [{"name": "UKCloud OpenShift"}]  
+    metadata['hostgroup'] = "OpenShift-cor00005-2"
+    metadata['hosttemplates'] = [{"name": "UKCloud OpenShift"}]  
     metadata['fqdn'] = api
     metadata['monitored_by'] = "assured COR internet bubble collector group"
     metadata['name'] = name
@@ -43,9 +44,16 @@ def generateJson(domain, api, name):
     variables.append({"name": "OPENSHIFT_PORT", "value": "6443"})
     variables.append({"name": "OPENSHIFT_TOKEN", "value": "Monitoring token", "arg1": "secret(label=monitoring_auth_token)"})
 
+    if logging == 'true':
     routeList = {
                  "oauth-openshift.apps": "403", "console-openshift-console.apps": "200", "downloads-openshift-console.apps": "200",
                  "kibana-openshift-logging.apps": "403", "alertmanager-main-openshift-monitoring.apps": "403", "grafana-openshift-monitoring.apps": "403",
+                 "prometheus-k8s-openshift-monitoring.apps": "403", "thanos-querier-openshift-monitoring.apps": "403"
+                }
+    else:
+    routeList = {
+                 "oauth-openshift.apps": "403", "console-openshift-console.apps": "200", "downloads-openshift-console.apps": "200",
+                 "alertmanager-main-openshift-monitoring.apps": "403", "grafana-openshift-monitoring.apps": "403",
                  "prometheus-k8s-openshift-monitoring.apps": "403", "thanos-querier-openshift-monitoring.apps": "403"
                 }
 
