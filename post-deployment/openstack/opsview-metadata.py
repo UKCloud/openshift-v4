@@ -36,7 +36,7 @@ def generateJson(domain, api, name, logging, region):
     metadata['hostgroup'] = "OpenShift-{}".format(region[1])
     metadata['hosttemplates'] = [{"name": "UKCloud OpenShift"}]  
     metadata['fqdn'] = api
-    metadata['monitored_by'] = "assured COR internet bubble collector group"
+    metadata['monitoringcluster'] = "assured COR internet bubble collector group"
     metadata['name'] = name
 
     variables = metadata['variables']
