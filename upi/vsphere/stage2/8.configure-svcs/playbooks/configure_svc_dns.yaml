@@ -67,8 +67,9 @@
   - name: Push Zonefile
     raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
 
-  - name: Push Corefile
-    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/manCorefile') }}" > /etc/coredns/Corefile
+  - name: Push Corefile - only if it doesnt exist
+    raw: set -o noclobber; echo "{{ lookup('file', '/tmp/workingdir/dns/manCorefile') }}" > /etc/coredns/Corefile
+    ignore_errors: True
 
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
@@ -92,8 +93,9 @@
   - name: Push Zonefile
     raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
 
-  - name: Push Corefile
-    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/assCorefile') }}" > /etc/coredns/Corefile
+  - name: Push Corefile - only if it doesnt exist
+    raw: set -o noclobber; echo "{{ lookup('file', '/tmp/workingdir/dns/assCorefile') }}" > /etc/coredns/Corefile
+    ignore_errors: True
 
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
@@ -118,8 +120,9 @@
   - name: Push Zonefile
     raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
 
-  - name: Push Corefile
-    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/comCorefile') }}" > /etc/coredns/Corefile
+  - name: Push Corefile - only if it doesnt exist
+    raw: set -o noclobber; cho "{{ lookup('file', '/tmp/workingdir/dns/comCorefile') }}" > /etc/coredns/Corefile
+    ignore_errors: True
 
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
@@ -144,8 +147,9 @@
   - name: Push Zonefile
     raw: echo '{{ lookup('file', '/tmp/workingdir/dns/{{ domain_suffix }}.zone') }}' > /etc/coredns/{{ domain_suffix }}.zone
 
-  - name: Push Corefile
-    raw: echo "{{ lookup('file', '/tmp/workingdir/dns/eleCorefile') }}" > /etc/coredns/Corefile
+  - name: Push Corefile - only if it doesnt exist
+    raw: set -o noclobber; echo "{{ lookup('file', '/tmp/workingdir/dns/eleCorefile') }}" > /etc/coredns/Corefile
+    ignore_errors: True
 
   - name: Push Unit file
     raw: echo "{{ lookup('file', '/tmp/workingdir/dns/coredns.service') }}" > /etc/systemd/system/coredns.service
