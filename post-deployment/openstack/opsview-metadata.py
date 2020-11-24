@@ -45,18 +45,14 @@ def generateJson(domain, api, name, logging, region):
     variables.append({"name": "OPENSHIFT_PORT", "value": "6443"})
     variables.append({"name": "OPENSHIFT_TOKEN", "value": "Monitoring token", "arg1": "secret(label=monitoring_auth_token)"})
 
+    routeList = {
+                 "oauth-openshift.apps": "403", "console-openshift-console.apps": "200", "downloads-openshift-console.apps": "200",
+                 "alertmanager-main-openshift-monitoring.apps": "403", "grafana-openshift-monitoring.apps": "403",
+                 "prometheus-k8s-openshift-monitoring.apps": "403", "thanos-querier-openshift-monitoring.apps": "403"
+                }
+
     if logging == True:
-        routeList = {
-                     "oauth-openshift.apps": "403", "console-openshift-console.apps": "200", "downloads-openshift-console.apps": "200",
-                     "kibana-openshift-logging.apps": "403", "alertmanager-main-openshift-monitoring.apps": "403", "grafana-openshift-monitoring.apps": "403",
-                     "prometheus-k8s-openshift-monitoring.apps": "403", "thanos-querier-openshift-monitoring.apps": "403"
-                    }
-    else:
-        routeList = {
-                     "oauth-openshift.apps": "403", "console-openshift-console.apps": "200", "downloads-openshift-console.apps": "200",
-                     "alertmanager-main-openshift-monitoring.apps": "403", "grafana-openshift-monitoring.apps": "403",
-                     "prometheus-k8s-openshift-monitoring.apps": "403", "thanos-querier-openshift-monitoring.apps": "403"
-                    }
+        routeList['kibana-openshift-logging.apps'] = '403' 
 
     for prefix, returnCode in routeList.items():
         value = prefix.split('-')[0]
