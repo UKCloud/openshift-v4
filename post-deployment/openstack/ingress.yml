@@ -17,6 +17,35 @@
         namespace: "openshift-monitoring"
 
   tasks:
+    - name: Patch APIServer
+      k8s:
+        state: present
+        definition:
+          apiVersion: config.openshift.io/v1
+          kind: APIServer
+          metadata:
+            name: cluster
+          spec:
+            servingCerts:
+              namedCertificates:
+              - names:
+                - "api.{{ domainSuffix}}"
+                servingCertificate:
+                  name: api-certs
+
+    - name: Patch IngressController
+      k8s:
+        state: present
+        definition:
+          apiVersion: operator.openshift.io/v1
+          kind: IngressController
+          metadata:
+            name: default
+            namespace: openshift-ingress-operator
+          spec:
+            defaultCertificate:
+              name: ingress-certs
+
     - name: Enable HSTS on routes
       k8s:
         state: present

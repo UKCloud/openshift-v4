@@ -39,6 +39,7 @@
     uri:
       url: https://api.{{ domainSuffix }}:6443/api/v1/nodes
       return_content: yes
+      validate_certs: no
       headers:
         Authorization: "Bearer {{ token_json.resources[0].data.token | b64decode }}"
 
