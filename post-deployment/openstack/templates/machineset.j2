@@ -44,7 +44,7 @@ spec:
                 tags: "openshiftClusterID={{ infrastructureId }}"
           securityGroups:
           - filter: {}
-            name: "{{ infrastructureId }}-worker"
+            name: "{{ infrastructureId }}-infra"
           serverMetadata:
             Name: "{{ infrastructureId }}-infra"
             openshiftClusterID: "{{ infrastructureId }}"
