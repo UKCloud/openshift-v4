@@ -45,6 +45,8 @@ spec:
           securityGroups:
           - filter: {}
             name: "{{ infrastructureId }}-infra"
+          - filter: {}
+            name: "{{ infrastructureId }}-ingress"
           serverMetadata:
             Name: "{{ infrastructureId }}-infra"
             openshiftClusterID: "{{ infrastructureId }}"
