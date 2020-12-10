@@ -4,10 +4,10 @@ Ensure you have set the `KUBECONFIG` variable in your shell referencing a valid 
 export KUBECONFIG=/path/to/kubeconfig
 ```
 
-To run post-deployment code:
+Populate vars.yml then run post-deployment code:
 
 ```
-ansible-playbook post-deployment.yml -e "@vars.yml"
+deploy.sh
 ```
 
-Alternatively you can run through each playbook included in the above separately ensuring to use vars.yml with each.
+Alternatively you can run through each playbook included in post-deployment.yml separately ensuring to use vars.yml with each then run opsview-metadata.py.

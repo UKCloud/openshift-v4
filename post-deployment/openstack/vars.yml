@@ -12,6 +12,8 @@ accessKey: <access key>
 secretKey: <secret key>
 # Optional add ons
 logging: <boolean>
+# Opsview host name format cnaxxxxx-<customer>
+opsviewName: <name>
 ## Set to false when using default kubeadmin user, defaults to true
 #useSingleSignOn: false
 ## Set to false when using self-signed certificates, defaults to true
