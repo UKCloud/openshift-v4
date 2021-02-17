@@ -13,7 +13,7 @@
         namespace: "openshift-monitoring"
       - name: "thanos-querier"
         namespace: "openshift-monitoring"
-    
+
   tasks:
     - name: Add logging routes
       set_fact:
