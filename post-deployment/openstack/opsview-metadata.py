@@ -52,7 +52,7 @@ def generateJson(domain, api, name, logging, region):
                 }
 
     if logging == True:
-        routeList['kibana-openshift-logging.apps'] = '403' 
+        routeList['kibana-openshift-logging.apps'] = '302,403' 
 
     for prefix, returnCode in routeList.items():
         value = prefix.split('-')[0]
