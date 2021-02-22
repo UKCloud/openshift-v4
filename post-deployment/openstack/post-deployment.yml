@@ -1,13 +1,16 @@
 ---
-- name: Check for legacy imageName var
-  set_fact: 
-    rhcosImage: "{{ imageName }}"
-  when: rhcosImage is not defined
+- hosts: localhost
+  gather_facts: False
+  tasks:
+  - name: Check for legacy imageName var
+    set_fact: 
+      rhcosImage: "{{ imageName }}"
+    when: rhcosImage is not defined
 
-- name: Set domainSuffix
-  set_fact:
-    domainSuffix: "{{ custID }}.{{ baseDomain }}"
-  when: domainSuffix is not defined
+  - name: Set domainSuffix
+    set_fact:
+      domainSuffix: "{{ custID }}.{{ baseDomain }}"
+    when: domainSuffix is not defined
 
 - import_playbook: object-storage.yml
 - import_playbook: infra.yml
