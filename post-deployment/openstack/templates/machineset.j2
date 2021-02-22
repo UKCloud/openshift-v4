@@ -30,8 +30,8 @@ spec:
             name: openstack-cloud-credentials
             namespace: openshift-machine-api
           flavor: ocp.m1.medium
-{% if imageName is defined %}
-          image: "{{ imageName }}"
+{% if rhcosImage is defined %}
+          image: "{{ rhcosImage }}"
 {% else %}
           image: "{{ infrastructureId }}-rhcos"
 {% endif %}
