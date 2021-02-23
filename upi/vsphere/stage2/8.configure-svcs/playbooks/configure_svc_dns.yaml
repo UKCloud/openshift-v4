@@ -78,15 +78,20 @@
       immediate: yes
       state: enabled
 
-
 - hosts: svcs, asvcs, csvcs, esvcs
   any_errors_fatal: true
   strategy: linear
   serial: 1
   tasks:
-  - name: Enable and (re)start coredns.service
+  - name: Enable coredns.service
     systemd:
       name: coredns
-      state: restarted
+      state: stopped
       enabled: yes
       daemon_reload: yes
+
+  - name: Start coredns.service
+    systemd:
+      name: coredns
+      enabled: yes
+      state: started
