@@ -83,7 +83,7 @@
   strategy: linear
   serial: 1
   tasks:
-  - name: Enable coredns.service
+  - name: Enable (and stop, if necessary) coredns.service
     systemd:
       name: coredns
       state: stopped
@@ -93,5 +93,4 @@
   - name: Start coredns.service
     systemd:
       name: coredns
-      enabled: yes
       state: started
