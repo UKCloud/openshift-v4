@@ -4,7 +4,7 @@ Wants=crio.service
 [Service]
 Restart=always
 RestartSec=1
-ExecStartPre=-/usr/bin/podman stop coredns
+ExecStartPre=-/usr/bin/podman rm coredns --storage -f
 ExecStart=/usr/bin/podman run --rm=true -a=STDOUT --name coredns -v /etc/coredns:/etc/coredns:z --network host -p 53:53/udp {{ registry_url }}/coredns:{{ image_tag }} --conf /etc/coredns/Corefile
 ExecStop=/usr/bin/podman stop coredns
 [Install]
