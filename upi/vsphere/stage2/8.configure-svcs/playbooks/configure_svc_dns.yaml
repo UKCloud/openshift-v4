@@ -16,6 +16,13 @@
       src: templates/coredns.service.j2
       dest: /etc/systemd/system/coredns.service
 
+  - name: Login to registry to pull image
+    raw: podman login --tls-verify=false  -u "{{ registry_username }}" -p "{{ registry_token }}" https://{{ registry_url }}
+    when: registry_username != ""
+
+  - name: Pull CoreDNS container
+    raw: podman pull --tls-verify=false {{ registry_url }}/coredns:{{ image_tag }}
+      
 - hosts: svcs
   vars:
     dns_server1: "{{ man_dns_server1 }}"
@@ -83,14 +90,9 @@
   strategy: linear
   serial: 1
   tasks:
-  - name: Enable (and stop, if necessary) coredns.service
+  - name: Enable (and restart) coredns.service
     systemd:
       name: coredns
-      state: stopped
+      state: restarted
       enabled: yes
       daemon_reload: yes
-
-  - name: Start coredns.service
-    systemd:
-      name: coredns
-      state: started
