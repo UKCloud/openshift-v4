@@ -1,5 +1,5 @@
-imageName: <Name of image if using one in glance. If you want the installer to upload comment this variable out>
-domainSuffix: <domain suffix>
+rhcosImage: <image present in project> # <Name of image to use for deploying infra nodes>
+domainSuffix: <domain suffix> # Can also be specified in two params "custID" and "baseDomain"
 # SSO parameters
 ssoSecret: <secret>
 ssoClientID: <client ID>

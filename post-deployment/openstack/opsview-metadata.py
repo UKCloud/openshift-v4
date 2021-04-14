@@ -16,7 +16,11 @@ def Vars():
     with open('vars.yml') as f:
         data = yaml.load(f)
 
-    domain = data['domainSuffix']
+    if 'domainSuffix' in data:
+        domain = data['domainSuffix']
+    else:
+        domain = data['custID'] + '.' + data['baseDomain']
+
     api = 'api.{}'.format(domain)
     name = data['opsviewName']
     logging = data['logging']
