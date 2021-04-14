@@ -70,10 +70,6 @@
         kind: Secret
         type: Opaque
 
-  - name: Create infra machineset
-    k8s:
-      state: present
-      definition: "{{ lookup('template', 'templates/machineset.j2') }}"
 
   - name: Wait for nodes to exist
     k8s_info:
