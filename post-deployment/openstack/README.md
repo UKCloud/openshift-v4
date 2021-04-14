@@ -13,7 +13,7 @@ deploy.sh
 Alternatively you can run through each playbook included in post-deployment.yml separately ensuring to use vars.yml with each then run opsview-metadata.py.
 
 
-##vars.yml format
+## vars.yml format
 
 Note that the `vars.yml` format has been changed to match the `vars.yml` used by openshift-upi-ansible deployment code. This means the same `vars.yml` can be used for deployment and post-deployment.
 
