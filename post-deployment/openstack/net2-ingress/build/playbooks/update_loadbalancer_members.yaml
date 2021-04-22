@@ -44,13 +44,17 @@
     set_fact:
       loadbalancerMembersToAdd: "{{ loadbalancerMembersToAdd | default([]) + [ item ] }}"
     with_items: "{{ net2Members }}"
-    when: item not in loadbalancerMembers
+    when: 
+      - net2Members is defined
+      - item not in loadbalancerMembers
 
   - name: 'Determine members to be deleted'
     set_fact:
       loadbalancerMembersToDelete: "{{ loadbalancerMembersToDelete | default([]) + [ item ] }}"
     with_items: "{{ loadbalancerMembers }}"
-    when: item not in net2Members
+    when: 
+      - net2Members is defined
+      - item not in net2Members
 
   - name: 'Add loadbalancer members'
     openstack.cloud.lb_member:
