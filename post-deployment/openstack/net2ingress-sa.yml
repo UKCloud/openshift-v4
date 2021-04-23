@@ -1,0 +1,107 @@
+---
+- hosts: localhost
+
+  vars:
+    secrets:
+      - name: "openstack-credentials"
+        namespace: "kube-system"
+
+  tasks:
+  - name: 'Create net2-ingress service account'
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: net2-ingress
+          namespace: default
+
+  - name: 'Create net2-ingress roles'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: Role
+        metadata:
+          name: net2-ingress
+          namespace: "{{ item.namespace }}"
+        rules:
+        - apiGroups: [""]
+          resources: ["secrets"]
+          resourceNames: ["{{ item.name }}"]
+          verbs:
+          - get
+          - list
+          - watch
+    with_items: "{{ secrets }}"
+
+  - name: 'Create net2-ingress rolebindings'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: "net2-ingress"
+          namespace: "{{ item.namespace }}"
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: Role
+          name: net2-ingress
+        subjects:
+        - kind: ServiceAccount
+          name: net2-ingress
+          namespace: default
+    with_items: "{{ secrets }}"
+
+  - name: 'Create node-reader ClusterRole'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: node-reader
+        rules:
+          - apiGroups:
+            - ""
+            resources:
+            - nodes
+            verbs:
+            - get
+            - list
+            - watch
+
+  - name: 'Create net2-ingress-node-reader clusterrolebinding'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: "net2-ingress-node-reader"
+        roleRef:
+          apiGroup: ""
+          kind: ClusterRole
+          name: node-reader
+        subjects:
+        - kind: ServiceAccount
+          name: net2-ingress
+          namespace: default
+
+  - name: 'Retrieve net2-ingress token'
+    command: oc serviceaccounts get-token net2-ingress -n default
+    register: net2IngressToken
+
+  - name: 'Write token to variable'
+    set_fact:
+      net2IngressSaToken: "{{ net2IngressToken.stdout }}"
+
+  - name: 'Verify token'
+    uri:
+      url: "https://api.{{ domainSuffix }}:6443/api/v1"
+      return_content: yes
+      validate_certs: no
+      headers:
+        Authorization: "Bearer {{ net2IngressSaToken }}"
