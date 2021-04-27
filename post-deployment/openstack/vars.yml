@@ -18,8 +18,8 @@ opsviewName: <name>
 #useSingleSignOn: false
 ## Set to false when using self-signed certificates, defaults to true:
 #useLetsEncryptCert: false
-## Set to false to disable isolation NetworkPolicy being added to 
-## default project template to prevent inter-project comms, defaults to true:
+## Set to false to prevent isolation NetworkPolicy's being added to 
+## default project template, defaults to true:
 #isolateProjectsNetworkPolicy: false
 # DNS Forwarding - omit or set to {} to disable
 dnsforwardingzones: 
