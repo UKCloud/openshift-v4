@@ -37,7 +37,7 @@
         - apiVersion: networking.k8s.io/v1
           kind: NetworkPolicy
           metadata:
-            name: allow-same-namespace
+            name: allow-from-same-namespace
             namespace: ${PROJECT_NAME}
           spec:
             ingress:
@@ -65,7 +65,7 @@
         - name: PROJECT_ADMIN_USER
         - name: PROJECT_REQUESTING_USER
 
-  - name: Configure the cluster to use the Project template
+  - name: Configure the cluster to use the project template
     k8s:
       state: present
       definition:
