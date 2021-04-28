@@ -1,5 +1,5 @@
 $ORIGIN {{ domain_suffix }}.
-$TTL 60s
+$TTL 6h
 @    IN    SOA    dns1.{{ domain_suffix }}.    hostmaster.{{ domain_suffix }}. (
             {{ ansible_date_time.epoch }} ; serial
             21600      ; refresh after 6 hours
