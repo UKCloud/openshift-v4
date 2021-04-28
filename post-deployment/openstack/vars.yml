@@ -14,10 +14,13 @@ secretKey: <secret key>
 logging: <boolean>
 # Opsview host name format cnaxxxxx-<customer>
 opsviewName: <name>
-## Set to false when using default kubeadmin user, defaults to true
+## Set to false to use default kubeadmin user auth, defaults to true:
 #useSingleSignOn: false
-## Set to false when using self-signed certificates, defaults to true
+## Set to false when using self-signed certificates, defaults to true:
 #useLetsEncryptCert: false
+## Set to false to prevent isolation NetworkPolicy's being added to 
+## default project template, defaults to true:
+#isolateProjectsNetworkPolicy: false
 # DNS Forwarding - omit or set to {} to disable
 dnsforwardingzones: 
   - name: foo-dns
