@@ -28,3 +28,4 @@
 - import_playbook: monitoring-sa.yml
 - import_playbook: acme-sa.yml
   when: useLetsEncryptCert | default(true) | bool
+- import_playbook: etcd-backup.yml
