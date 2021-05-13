@@ -1,0 +1,46 @@
+---
+- hosts: localhost
+  connection: local
+
+  vars:
+    namespace: "net2-ingress"
+
+  tasks:
+  - name: "Create {{ namespace }} namespace"
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: "{{ namespace }}"
+
+  - name: Create secret containing sa token
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: "net2-ingress-sa"
+          namespace: "{{ namespace }}"
+        data:
+          token: "{{ net2IngressSaToken | b64encode }}"
+
+  - name: Create build
+    command: "oc new-build --binary --strategy=docker --name update-loadbalancer-members -n {{ namespace }}"
+    args:
+      chdir: "./build"
+
+  - name: Start build
+    command: "oc start-build update-loadbalancer-members --from-dir . -F -n {{ namespace }}"
+    args:
+      chdir: "./build"
+
+  - name: Allow imagestream lookups from same project
+    command: "oc set image-lookup update-loadbalancer-members -n {{ namespace }}"
+
+  - name: Create update-loadbalancer-members CronJob
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/cronjob-update-loadbalancer-members.j2') }}"

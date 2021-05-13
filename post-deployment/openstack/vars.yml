@@ -18,6 +18,8 @@ opsviewName: <name>
 #useSingleSignOn: false
 ## Set to false when using self-signed certificates, defaults to true
 #useLetsEncryptCert: false
+## Set to true when deploying net2, defaults to false
+#net2: true
 # DNS Forwarding - omit or set to {} to disable
 dnsforwardingzones: 
   - name: foo-dns

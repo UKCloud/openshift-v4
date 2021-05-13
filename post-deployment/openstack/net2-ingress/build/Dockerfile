@@ -1,18 +1,18 @@
 # FROM ansible-runner:latest
-FROM docker.io/ansible/ansible-runner@sha256:bd09ef403f2f90f2c6bd133d7533e939058903f69223c5f12557a49e3aed14bb
+FROM docker.io/ansible/ansible-runner@sha256:4c6034798b5e724c5a59466f5438e14480c53bc4adac5cc9db5e3997a286a0e4
 
 WORKDIR /usr/local/
 
-ADD ./playbooks ./playbooks
-COPY ./pip-requirements.txt ./pip-requirements.txt
-COPY ./ansible-requirements.yml ./ansible-requirements.yml
+ADD ./playbooks /usr/local/playbooks
+COPY ./pip-requirements.txt /usr/local/pip-requirements.txt
+COPY ./ansible-requirements.yml /usr/local/ansible-requirements.yml
 
 # Upgrade pip and install requirements for Kubernetes/Openstack modules
 RUN pip3 install --upgrade pip && \
     pip3 install -U setuptools && \
-    pip3 install -r ./pip-requirements.txt
+    pip3 install -r /usr/local/pip-requirements.txt --ignore-installed PyYAML
 
 # Install Ansible collections for Kubernetes/Openstack modules
-RUN ansible-galaxy collection install -r ./ansible-requirements.yml
+RUN ansible-galaxy collection install -r /usr/local/ansible-requirements.yml
 
-ENTRYPOINT ./entrypoint.sh
+ENTRYPOINT /usr/local/playbooks/entrypoint.sh

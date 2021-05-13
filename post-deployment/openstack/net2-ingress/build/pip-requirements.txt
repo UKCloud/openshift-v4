@@ -1,4 +1,6 @@
-openshift~=0.6
-PyYAML~=3.11
-jmespath
-openstacksdk~=0.12.0
+openshift~=0.12.0
+PyYAML~=5.4.1
+jmespath~=0.10.0
+openstacksdk~=0.56.0
+python-octaviaclient~=2.3.0
+python-openstackclient~=5.5.0
