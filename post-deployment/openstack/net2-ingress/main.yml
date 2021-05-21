@@ -28,18 +28,60 @@
         data:
           token: "{{ net2IngressSaToken | b64encode }}"
 
-  - name: Create build
-    command: "oc new-build --binary --strategy=docker --name update-loadbalancer-members -n {{ namespace }}"
-    args:
-      chdir: "./build"
+  - name: Create ImageStream
+    k8s:
+      state: present
+      definition:
+        apiVersion: image.openshift.io/v1
+        kind: ImageStream
+        metadata:
+          name: update-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          lookupPolicy:
+            local: true
 
-  - name: Start build
+  - name: Create BuildConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          labels:
+            build: update-loadbalancer-members
+          name: update-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          nodeSelector:
+            node-role.kubernetes.io/infra:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: update-loadbalancer-members:latest
+          source:
+            binary: {}
+            type: Binary
+          strategy:
+            dockerStrategy: {}
+            type: Docker
+
+  - name: Run Docker build
     command: "oc start-build update-loadbalancer-members --from-dir . -F -n {{ namespace }}"
     args:
       chdir: "./build"
+    register: buildStatus
+    failed_when: "'Push successful' not in buildStatus.stdout_lines"
 
-  - name: Allow imagestream lookups from same project
-    command: "oc set image-lookup update-loadbalancer-members -n {{ namespace }}"
+  - name: Delete BuildConfig
+    k8s:
+      state: absent
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          name: update-loadbalancer-members
+          namespace: "{{ namespace }}"
 
   - name: Create update-loadbalancer-members CronJob
     k8s:
@@ -49,4 +91,22 @@
   - name: Create IngressController
     k8s:
       state: present
-      definition: "{{ lookup('template', 'templates/ingress-controller.j2') }}"
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          namespace: openshift-ingress-operator
+          name: "{{ net2NetworkName | replace('_','-') }}"
+        spec:
+          domain: "{{ net2NetworkName | replace('_','-') }}.{{ domainSuffix }}"
+          nodePlacement:
+            nodeSelector:
+              matchLabels:
+                network: "{{ net2NetworkName }}"
+          replicas: 2
+          routeSelector:
+            matchExpressions:
+            - key: network
+              operator: In
+              values:
+              - "{{ net2NetworkName }}"
