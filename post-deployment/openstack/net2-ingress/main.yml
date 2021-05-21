@@ -4,6 +4,7 @@
 
   vars:
     namespace: "net2-ingress"
+    net2NetworkName: "{{ net2ExternalNetwork | lower }}"
 
   tasks:
   - name: "Create {{ namespace }} namespace"
@@ -44,3 +45,8 @@
     k8s:
       state: present
       definition: "{{ lookup('template', 'templates/cronjob-update-loadbalancer-members.j2') }}"
+
+  - name: Create IngressController
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/ingress-controller.j2') }}"
