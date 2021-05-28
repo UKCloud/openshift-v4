@@ -1,0 +1,9 @@
+---
+- hosts: svcs, asvcs, csvcs, esvcs
+  any_errors_fatal: true
+  tasks:
+  - name: Check all DNS servers are functional
+    command: nslookup -timeout=1 api-int.{{ domain_suffix }} {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+    delegate_to: 127.0.0.1
+
+- import_playbook: configure_svc_dns.yaml 
