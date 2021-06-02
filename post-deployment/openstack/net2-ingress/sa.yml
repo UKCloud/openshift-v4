@@ -2,31 +2,31 @@
 - hosts: localhost
   connection: local
   gather_facts: false
-
+  
   vars:
     secrets:
       - name: "openstack-credentials"
         namespace: "kube-system"
 
   tasks:
-  - name: 'Create net2-ingress service account'
+  - name: 'Create ukc-ingress service account'
     k8s:
       state: present
       definition:
         apiVersion: v1
         kind: ServiceAccount
         metadata:
-          name: net2-ingress
+          name: ukc-ingress
           namespace: default
 
-  - name: 'Create net2-ingress roles'
+  - name: 'Create ukc-ingress roles'
     k8s:
       state: present
       definition:
         apiVersion: rbac.authorization.k8s.io/v1
         kind: Role
         metadata:
-          name: net2-ingress
+          name: ukc-ingress
           namespace: "{{ item.namespace }}"
         rules:
         - apiGroups: [""]
@@ -38,22 +38,22 @@
           - watch
     with_items: "{{ secrets }}"
 
-  - name: 'Create net2-ingress rolebindings'
+  - name: 'Create ukc-ingress rolebindings'
     k8s:
       state: present
       definition:
         apiVersion: rbac.authorization.k8s.io/v1
         kind: RoleBinding
         metadata:
-          name: "net2-ingress"
+          name: "ukc-ingress"
           namespace: "{{ item.namespace }}"
         roleRef:
           apiGroup: rbac.authorization.k8s.io
           kind: Role
-          name: net2-ingress
+          name: ukc-ingress
         subjects:
         - kind: ServiceAccount
-          name: net2-ingress
+          name: ukc-ingress
           namespace: default
     with_items: "{{ secrets }}"
 
@@ -75,30 +75,30 @@
             - list
             - watch
 
-  - name: 'Create net2-ingress-node-reader clusterrolebinding'
+  - name: 'Create ukc-ingress-node-reader clusterrolebinding'
     k8s:
       state: present
       definition:
         apiVersion: rbac.authorization.k8s.io/v1
         kind: ClusterRoleBinding
         metadata:
-          name: "net2-ingress-node-reader"
+          name: "ukc-ingress-node-reader"
         roleRef:
           apiGroup: ""
           kind: ClusterRole
           name: node-reader
         subjects:
         - kind: ServiceAccount
-          name: net2-ingress
+          name: ukc-ingress
           namespace: default
 
-  - name: 'Retrieve net2-ingress token'
-    command: oc serviceaccounts get-token net2-ingress -n default
-    register: net2IngressToken
+  - name: 'Retrieve ukc-ingress token'
+    command: oc serviceaccounts get-token ukc-ingress -n default
+    register: ukcIngressToken
 
   - name: 'Write token to variable'
     set_fact:
-      net2IngressSaToken: "{{ net2IngressToken.stdout }}"
+      ukcIngressSaToken: "{{ ukcIngressToken.stdout }}"
 
   - name: 'Verify token'
     uri:
@@ -106,4 +106,4 @@
       return_content: yes
       validate_certs: no
       headers:
-        Authorization: "Bearer {{ net2IngressSaToken }}"
+        Authorization: "Bearer {{ ukcIngressSaToken }}"
