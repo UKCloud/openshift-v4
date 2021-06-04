@@ -190,6 +190,13 @@
               schedule: 0 1 * * *
           logStore:
             type: "elasticsearch"
+            retentionPolicy: 
+              application:
+                maxAge: 7d
+              infra:
+                maxAge: 7d
+              audit:
+                maxAge: 3d
             elasticsearch:
               nodeCount: 1
               nodeSelector:
