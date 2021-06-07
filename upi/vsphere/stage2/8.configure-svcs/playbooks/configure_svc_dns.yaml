@@ -96,3 +96,15 @@
       state: restarted
       enabled: yes
       daemon_reload: yes
+
+  - name: Pause 1 second
+    pause:
+      seconds: 1
+
+  - name: Test by doing lookup of api-int
+    command: nslookup -timeout=1 api-int.{{ domain_suffix }} {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+    delegate_to: 127.0.0.1
+    retries: 3
+    delay: 1
+    register: result
+    until: result.rc == 0
