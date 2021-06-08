@@ -1,0 +1,27 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "update-ingress-controllers"
+  namespace: "{{ namespace }}"
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: "Replace"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+          - name: update-ingress-controllers
+            image: update-ingress-controllers
+            env:
+            - name: K8S_AUTH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ukc-ingress-sa"
+                  key: token
+            - name: K8S_AUTH_HOST
+              value: "https://api.{{ domainSuffix}}:6443"
+          restartPolicy: Never

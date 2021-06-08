@@ -7,27 +7,6 @@
     net2NetworkName: "{{ net2ExternalNetwork | lower }}"
 
   tasks:
-  - name: "Create {{ namespace }} namespace"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Namespace
-        metadata:
-          name: "{{ namespace }}"
-
-  - name: Create secret containing sa token
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: "ukc-ingress-sa"
-          namespace: "{{ namespace }}"
-        data:
-          token: "{{ ukcIngressSaToken | b64encode }}"
-
   - name: Create ImageStream
     k8s:
       state: present
@@ -53,8 +32,6 @@
           name: update-loadbalancer-members
           namespace: "{{ namespace }}"
         spec:
-          nodeSelector:
-            node-role.kubernetes.io/infra:
           output:
             to:
               kind: ImageStreamTag
@@ -70,8 +47,8 @@
     command: "oc start-build update-loadbalancer-members --from-dir . -F -n {{ namespace }}"
     args:
       chdir: "./build"
-    register: buildStatus
-    failed_when: "'Push successful' not in buildStatus.stdout_lines"
+    register: loadbalancerBuildStatus
+    failed_when: "'Push successful' not in loadbalancerBuildStatus.stdout_lines"
 
   - name: Delete BuildConfig
     k8s:

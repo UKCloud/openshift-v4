@@ -19,7 +19,7 @@
           name: ukc-ingress
           namespace: default
 
-  - name: 'Create ukc-ingress roles'
+  - name: 'Create ukc-ingress secret role'
     k8s:
       state: present
       definition:
@@ -37,6 +37,25 @@
           - list
           - watch
     with_items: "{{ secrets }}"
+
+  - name: 'Create ukc-ingress ingresscontroller role'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: Role
+        metadata:
+          name: ukc-ingress
+          namespace: openshift-ingress-operator
+        rules:
+        - apiGroups: ["operator.openshift.io"]
+          resources: ["ingresscontrollers"]
+          verbs:
+          - get
+          - list
+          - watch
+          - update
+          - patch
 
   - name: 'Create ukc-ingress rolebindings'
     k8s:
@@ -56,6 +75,24 @@
           name: ukc-ingress
           namespace: default
     with_items: "{{ secrets }}"
+
+  - name: 'Create ukc-ingress rolebindings'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: ukc-ingress
+          namespace: openshift-ingress-operator
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: Role
+          name: ukc-ingress
+        subjects:
+        - kind: ServiceAccount
+          name: ukc-ingress
+          namespace: default
 
   - name: 'Create node-reader ClusterRole'
     k8s:

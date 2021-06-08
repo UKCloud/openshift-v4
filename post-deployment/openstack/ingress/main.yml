@@ -1,0 +1,88 @@
+---
+- import_playbook: sa.yml
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    namespace: "ukc-ingress"
+
+  tasks:
+  - name: "Create {{ namespace }} namespace"
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: "{{ namespace }}"
+
+  - name: Create secret containing sa token
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: "ukc-ingress-sa"
+          namespace: "{{ namespace }}"
+        data:
+          token: "{{ ukcIngressSaToken | b64encode }}"
+
+  - name: Create ImageStream
+    k8s:
+      state: present
+      definition:
+        apiVersion: image.openshift.io/v1
+        kind: ImageStream
+        metadata:
+          name: update-ingress-controllers
+          namespace: "{{ namespace }}"
+        spec:
+          lookupPolicy:
+            local: true
+
+  - name: Create BuildConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          labels:
+            build: update-ingress-controllers
+          name: update-ingress-controllers
+          namespace: "{{ namespace }}"
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: update-ingress-controllers:latest
+          source:
+            binary: {}
+            type: Binary
+          strategy:
+            dockerStrategy: {}
+            type: Docker
+
+  - name: Run Docker build
+    command: "oc start-build update-ingress-controllers --from-dir . -F -n {{ namespace }}"
+    args:
+      chdir: "./build"
+    register: ingressBuildStatus
+    failed_when: "'Push successful' not in ingressBuildStatus.stdout_lines"
+
+  - name: Delete BuildConfig
+    k8s:
+      state: absent
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          name: update-ingress-controllers
+          namespace: "{{ namespace }}"
+
+  - name: Create update-ingress-controllers CronJob
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/cronjob-update-ingress-controllers.j2') }}"
