@@ -4,7 +4,7 @@
 
   vars:
     namespace: "ukc-ingress"
-    net2NetworkName: "{{ net2ExternalNetwork | lower }}"
+    net2NetworkName: "{{ net2ExternalNetwork | replace(' ','-') | lower }}"
 
   tasks:
   - name: Create ImageStream
