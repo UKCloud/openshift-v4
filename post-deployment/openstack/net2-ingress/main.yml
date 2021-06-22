@@ -4,7 +4,7 @@
 
   vars:
     namespace: "ukc-ingress"
-    net2NetworkName: "{{ net2ExternalNetwork | replace(' ','-') | lower }}"
+    net2NetworkName: "{{ net2ExternalNetwork | replace(' ','-') | replace('_','-') | lower }}"
 
   tasks:
   - name: Create ImageStream
@@ -73,9 +73,9 @@
         kind: IngressController
         metadata:
           namespace: openshift-ingress-operator
-          name: "{{ net2NetworkName | replace('_','-') }}"
+          name: "{{ net2NetworkName }}"
         spec:
-          domain: "{{ net2NetworkName | replace('_','-') }}.{{ domainSuffix }}"
+          domain: "{{ net2NetworkName }}.{{ domainSuffix }}"
           nodePlacement:
             nodeSelector:
               matchLabels:
