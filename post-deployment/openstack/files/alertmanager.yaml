@@ -1,0 +1,64 @@
+"global":
+  "resolve_timeout": "5m"
+  slack_api_url: 
+
+"inhibit_rules":
+- "equal":
+  - "namespace"
+  - "alertname"
+  "source_match":
+    "severity": "critical"
+  "target_match_re":
+    "severity": "warning|info"
+- "equal":
+  - "namespace"
+  - "alertname"
+  "source_match":
+    "severity": "warning"
+  "target_match_re":
+    "severity": "info"
+
+"receivers":
+- "name": "Default"
+- "name": "Watchdog"
+- "name": "Critical"
+
+- name: slack_etcd_backup_alert
+  slack_configs:
+  - channel: '#openshift-monitoring'
+    username: "Alertmanager -"
+    send_resolved: true
+    title: |-
+      [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job_name }}
+      {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+        {{" "}}
+      {{- end }}
+    text: >-
+      *Alert details*:
+
+      {{ with index .Alerts 0 -}}
+        *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+      *Description:* {{ .Annotations.description }}
+      *Details:*
+        • *Alert* `{{ .Labels.alertname }}`
+        • *Job Name* `{{ .Labels.job_name }}`
+        • *Namespace* `{{ .Labels.namespace }}`
+        • *Severity* `{{ .Labels.severity }}`
+      {{ end }}
+
+"route":
+  "group_by":
+  - "namespace"
+  "group_interval": "5m"
+  "group_wait": "30s"
+  "receiver": "Default"
+  "repeat_interval": "12h"
+  "routes":
+  - "match":
+      "alertname": "Watchdog"
+    "receiver": "Watchdog"
+
+  - "match":
+      "alertname": "etcd-backupFailure"
+    "receiver": "slack_etcd_backup_alert"
+    - '...'
