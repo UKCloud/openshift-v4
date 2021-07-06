@@ -1,5 +1,4 @@
 - hosts: localhost
-  connection: local
   gather_facts: No
   tasks:
   - name: Create etcd-backup project
@@ -52,8 +51,8 @@
         apiVersion: rbac.authorization.k8s.io/v1
         metadata:
           name: openshift-backup
-        labels:
-          app: openshift-backup
+          labels:
+            app: openshift-backup
         subjects:
           - kind: ServiceAccount
             name: openshift-backup
@@ -64,7 +63,7 @@
           name: cluster-etcd-backup
 
   - name: Add privileged scc to openshift-backup service account
-    command: oc adm policy add-scc-to-user privileged -z openshift-backup
+    shell: oc adm policy add-scc-to-user privileged -z openshift-backup
 
   - name: Create backup cronjob
     k8s:
@@ -79,6 +78,7 @@
           app: openshift-backup
         spec:
           schedule: "55 1 * * *"
+          startingDeadlineSeconds: 200
           concurrencyPolicy: Forbid
           successfulJobsHistoryLimit: 5
           failedJobsHistoryLimit: 5
@@ -122,23 +122,27 @@
         spec:
           groups:
           - name: etcd-backup-alert
-          rules:
+            rules:
             - alert: etcd-backupFailure
-            expr: kube_job_failed{namespace="etcd-backup", job_name=~"backup-.*"} != 0
-            labels:
-              severity: critical
+              annotations:
+                description: 'etcd-backup has failed to run, removing the failed job will clear this alert.'
+                message: The etcd-backup cronjob has failed!
+                title: etcd-backup cronjob failure!
+              expr: kube_job_failed{namespace="etcd-backup", job_name=~"backup-.*"} != 0
+              labels:
+                severity: critical
 
   - name: Update Alertmanager Config API URL
-      lineinfile:
-        path: files/alertmanager.yaml
-        regexp: "  slack_api_url:"
-        line:  "  slack_api_url: {{ slackApiUrl }}"
+    lineinfile:
+      path: files/alertmanager.yaml
+      regexp: "  slack_api_url:"
+      line:  "  slack_api_url: {{ slackApiUrl }}"
 
   - name: Update Alertmanager alert username 
-      replace:
-        path: files/alertmanager.yaml
-        regexp: "    username: "Alertmanager -"
-        replace:  "    username: "Alertmanager - {{ domainSuffix }}"
+    replace:
+      path: files/alertmanager.yaml
+      regexp: "    username: Alertmanager -"
+      replace:  "    username: Alertmanager @ {{ domainSuffix }}"
 
   - name: Push alertmanager config to the cluster
-    command: oc -n openshift-monitoring create secret generic alertmanager-main --from-file=files/alertmanager.yaml --dry-run -o=yaml |  oc -n openshift-monitoring replace secret --filename=-
+    shell: oc -n openshift-monitoring create secret generic alertmanager-main --from-file=files/alertmanager.yaml --dry-run -o=yaml | oc -n openshift-monitoring replace secret --filename=-

@@ -1,6 +1,6 @@
 "global":
   "resolve_timeout": "5m"
-  slack_api_url: 
+  slack_api_url:
 
 "inhibit_rules":
 - "equal":
@@ -26,7 +26,7 @@
 - name: slack_etcd_backup_alert
   slack_configs:
   - channel: '#openshift-monitoring'
-    username: "Alertmanager -"
+    username: Alertmanager -
     send_resolved: true
     title: |-
       [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job_name }}
@@ -61,4 +61,3 @@
   - "match":
       "alertname": "etcd-backupFailure"
     "receiver": "slack_etcd_backup_alert"
-    - '...'
