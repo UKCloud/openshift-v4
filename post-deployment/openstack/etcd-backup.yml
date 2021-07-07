@@ -132,17 +132,10 @@
               labels:
                 severity: critical
 
-  - name: Update Alertmanager Config API URL
-    lineinfile:
-      path: files/alertmanager.yaml
-      regexp: "  slack_api_url:"
-      line:  "  slack_api_url: {{ slackApiUrl }}"
-
-  - name: Update Alertmanager alert username 
-    replace:
-      path: files/alertmanager.yaml
-      regexp: "    username: Alertmanager -"
-      replace:  "    username: Alertmanager @ {{ domainSuffix }}"
+  - name: Render alertmanager yaml from template
+    template:
+      src: templates/alertmanager.j2
+      dest: files/alertmanager.yaml
 
   - name: Push alertmanager config to the cluster
     shell: oc -n openshift-monitoring create secret generic alertmanager-main --from-file=files/alertmanager.yaml --dry-run -o=yaml | oc -n openshift-monitoring replace secret --filename=-
