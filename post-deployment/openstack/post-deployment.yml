@@ -21,6 +21,8 @@
 - import_playbook: console-customization.yml
 - import_playbook: sso.yml
   when: useSingleSignOn | default(true) | bool
+- import_playbook: networkpolicy.yml
+  when: isolateProjectsNetworkPolicy | default(true) | bool  
 - import_playbook: monitoring-sa.yml
 - import_playbook: acme-sa.yml
   when: useLetsEncryptCert | default(true) | bool

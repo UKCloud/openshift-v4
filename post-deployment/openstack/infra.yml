@@ -5,77 +5,7 @@
     infraMachineSetScale: 2
 
   tasks:
-  - name: Get infrastructure
-    k8s_info:
-      kind: Infrastructure
-      name: cluster
-    register: infrastructure
-
-  - name: Get infrastructureName
-    set_fact:
-      infrastructureId: '{{ infrastructure | json_query(infrastructureIdQuery) }}'
-    vars:
-      infrastructureIdQuery: "resources[0].status.infrastructureName"
-
-  - name: Create MachineConfigPool
-    k8s:
-      state: present
-      definition:
-        apiVersion: machineconfiguration.openshift.io/v1
-        kind: MachineConfigPool
-        metadata:
-          name: infra
-        spec:
-          machineConfigSelector:
-            matchExpressions:
-              - { key: machineconfiguration.openshift.io/role, operator: In, values: [ worker, infra ] }
-          nodeSelector:
-            matchLabels:
-              node-role.kubernetes.io/infra: ""
-
-  - name: Get worker-user-data secret
-    k8s_info:
-      kind: Secret
-      name: worker-user-data
-      namespace: openshift-machine-api
-    register: workerUserData
-
-  - name: Get userData
-    set_fact:
-      userData: '{{ workerUserData | to_json | from_json | json_query(userDataQuery) | b64decode }}'
-    vars: 
-      userDataQuery: "resources[0].data.userData"
-
-  - name: Retrieve and modify ignition endpoint
-    set_fact:
-      ignitionEndpoint: "{{ userData | to_json | from_json | json_query(ignitionEndpointQuery) | replace('worker','infra') }}"
-    vars: 
-      ignitionEndpointQuery: "ignition.config.append[0].source"
-
-  - name: Insert changed ignition endpoint
-    set_fact:
-      infraUserData: '{{ userData | combine({"ignition": {"config": {"append":[{"source": ignitionEndpoint, "verification":{}}]}}}, recursive=True) }}'
-
-  - name: Create infra-user-data secret
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        metadata:
-          name: infra-user-data
-          namespace: openshift-machine-api
-        data:
-          disableTemplating: dHJ1ZQo=
-          userData: "{{ infraUserData | to_json | b64encode }}"
-        kind: Secret
-        type: Opaque
-
-  - name: Create infra machineset
-    k8s:
-      state: present
-      definition: "{{ lookup('template', 'templates/machineset.j2') }}"
-
-  - name: Wait for nodes to exist
+  - name: Wait for infra nodes to exist
     k8s_info:
       kind: Node
       label_selectors:

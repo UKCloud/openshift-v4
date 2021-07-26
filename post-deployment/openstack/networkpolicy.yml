@@ -1,0 +1,78 @@
+---
+- hosts: localhost
+  
+  tasks:
+  - name: Label default namespace to allow NetworkPolicy to work
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: default
+          labels:
+            network.openshift.io/policy-group: "ingress"
+
+  - name: Create a default project template which includes NetworkPolicy
+    k8s:
+      state: present
+      definition:
+        apiVersion: template.openshift.io/v1
+        kind: Template
+        metadata:
+          name: project-defaults
+          namespace: openshift-config
+        objects:
+        - apiVersion: project.openshift.io/v1
+          kind: Project
+          metadata:
+            annotations:
+              openshift.io/description: ${PROJECT_DESCRIPTION}
+              openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+              openshift.io/requester: ${PROJECT_REQUESTING_USER}
+            creationTimestamp: null
+            name: ${PROJECT_NAME}
+          spec: {}
+          status: {}
+        - apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: allow-from-same-namespace
+            namespace: ${PROJECT_NAME}
+          spec:
+            ingress:
+            - from:
+              - podSelector: {}
+            podSelector: null
+        - apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: allow-from-ingress-routers
+            namespace: ${PROJECT_NAME}
+          spec:
+            ingress:
+            - from:
+              - namespaceSelector:
+                  matchLabels:
+                    network.openshift.io/policy-group: ingress
+            podSelector: {}
+            policyTypes:
+            - Ingress
+        parameters:
+        - name: PROJECT_NAME
+        - name: PROJECT_DISPLAYNAME
+        - name: PROJECT_DESCRIPTION
+        - name: PROJECT_ADMIN_USER
+        - name: PROJECT_REQUESTING_USER
+
+  - name: Configure the cluster to use the project template
+    k8s:
+      state: present
+      definition:
+        apiVersion: config.openshift.io/v1
+        kind: Project
+        metadata:
+          name: cluster
+        spec:
+          projectRequestTemplate:
+            name: project-defaults  
