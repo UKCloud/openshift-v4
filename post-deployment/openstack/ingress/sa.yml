@@ -1,0 +1,146 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    secrets:
+      - name: "openstack-credentials"
+        namespace: "kube-system"
+
+  tasks:
+  - name: 'Create ukc-ingress service account'
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: ukc-ingress
+          namespace: default
+
+  - name: 'Create ukc-ingress secret role'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: Role
+        metadata:
+          name: ukc-ingress
+          namespace: "{{ item.namespace }}"
+        rules:
+        - apiGroups: [""]
+          resources: ["secrets"]
+          resourceNames: ["{{ item.name }}"]
+          verbs:
+          - get
+          - list
+          - watch
+    with_items: "{{ secrets }}"
+
+  - name: 'Create ukc-ingress ingresscontroller role'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: Role
+        metadata:
+          name: ukc-ingress
+          namespace: openshift-ingress-operator
+        rules:
+        - apiGroups: ["operator.openshift.io"]
+          resources: ["ingresscontrollers"]
+          verbs:
+          - get
+          - list
+          - watch
+          - update
+          - patch
+
+  - name: 'Create ukc-ingress rolebindings'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: "ukc-ingress"
+          namespace: "{{ item.namespace }}"
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: Role
+          name: ukc-ingress
+        subjects:
+        - kind: ServiceAccount
+          name: ukc-ingress
+          namespace: default
+    with_items: "{{ secrets }}"
+
+  - name: 'Create ukc-ingress rolebindings'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: ukc-ingress
+          namespace: openshift-ingress-operator
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: Role
+          name: ukc-ingress
+        subjects:
+        - kind: ServiceAccount
+          name: ukc-ingress
+          namespace: default
+
+  - name: 'Create node-reader ClusterRole'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: node-reader
+        rules:
+          - apiGroups:
+            - ""
+            resources:
+            - nodes
+            verbs:
+            - get
+            - list
+            - watch
+
+  - name: 'Create ukc-ingress-node-reader clusterrolebinding'
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRoleBinding
+        metadata:
+          name: "ukc-ingress-node-reader"
+        roleRef:
+          apiGroup: ""
+          kind: ClusterRole
+          name: node-reader
+        subjects:
+        - kind: ServiceAccount
+          name: ukc-ingress
+          namespace: default
+
+  - name: 'Retrieve ukc-ingress token'
+    command: oc serviceaccounts get-token ukc-ingress -n default
+    register: ukcIngressToken
+
+  - name: 'Write token to variable'
+    set_fact:
+      ukcIngressSaToken: "{{ ukcIngressToken.stdout }}"
+
+  - name: 'Verify token'
+    uri:
+      url: "https://api.{{ domainSuffix }}:6443/api/v1"
+      return_content: yes
+      validate_certs: no
+      headers:
+        Authorization: "Bearer {{ ukcIngressSaToken }}"
