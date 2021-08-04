@@ -1,0 +1,6 @@
+---
+collections:
+- name: openstack.cloud
+  version: "1.2.0"
+- name: community.kubernetes
+  version: "1.2.0"

@@ -34,3 +34,8 @@
       state: present
       definition: "{{ lookup('template', 'templates/net2_ingress_controller.j2') }}"
     with_items: "{{ net2Networks | unique }}"
+
+  - name: Update extragateway ingresscontroller replicas
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/eg_ingress_controller.j2') }}"

@@ -22,26 +22,26 @@
       dest: /etc/openstack/clouds.yaml
       content: "{{ openstackCredential | b64decode }}"
 
-  - name: 'Get net2 nodes'
+  - name: 'Get infra nodes'
     community.kubernetes.k8s_info:
       kind: Node
       label_selectors:
-        - node-role.kubernetes.io/net2 =
-    register: net2Nodes
+        - node-role.kubernetes.io/infra =
+    register: infraNodes
 
-  - name: 'Extract net2 node IPs'
+  - name: 'Extract infra node IPs'
     ansible.builtin.set_fact:
-      net2MembersRaw: "{{ net2Nodes | to_json | from_json | json_query(net2MembersRawQuery) }}"
+      infraMembersRaw: "{{ infraNodes | to_json | from_json | json_query(infraMembersRawQuery) }}"
     vars:
-      net2MembersRawQuery: "resources[*].status.addresses[?type=='InternalIP'].address"
+      infraMembersRawQuery: "resources[*].status.addresses[?type=='InternalIP'].address"
 
-  - name: 'Build net2 node IP dict'
+  - name: 'Build infra node IP dict'
     ansible.builtin.set_fact:
-      net2Members: "{{ net2Members | default([]) + [ item ] }}"
-    with_items: "{{ net2MembersRaw }}"
+      infraMembers: "{{ infraMembers | default([]) + [ item ] }}"
+    with_items: "{{ infraMembersRaw }}"
 
   - name: 'Get loadbalancer pools'
-    ansible.builtin.command: openstack loadbalancer pool list -c name -f value
+    ansible.builtin.shell: openstack loadbalancer pool list -c name -f value | grep -eg-
     register: loadbalancerPoolsRaw
 
   - name: Sanitise loadbalancer pools
@@ -59,9 +59,9 @@
   - name: 'Determine members to be added'
     ansible.builtin.set_fact:
       loadbalancerMembersToAdd: "{{ loadbalancerMembersToAdd | default([]) + [ item ] }}"
-    with_items: "{{ net2Members }}"
+    with_items: "{{ infraMembers }}"
     when: 
-      - net2Members is defined
+      - infraMembers is defined
       - item not in loadbalancerMembers
 
   - name: 'Determine members to be deleted'
@@ -69,15 +69,15 @@
       loadbalancerMembersToDelete: "{{ loadbalancerMembersToDelete | default([]) + [ item ] }}"
     with_items: "{{ loadbalancerMembers }}"
     when: 
-      - net2Members is defined
-      - item not in net2Members
+      - infraMembers is defined
+      - item not in infraMembers
 
   - name: 'Add loadbalancer members'
     openstack.cloud.lb_member:
       name: "{{ item[1] }}"
       address: "{{ item[1] }}"
       pool: "{{ item[0] }}"
-      protocol_port: "{{ 443 if '-HTTPS-' in item[0] else 80 }}"
+      protocol_port: "{{ 30443 if '-HTTPS-' in item[0] else 30080 }}"
       state: present
     with_nested:
       - "{{ loadbalancerPools }}"
