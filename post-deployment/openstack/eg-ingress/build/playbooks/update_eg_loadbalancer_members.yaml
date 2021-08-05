@@ -44,7 +44,7 @@
     ansible.builtin.shell: openstack loadbalancer pool list -c name -f value | grep -eg-
     register: loadbalancerPoolsRaw
 
-  - name: Sanitise loadbalancer pools
+  - name: 'Sanitise loadbalancer pools'
     ansible.builtin.set_fact:
       loadbalancerPools: "{{ loadbalancerPoolsRaw.stdout_lines }}"
 
