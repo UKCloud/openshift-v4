@@ -90,3 +90,18 @@
               operator: In
               values:
               - "{{ net2NetworkName }}"
+
+  - name: Ensure default IngressController does not pickup net2 routes
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          name: default
+          namespace: openshift-ingress-operator
+        spec:
+          routeSelector:
+            matchExpressions:
+            - key: network
+              operator: DoesNotExist

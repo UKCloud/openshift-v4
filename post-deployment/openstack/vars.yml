@@ -23,7 +23,7 @@ opsviewName: <name>
 #net2ExternalNetwork:  <net2 external network>
 ## Set to true when deploying extraGateway, defaults to false
 #extraGateway: true
-#extraGatewayExternalNetwork:  <extraGateway external network>
+#egExternalNetwork:  <extraGateway external network>
 ## Set to false to prevent isolation NetworkPolicy's being added to 
 ## default project template, defaults to true:
 #isolateProjectsNetworkPolicy: false

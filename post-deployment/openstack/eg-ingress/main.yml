@@ -4,7 +4,7 @@
 
   vars:
     namespace: "ukc-ingress"
-    extraGatewayNetworkName: "{{ extraGatewayExternalNetwork | replace(' ','-') | replace('_','-') | lower }}"
+    extraGatewayNetworkName: "{{ egExternalNetwork | replace(' ','-') | replace('_','-') | lower }}"
 
   tasks:
   - name: Create ImageStream
@@ -114,3 +114,18 @@
             port: 443
             protocol: TCP
             targetPort: https
+
+  - name: Ensure default IngressController does not pickup EG routes
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          name: default
+          namespace: openshift-ingress-operator
+        spec:
+          routeSelector:
+            matchExpressions:
+            - key: network
+              operator: DoesNotExist
