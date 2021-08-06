@@ -41,7 +41,7 @@
     with_items: "{{ net2MembersRaw }}"
 
   - name: 'Get loadbalancer pools'
-    ansible.builtin.shell: openstack loadbalancer pool list -c name -f value | grep -net2-
+    ansible.builtin.shell: openstack loadbalancer pool list -c name -f value | grep -- -net2-
     register: loadbalancerPoolsRaw
 
   - name: 'Sanitise loadbalancer pools'
