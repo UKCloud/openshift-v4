@@ -1,0 +1,7 @@
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+    namespace: openshift-ingress-operator
+    name: extragateway
+spec:
+    replicas: {{ infraNodes.resources | length }}

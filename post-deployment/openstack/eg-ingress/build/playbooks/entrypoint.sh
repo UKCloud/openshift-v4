@@ -7,4 +7,4 @@ if [ `id -u` -ge 500 ]; then
     rm /tmp/passwd
 fi
 
-ansible-playbook /usr/local/playbooks/update_net2_loadbalancer_members.yaml
+ansible-playbook /usr/local/playbooks/update_eg_loadbalancer_members.yaml

@@ -27,7 +27,10 @@
 - import_playbook: acme-sa.yml
   when: useLetsEncryptCert | default(true) | bool
 - import_playbook: ingress/main.yml
+  when: (extraGateway | default(false) | bool) or (net2 | default(false) | bool)
 - import_playbook: net2-ingress/main.yml
   when: net2 | default(false) | bool
+- import_playbook: eg-ingress/main.yml
+  when: extraGateway | default(false) | bool
 - import_playbook: ingress/letsencrypt.yml
   when: useLetsEncryptCert | default(true) | bool

@@ -18,19 +18,32 @@
         - node-role.kubernetes.io/net2 =
     register: net2Nodes
 
+  - name: 'Get ingresscontrollers'
+    community.kubernetes.k8s_info:
+      kind: IngressController
+      namespace: openshift-ingress-operator
+      name: extragateway
+    register: egIngressController
+
   - name: 'Extract net2 network name'
     ansible.builtin.set_fact:
       net2Networks: "{{ net2Nodes | to_json | from_json | json_query(net2NetworksQuery) }}"
     vars:
       net2NetworksQuery: "resources[*].metadata.labels.network"
 
-  - name: Update default ingresscontroller replicas
-    k8s:
+  - name: 'Update default ingresscontroller replicas'
+    community.kubernetes.k8s:
       state: present
       definition: "{{ lookup('template', 'templates/default_ingress_controller.j2') }}"
 
-  - name: Update net2 ingresscontroller replicas
-    k8s:
+  - name: 'Update net2 ingresscontroller replicas'
+    community.kubernetes.k8s:
       state: present
       definition: "{{ lookup('template', 'templates/net2_ingress_controller.j2') }}"
     with_items: "{{ net2Networks | unique }}"
+
+  - name: 'Update extragateway ingresscontroller replicas'
+    community.kubernetes.k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/eg_ingress_controller.j2') }}"
+    when: egIngressController.resources | length > 0
