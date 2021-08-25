@@ -10,6 +10,7 @@ bucketName: <object store bucket>
 regionEndpoint: <object storage region endpoint>
 accessKey: <access key>
 secretKey: <secret key>
+
 # Optional add ons
 logging: <boolean>
 # Opsview host name format cnaxxxxx-<customer>
@@ -18,15 +19,20 @@ opsviewName: <name>
 #useSingleSignOn: false
 ## Set to false when using self-signed certificates, defaults to true:
 #useLetsEncryptCert: false
+
 ## Set to true when deploying net2, defaults to false
 #net2: true
 #net2ExternalNetwork:  <net2 external network>
+#net2NTPServers: ["1.2.3.4","6.7.8.9"]    # List of NTP servers accessible on the net2 network
+
 ## Set to true when deploying extraGateway, defaults to false
 #extraGateway: true
 #egExternalNetwork:  <extraGateway external network>
+
 ## Set to false to prevent isolation NetworkPolicy's being added to 
 ## default project template, defaults to true:
 #isolateProjectsNetworkPolicy: false
+
 # DNS Forwarding - omit or set to {} to disable
 dnsforwardingzones: 
   - name: foo-dns

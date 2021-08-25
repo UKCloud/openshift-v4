@@ -1,0 +1,56 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+  - name: Template /etc/chrony.conf
+    set_fact: 
+      chronyconf: | 
+        {% for ntpserver in net2NTPServers %}server {{ ntpserver }} iburst
+        {% endfor %}
+        driftfile /var/lib/chrony/drift
+        makestep 1.0 3
+        rtcsync
+        logdir /var/log/chrony  
+    when: net2NTPServers is defined
+
+  - name: Create Net2 NTP MachineConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfig
+        metadata:
+          labels:
+            machineconfiguration.openshift.io/role: net2
+          name: 03-net2-ntp
+        spec:
+          config:
+            ignition:
+              version: 3.2.0
+            storage:
+              files:
+              - path: /etc/chrony.conf
+                mode: 0644
+                overwrite: true
+                contents:
+                  source: "data:,{{ chronyconf | urlencode }}"  
+    when: net2NTPServers is defined
+
+  - name: Create Net2 MachineConfigPool
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfigPool
+        metadata:
+          name: net2
+        spec:
+          machineConfigSelector:
+            matchExpressions:
+              - { key: machineconfiguration.openshift.io/role, operator: In, values: [ worker, net2 ] }
+          nodeSelector:
+            matchLabels:
+              node-role.kubernetes.io/net2: ""
+    when: net2NTPServers is defined
+
