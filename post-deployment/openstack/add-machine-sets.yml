@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: 'Get existing MachineSet'
+    k8s_info:
+      api_version: machine.openshift.io/v1beta1
+      kind: MachineSet
+      name: "{{ ( domainSuffix.split('.')[0] + '-' + workerFlavor ) | replace('.','-') | replace('ocp-','') | replace('app-','') }}-worker"
+      namespace: openshift-machine-api
+    register: workerMachineSet
+
+
+  - name: 'set variables'
+    set_fact:
+      ClusterID: "{{ workerMachineSet.resources[0].metadata.labels['machine.openshift.io/cluster-api-cluster'] }}"
+      serverGroupID: "{{ workerMachineSet.resources[0].spec.template.spec.providerSpec.value.serverGroupID }}"
+
+
+
+  - name: 'Create MachineSets from template'
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/machineset.j2') }}"    
+    with_items: "{{ additionalFlavors }}"
