@@ -1,0 +1,41 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: 'Get existing worker MachineSet'
+    k8s_info:
+      api_version: machine.openshift.io/v1beta1
+      kind: MachineSet
+      name: "{{ ( domainSuffix.split('.')[0] + '-' + workerFlavor ) | replace('.','-') | replace('ocp-','') | replace('app-','') }}-worker"
+      namespace: openshift-machine-api
+    register: workerMachineSet
+
+  - name: 'Get all existing MachineSets'
+    k8s_info:
+      api_version: machine.openshift.io/v1beta1
+      kind: MachineSet
+      namespace: openshift-machine-api
+    register: currentMachineSets
+
+  - name: 'Extract all flavor names for non-infra machinesets'
+    set_fact:
+      listFlavors: "{{ currentMachineSets | json_query(flavor_query) }}"
+    vars:
+      flavor_query: "resources[?spec.template.spec.providerSpec.value.userDataSecret.name=='worker-user-data'].spec.template.spec.providerSpec.value.flavor"
+
+  - name: 'Discover which flavors dont already have a machineset'
+    set_fact:
+      missingFlavors: "{{ additionalFlavors | difference(listFlavors) }}"
+
+  - name: 'set variables for templating'
+    set_fact:
+      ClusterID: "{{ workerMachineSet.resources[0].metadata.labels['machine.openshift.io/cluster-api-cluster'] }}"
+      serverGroupID: "{{ workerMachineSet.resources[0].spec.template.spec.providerSpec.value.serverGroupID }}"
+
+  - name: 'Create new MachineSets from template'
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/machineset.j2') }}"    
+    with_items: "{{ missingFlavors }}"

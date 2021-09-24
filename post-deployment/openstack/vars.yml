@@ -1,5 +1,7 @@
 rhcosImage: <image present in project> # <Name of image to use for deploying infra nodes>
 domainSuffix: <domain suffix> # Can also be specified in two params "custID" and "baseDomain"
+workerFlavor: <flavor> # OpenStack flavor for the primary app worker MachineSet
+additionalFlavors: [] # List of other flavors to create worker MachineSets for
 # SSO parameters
 ssoSecret: <secret>
 ssoClientID: <client ID>
