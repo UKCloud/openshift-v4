@@ -112,7 +112,7 @@
             - list
             - watch
 
-  - name: 'Create ukc-ingress-node-reader clusterrolebinding'
+  - name: 'Create ukc-ingress-node-reader ClusterRoleBinding'
     k8s:
       state: present
       definition:
