@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "update-nodeport-loadbalancer"
+  namespace: "{{ namespace }}"
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: "Replace"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+          - name: update-nodeport-loadbalancer-members
+            image: update-nodeport-loadbalancer-members
+            env:
+            - name: K8S_AUTH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: "ukc-ingress-sa"
+                  key: token
+            - name: K8S_AUTH_HOST
+              value: "https://api.{{ domainSuffix}}:6443"
+            - name: OS_CLOUD
+              value: openstack
+            volumeMounts:
+            - mountPath: "/etc/openstack"
+              name: clouds
+          volumes:
+            - name: clouds
+              emptyDir: {}
+          restartPolicy: Never
