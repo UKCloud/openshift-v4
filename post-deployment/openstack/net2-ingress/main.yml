@@ -85,7 +85,7 @@
             nodeSelector:
               matchLabels:
                 network: "{{ net2NetworkName }}"
-          replicas: 2
+          replicas: 0
           routeSelector:
             matchExpressions:
             - key: network

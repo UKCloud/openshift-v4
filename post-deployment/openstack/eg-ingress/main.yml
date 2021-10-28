@@ -87,7 +87,7 @@
                 node-role.kubernetes.io/infra: ""
           endpointPublishingStrategy:
             type: NodePortService
-          replicas: 2
+          replicas: 0
           routeSelector:
             matchExpressions:
             - key: network

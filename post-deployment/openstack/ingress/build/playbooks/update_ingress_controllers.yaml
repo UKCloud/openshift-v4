@@ -24,20 +24,27 @@
       namespace: openshift-ingress-operator
       label_selectors:
         - ingress = net2
-    register: ingressControllers
+    register: rawNet2IngressControllers
 
   - name: 'Get eg IngressControllers'
     community.kubernetes.k8s_info:
       kind: IngressController
       namespace: openshift-ingress-operator
-      name: extragateway
-    register: egIngressController
+      label_selectors:
+        - ingress = eg
+    register: rawEgIngressControllers
 
   - name: 'Extract net2 IngressController names'
     ansible.builtin.set_fact:
-      net2IngressControllers: "{{ ingressControllers | to_json | from_json | json_query(net2IngressControllersQuery) }}"
+      net2IngressControllers: "{{ rawNet2IngressControllers | to_json | from_json | json_query(net2IngressControllersQuery) }}"
     vars:
       net2IngressControllersQuery: "resources[*].metadata.name"
+
+  - name: 'Extract eg IngressController names'
+    ansible.builtin.set_fact:
+      egIngressControllers: "{{ rawEgIngressControllers | to_json | from_json | json_query(egIngressControllersQuery) }}"
+    vars:
+      egIngressControllersQuery: "resources[*].metadata.name"
 
   - name: 'Update default IngressController replicas'
     community.kubernetes.k8s:
@@ -50,8 +57,8 @@
       definition: "{{ lookup('template', 'templates/net2_ingress_controller.j2') }}"
     with_items: "{{ net2IngressControllers }}"
 
-  - name: 'Update extragateway IngressController replicas'
+  - name: 'Update eg IngressController replicas'
     community.kubernetes.k8s:
       state: present
       definition: "{{ lookup('template', 'templates/eg_ingress_controller.j2') }}"
-    when: egIngressController.resources | length > 0
+    with_items: "{{ egIngressControllers }}"
