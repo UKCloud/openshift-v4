@@ -1,0 +1,92 @@
+---
+- import_playbook: sa.yml
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    namespace: "ukc-ingress"
+
+  tasks:
+  - name: Create "{{ namespace }}" namespace
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: namespace
+        metadata:
+          name: "{{ namespace }}"
+
+  - name: Create secret containing sa token
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: "ukc-ingress-sa"
+          namespace: "{{ namespace }}"
+        data:
+          token: "{{ ukcIngressSaToken | b64encode }}"
+
+  - name: Create ImageStream
+    k8s:
+      state: present
+      definition:
+        apiVersion: image.openshift.io/v1
+        kind: ImageStream
+        metadata:
+          name: update-nodeport-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          lookupPolicy:
+            local: true
+
+  - name: Create BuildConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          labels:
+            build: update-nodeport-loadbalancer-members
+          name: update-nodeport-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          output:
+            to:
+              kind: "ImageStreamTag"
+              name: update-nodeport-loadbalancer-members:latest
+          source:
+            binary: {}
+            type: Binary
+          strategy:
+            dockerStrategy: {}
+            type: Docker
+
+  - name: Run docker build
+    ansible.builtin.shell:
+      cmd: oc start-build update-nodeport-loadbalancer-members --from-dir . -F -n {{ namespace }}
+    args:
+      chdir: "./build"
+    register: updateNodePortbBuildStatus
+    until: 
+      - "'Push successful' in updateNodePortbBuildStatus.stdout_lines"
+    retries: 5
+    delay: 60
+
+  - name: Delete BuildConfig
+    k8s:
+      state: absent
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          name: update-nodeport-loadbalancer-members
+          namespace: "{{ namespace }}"
+
+  - name: Create update-nodeport-loadbalancer CronJob
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/cronjob-update-nodeport-loadbalancer.j2') }}"
