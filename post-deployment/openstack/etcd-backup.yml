@@ -63,7 +63,7 @@
           name: cluster-etcd-backup
 
   - name: Add privileged scc to openshift-backup service account
-    shell: oc adm policy add-scc-to-user privileged -z openshift-backup
+    shell: oc adm policy add-scc-to-user privileged -z openshift-backup -n etcd-backup
 
   - name: Create backup cronjob
     k8s:
@@ -136,6 +136,8 @@
     template:
       src: templates/alertmanager.j2
       dest: files/alertmanager.yaml
+    when: slackApiUrl is defined
 
   - name: Push alertmanager config to the cluster
     shell: oc -n openshift-monitoring create secret generic alertmanager-main --from-file=files/alertmanager.yaml --dry-run -o=yaml | oc -n openshift-monitoring replace secret --filename=-
+    when: slackApiUrl is defined

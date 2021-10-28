@@ -14,8 +14,8 @@ secretKey: <secret key>
 logging: <boolean>
 # Opsview host name format cnaxxxxx-<customer>
 opsviewName: <name>
-# Slack webhook api url for monitoring
-slackApiUrl: <url>
+## Set to Slack webhook api url to configure slack monitoring
+#slackApiUrl: <url>
 ## Set to false to use default kubeadmin user auth, defaults to true:
 #useSingleSignOn: false
 ## Set to false when using self-signed certificates, defaults to true:
