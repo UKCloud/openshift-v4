@@ -18,32 +18,47 @@
         - node-role.kubernetes.io/net2 =
     register: net2Nodes
 
-  - name: 'Get ingresscontrollers'
+  - name: 'Get net2 IngressControllers'
     community.kubernetes.k8s_info:
       kind: IngressController
       namespace: openshift-ingress-operator
-      name: extragateway
-    register: egIngressController
+      label_selectors:
+        - ingress = net2
+    register: rawNet2IngressControllers
 
-  - name: 'Extract net2 network name'
+  - name: 'Get eg IngressControllers'
+    community.kubernetes.k8s_info:
+      kind: IngressController
+      namespace: openshift-ingress-operator
+      label_selectors:
+        - ingress = eg
+    register: rawEgIngressControllers
+
+  - name: 'Extract net2 IngressController names'
     ansible.builtin.set_fact:
-      net2Networks: "{{ net2Nodes | to_json | from_json | json_query(net2NetworksQuery) }}"
+      net2IngressControllers: "{{ rawNet2IngressControllers | to_json | from_json | json_query(net2IngressControllersQuery) }}"
     vars:
-      net2NetworksQuery: "resources[*].metadata.labels.network"
+      net2IngressControllersQuery: "resources[*].metadata.name"
 
-  - name: 'Update default ingresscontroller replicas'
+  - name: 'Extract eg IngressController names'
+    ansible.builtin.set_fact:
+      egIngressControllers: "{{ rawEgIngressControllers | to_json | from_json | json_query(egIngressControllersQuery) }}"
+    vars:
+      egIngressControllersQuery: "resources[*].metadata.name"
+
+  - name: 'Update default IngressController replicas'
     community.kubernetes.k8s:
       state: present
       definition: "{{ lookup('template', 'templates/default_ingress_controller.j2') }}"
 
-  - name: 'Update net2 ingresscontroller replicas'
+  - name: 'Update net2 IngressController replicas'
     community.kubernetes.k8s:
       state: present
       definition: "{{ lookup('template', 'templates/net2_ingress_controller.j2') }}"
-    with_items: "{{ net2Networks | unique }}"
+    with_items: "{{ net2IngressControllers }}"
 
-  - name: 'Update extragateway ingresscontroller replicas'
+  - name: 'Update eg IngressController replicas'
     community.kubernetes.k8s:
       state: present
       definition: "{{ lookup('template', 'templates/eg_ingress_controller.j2') }}"
-    when: egIngressController.resources | length > 0
+    with_items: "{{ egIngressControllers }}"

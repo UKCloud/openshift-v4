@@ -9,7 +9,7 @@ ssoIssuer: <issuer URL>
 ssoLogoutURL: <logout URL>
 # Object storage parameters
 bucketName: <object store bucket>
-regionEndpoint: <object storage region endpoint>
+regionEndpoint: <object storage region endpoint preceded by protocol e.g. https://>
 accessKey: <access key>
 secretKey: <secret key>
 
