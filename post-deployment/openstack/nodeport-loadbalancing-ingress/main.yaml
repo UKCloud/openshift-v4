@@ -17,6 +17,16 @@
         metadata:
           name: "{{ namespace }}"
 
+  - name: Create ConfigMap
+    k8s:
+      state: present
+      definition:
+        api_version: v1
+        kind: ConfigMap
+        metadata:
+          name: "ukcloud-openstack-loadbalancer"
+          namespace: "{{ namespace }}"
+
   - name: Create secret containing sa token
     k8s:
       state: present
