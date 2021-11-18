@@ -3,6 +3,6 @@ collections:
 - name: openstack.cloud
   version: "1.5.1"
 - name: community.kubernetes
-  version: "1.2.0"
+  version: "1.2.1"
 - name: community.general
-  version: "3.7.0"
+  version: "3.8.1"
