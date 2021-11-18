@@ -75,17 +75,18 @@
             - list
             - watch
 
-  - name: Create services-reader ClusterRole
+  - name: Create configmap-reader Role
     k8s:
       state: present
       definition:
         apiVersion: rbac.authorization.k8s.io/v1
-        kind: ClusterRole
+        kind: Role
         metadata:
-          name: services-reader
+          name: configmap-reader
+          namespace: ukc-ingress
         rules:
           - apiGroups: [""]
-            resources: ["services"]
+            resources: ["configmaps"]
             verbs: ["get", "watch", "list"]
 
   - name: 'Create ukc-ingress-node-reader clusterrolebinding'
@@ -105,21 +106,22 @@
           name: ukc-ingress
           namespace: default
 
-  - name: Create ukc-ingress-services-reader ClusterRoleBinding
+  - name: Create ukc-ingress-configmap-reader RoleBinding
     k8s:
       state: present
       definition:
         apiVersion: rbac.authorization.k8s.io/v1
-        kind: ClusterRoleBinding
+        kind: RoleBinding
         metadata:
-          name: ukc-ingress-services-reader
+          name: ukc-ingress-configmap-reader
+          namespace: ukc-ingress
         subjects:
         - kind: ServiceAccount
           name: ukc-ingress
           namespace: default
         roleRef:
-          kind: ClusterRole
-          name: services-reader
+          kind: Role
+          name: configmap-reader
           apiGroup: ""
 
   - name: 'Retrieve ukc-ingress token'
