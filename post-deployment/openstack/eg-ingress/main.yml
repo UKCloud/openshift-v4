@@ -77,6 +77,8 @@
         metadata:
           namespace: openshift-ingress-operator
           name: extragateway
+          labels:
+            ingress: "eg"
         spec:
           domain: "{{ extraGatewayNetworkName }}.{{ domainSuffix }}"
           nodePlacement:
@@ -85,7 +87,7 @@
                 node-role.kubernetes.io/infra: ""
           endpointPublishingStrategy:
             type: NodePortService
-          replicas: 2
+          replicas: 0
           routeSelector:
             matchExpressions:
             - key: network
