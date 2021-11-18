@@ -1,5 +1,5 @@
 # FROM ansible-runner:latest
-FROM quay.io/ansible/ansible-runner:stable-2.10-latest
+FROM quay.io/ansible/ansible-runner:stable-2.11-latest
 
 WORKDIR /usr/local/
 
