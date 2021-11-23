@@ -26,7 +26,7 @@
     community.kubernetes.k8s_info:
       kind: ConfigMap
       namespace: ukc-ingress
-      name: nodeport-loadbalance
+      name: ukcloud-openstack-loadbalancer
     register: configmap
 
   - name: Grab data from configmap
