@@ -26,6 +26,11 @@
         metadata:
           name: "ukcloud-openstack-loadbalancer"
           namespace: "{{ namespace }}"
+        data:
+          openstack: |
+            - nodeport:
+              listener:
+              allowed_ips: []
 
   - name: Create secret containing sa token
     k8s:
