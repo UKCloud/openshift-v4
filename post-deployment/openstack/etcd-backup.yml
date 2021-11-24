@@ -1,0 +1,143 @@
+- hosts: localhost
+  gather_facts: No
+  tasks:
+  - name: Create etcd-backup project
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          annotations:
+            openshift.io/node-selector: ""
+          name: etcd-backup
+
+  - name: Create service account for etcd-backup
+    k8s:
+      state: present
+      definition:
+        kind: ServiceAccount
+        apiVersion: v1
+        metadata:
+          name: openshift-backup
+          namespace: etcd-backup
+        labels:
+          app: openshift-backup
+
+  - name: Create cluster role for etcd-backup
+    k8s:
+      state: present
+      definition:
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: cluster-etcd-backup
+        rules:
+        - apiGroups: [""]
+          resources:
+            - "nodes"
+          verbs: ["get", "list"]
+        - apiGroups: [""]
+          resources:
+            - "pods"
+            - "pods/log"
+          verbs: ["get", "list", "create", "delete", "watch"]
+
+  - name: Create cluster role binding for etcd-backup
+    k8s:
+      state: present
+      definition:
+        kind: ClusterRoleBinding
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: openshift-backup
+          labels:
+            app: openshift-backup
+        subjects:
+          - kind: ServiceAccount
+            name: openshift-backup
+            namespace: etcd-backup
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: cluster-etcd-backup
+
+  - name: Add privileged scc to openshift-backup service account
+    shell: oc adm policy add-scc-to-user privileged -z openshift-backup -n etcd-backup
+
+  - name: Create backup cronjob
+    k8s:
+      state: present
+      definition:
+        kind: CronJob
+        apiVersion: batch/v1beta1
+        metadata:
+          name: openshift-backup
+          namespace: etcd-backup
+        labels:
+          app: openshift-backup
+        spec:
+          schedule: "55 1 * * *"
+          startingDeadlineSeconds: 200
+          concurrencyPolicy: Forbid
+          successfulJobsHistoryLimit: 5
+          failedJobsHistoryLimit: 5
+          jobTemplate:
+            metadata:
+              labels:
+                app: openshift-backup
+            spec:
+              backoffLimit: 0
+              template:
+                metadata:
+                  labels:
+                    app: openshift-backup
+                spec:
+                  containers:
+                  - name: backup
+                    image: "registry.redhat.io/openshift4/ose-cli"
+                    command:
+                    - "/bin/bash"
+                    - "-c"
+                    - oc get no -l node-role.kubernetes.io/master --no-headers -o name | xargs -I {} --  oc debug {} -- bash -c 'chroot /host sudo -E /usr/local/bin/cluster-backup.sh /home/core/backup/ && chroot /host sudo -E find /home/core/backup/ -type f -mtime +"4" -delete'
+                  restartPolicy: Never
+                  securityContext:
+                    runAsUser: 1000670000
+                    privileged: true
+                  terminationGracePeriodSeconds: 30
+                  activeDeadlineSeconds: 500
+                  dnsPolicy: ClusterFirst
+                  serviceAccountName: openshift-backup
+                  serviceAccount: openshift-backup
+
+  - name: Create Prometheus Monitoring Rule
+    k8s:
+      state: present
+      definition:
+        apiVersion: monitoring.coreos.com/v1
+        kind: PrometheusRule
+        metadata:
+          name: etcd-backup-fail-alert
+          namespace: etcd-backup
+        spec:
+          groups:
+          - name: etcd-backup-alert
+            rules:
+            - alert: etcd-backupFailure
+              annotations:
+                description: 'etcd-backup has failed to run, removing the failed job will clear this alert.'
+                message: The etcd-backup cronjob has failed!
+                title: etcd-backup cronjob failure!
+              expr: kube_job_failed{namespace="etcd-backup", job_name=~"backup-.*"} != 0
+              labels:
+                severity: critical
+
+  - name: Render alertmanager yaml from template
+    template:
+      src: templates/alertmanager.j2
+      dest: files/alertmanager.yaml
+    when: slackApiUrl is defined
+
+  - name: Push alertmanager config to the cluster
+    shell: oc -n openshift-monitoring create secret generic alertmanager-main --from-file=files/alertmanager.yaml --dry-run -o=yaml | oc -n openshift-monitoring replace secret --filename=-
+    when: slackApiUrl is defined

@@ -78,6 +78,7 @@
             openshiftStateMetrics:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+            enableUserWorkload: true
 
   - name: Create default nodeSelector to target workers
     k8s:
