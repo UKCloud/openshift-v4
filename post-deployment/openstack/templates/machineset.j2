@@ -2,26 +2,28 @@ apiVersion: machine.openshift.io/v1beta1
 kind: MachineSet
 metadata:
   labels:
-    machine.openshift.io/cluster-api-cluster: "{{ infrastructureId }}"
-  name: "{{ infrastructureId }}-infra"
+    machine.openshift.io/cluster-api-cluster: {{ ClusterID }}
+    machine.openshift.io/cluster-api-machine-role: worker
+    machine.openshift.io/cluster-api-machine-type: worker
+  name: "{{ ( domainSuffix.split('.')[0] + '-' + item ) | replace('.','-') | replace('ocp-','') | replace('app-','') }}-worker"
   namespace: openshift-machine-api
 spec:
-  replicas: {{ infraMachineSetScale }}
+  replicas: 0
   selector:
     matchLabels:
-      machine.openshift.io/cluster-api-cluster: "{{ infrastructureId }}"
-      machine.openshift.io/cluster-api-machineset: "{{ infrastructureId }}-infra"
+      machine.openshift.io/cluster-api-cluster: {{ ClusterID }}
+      machine.openshift.io/cluster-api-machineset: "{{ ( domainSuffix.split('.')[0] + '-' + item ) | replace('.','-') | replace('ocp-','') | replace('app-','') }}-worker"
   template:
     metadata:
       labels:
-        machine.openshift.io/cluster-api-cluster: "{{ infrastructureId }}"
-        machine.openshift.io/cluster-api-machine-role: infra
-        machine.openshift.io/cluster-api-machine-type: infra 
-        machine.openshift.io/cluster-api-machineset: "{{ infrastructureId }}-infra"
+        machine.openshift.io/cluster-api-cluster: {{ ClusterID }}
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+        machine.openshift.io/cluster-api-machineset: "{{ ( domainSuffix.split('.')[0] + '-' + item ) | replace('.','-') | replace('ocp-','') | replace('app-','') }}-worker"
     spec:
       metadata:
         labels:
-          node-role.kubernetes.io/infra: ""
+          node-role.kubernetes.io/app: ""
       providerSpec:
         value:
           apiVersion: openstackproviderconfig.openshift.io/v1alpha1
@@ -29,29 +31,25 @@ spec:
           cloudsSecret:
             name: openstack-cloud-credentials
             namespace: openshift-machine-api
-          flavor: ocp.m1.medium
-{% if rhcosImage is defined %}
-          image: "{{ rhcosImage }}"
-{% else %}
-          image: "{{ infrastructureId }}-rhcos"
-{% endif %}
+          flavor: {{ item }}
+          image: {{ rhcosImage }}
           kind: OpenstackProviderSpec
+          metadata: {}
           networks:
           - filter: {}
             subnets:
             - filter:
-                name: "{{ infrastructureId }}-nodes"
-                tags: "openshiftClusterID={{ infrastructureId }}"
+                name: {{ ClusterID }}-nodes
+                tags: openshiftClusterID={{ ClusterID }}
           securityGroups:
           - filter: {}
-            name: "{{ infrastructureId }}-infra"
-          - filter: {}
-            name: "{{ infrastructureId }}-ingress"
+            name: {{ ClusterID }}-worker
+          serverGroupID: {{ serverGroupID }}
           serverMetadata:
-            Name: "{{ infrastructureId }}-infra"
-            openshiftClusterID: "{{ infrastructureId }}"
+            Name: "{{ ( domainSuffix.split('.')[0] + '-' + item ) | replace('.','-') | replace('ocp-','') | replace('app-','') }}-worker"
+            openshiftClusterID: {{ ClusterID }}
           tags:
-          - "openshiftClusterID={{ infrastructureId }}"
+          - openshiftClusterID={{ ClusterID }}
           trunk: true
           userDataSecret:
-            name: infra-user-data
+            name: worker-user-data

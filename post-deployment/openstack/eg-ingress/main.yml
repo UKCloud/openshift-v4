@@ -1,0 +1,133 @@
+---
+- hosts: localhost
+  connection: local
+
+  vars:
+    namespace: "ukc-ingress"
+    extraGatewayNetworkName: "{{ egExternalNetwork | replace(' ','-') | replace('_','-') | lower }}"
+
+  tasks:
+  - name: Create ImageStream
+    k8s:
+      state: present
+      definition:
+        apiVersion: image.openshift.io/v1
+        kind: ImageStream
+        metadata:
+          name: update-eg-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          lookupPolicy:
+            local: true
+
+  - name: Create BuildConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          labels:
+            build: update-eg-loadbalancer-members
+          name: update-eg-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: update-eg-loadbalancer-members:latest
+          source:
+            binary: {}
+            type: Binary
+          strategy:
+            dockerStrategy: {}
+            type: Docker
+
+  - name: Run Docker build
+    command: "oc start-build update-eg-loadbalancer-members --from-dir . -F -n {{ namespace }}"
+    args:
+      chdir: "./build"
+    register: egLoadbalancerBuildStatus
+    until:
+      - "'Push successful' in egLoadbalancerBuildStatus.stdout_lines"
+    retries: 5
+    delay: 60
+
+  - name: Delete BuildConfig
+    k8s:
+      state: absent
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          name: update-eg-loadbalancer-members
+          namespace: "{{ namespace }}"
+
+  - name: Create update-eg-loadbalancer-members CronJob
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/cronjob-update-eg-loadbalancer-members.j2') }}"
+
+  - name: Create IngressController
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          namespace: openshift-ingress-operator
+          name: extragateway
+          labels:
+            ingress: "eg"
+        spec:
+          domain: "{{ extraGatewayNetworkName }}.{{ domainSuffix }}"
+          nodePlacement:
+            nodeSelector:
+              matchLabels:
+                node-role.kubernetes.io/infra: ""
+          endpointPublishingStrategy:
+            type: NodePortService
+          replicas: 0
+          routeSelector:
+            matchExpressions:
+            - key: network
+              operator: In
+              values:
+              - "{{ extraGatewayNetworkName }}"
+
+  - name: Statically set NodePortService port numbers
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: router-nodeport-extragateway
+          namespace: openshift-ingress
+        spec:
+          ports:
+          - name: http
+            nodePort: 30080
+            port: 80
+            protocol: TCP
+            targetPort: http
+          - name: https
+            nodePort: 30443
+            port: 443
+            protocol: TCP
+            targetPort: https
+
+  - name: Ensure default IngressController does not pickup EG routes
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          name: default
+          namespace: openshift-ingress-operator
+        spec:
+          routeSelector:
+            matchExpressions:
+            - key: network
+              operator: DoesNotExist

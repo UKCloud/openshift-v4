@@ -42,19 +42,19 @@
 
   - name: Create elasticsearch-operator Subscription
     k8s:
-     state: present
-     definition:
-       apiVersion: operators.coreos.com/v1alpha1
-       kind: Subscription
-       metadata:
-         name: "elasticsearch-operator"
-         namespace: "openshift-operators-redhat"
-       spec:
-         channel: "{{ openshiftVersion }}"
-         installPlanApproval: "Automatic"
-         source: "redhat-operators"
-         sourceNamespace: "openshift-marketplace"
-         name: "elasticsearch-operator"
+      state: present
+      definition:
+        apiVersion: operators.coreos.com/v1alpha1
+        kind: Subscription
+        metadata:
+          name: "elasticsearch-operator"
+          namespace: "openshift-operators-redhat"
+        spec:
+          channel: "{{ 'stable' if openshiftVersion >= '4.7' else openshiftVersion }}"
+          installPlanApproval: "Automatic"
+          source: "redhat-operators"
+          sourceNamespace: "openshift-marketplace"
+          name: "elasticsearch-operator"
 
   - name: Create prometheus Role
     k8s:
@@ -132,7 +132,7 @@
           name: cluster-logging
           namespace: openshift-logging
         spec:
-          channel: "{{ openshiftVersion }}"
+          channel: "{{ 'stable' if openshiftVersion >= '4.7' else openshiftVersion }}"
           name: cluster-logging
           source: redhat-operators
           sourceNamespace: openshift-marketplace
@@ -190,6 +190,13 @@
               schedule: 0 1 * * *
           logStore:
             type: "elasticsearch"
+            retentionPolicy: 
+              application:
+                maxAge: 7d
+              infra:
+                maxAge: 7d
+              audit:
+                maxAge: 3d
             elasticsearch:
               nodeCount: 1
               nodeSelector:

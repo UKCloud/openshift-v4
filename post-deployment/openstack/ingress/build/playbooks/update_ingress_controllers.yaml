@@ -1,0 +1,64 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: 'Get infra nodes'
+    community.kubernetes.k8s_info:
+      kind: Node
+      label_selectors:
+        - node-role.kubernetes.io/infra =
+    register: infraNodes
+
+  - name: 'Get net2 nodes'
+    community.kubernetes.k8s_info:
+      kind: Node
+      label_selectors:
+        - node-role.kubernetes.io/net2 =
+    register: net2Nodes
+
+  - name: 'Get net2 IngressControllers'
+    community.kubernetes.k8s_info:
+      kind: IngressController
+      namespace: openshift-ingress-operator
+      label_selectors:
+        - ingress = net2
+    register: rawNet2IngressControllers
+
+  - name: 'Get eg IngressControllers'
+    community.kubernetes.k8s_info:
+      kind: IngressController
+      namespace: openshift-ingress-operator
+      label_selectors:
+        - ingress = eg
+    register: rawEgIngressControllers
+
+  - name: 'Extract net2 IngressController names'
+    ansible.builtin.set_fact:
+      net2IngressControllers: "{{ rawNet2IngressControllers | to_json | from_json | json_query(net2IngressControllersQuery) }}"
+    vars:
+      net2IngressControllersQuery: "resources[*].metadata.name"
+
+  - name: 'Extract eg IngressController names'
+    ansible.builtin.set_fact:
+      egIngressControllers: "{{ rawEgIngressControllers | to_json | from_json | json_query(egIngressControllersQuery) }}"
+    vars:
+      egIngressControllersQuery: "resources[*].metadata.name"
+
+  - name: 'Update default IngressController replicas'
+    community.kubernetes.k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/default_ingress_controller.j2') }}"
+
+  - name: 'Update net2 IngressController replicas'
+    community.kubernetes.k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/net2_ingress_controller.j2') }}"
+    with_items: "{{ net2IngressControllers }}"
+
+  - name: 'Update eg IngressController replicas'
+    community.kubernetes.k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/eg_ingress_controller.j2') }}"
+    with_items: "{{ egIngressControllers }}"

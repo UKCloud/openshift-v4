@@ -1,0 +1,109 @@
+---
+- hosts: localhost
+  connection: local
+
+  vars:
+    namespace: "ukc-ingress"
+    net2NetworkName: "{{ net2ExternalNetwork | replace(' ','-') | replace('_','-') | lower }}"
+
+  tasks:
+  - name: Create ImageStream
+    k8s:
+      state: present
+      definition:
+        apiVersion: image.openshift.io/v1
+        kind: ImageStream
+        metadata:
+          name: update-net2-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          lookupPolicy:
+            local: true
+
+  - name: Create BuildConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          labels:
+            build: update-net2-loadbalancer-members
+          name: update-net2-loadbalancer-members
+          namespace: "{{ namespace }}"
+        spec:
+          output:
+            to:
+              kind: ImageStreamTag
+              name: update-net2-loadbalancer-members:latest
+          source:
+            binary: {}
+            type: Binary
+          strategy:
+            dockerStrategy: {}
+            type: Docker
+
+  - name: Run Docker build
+    command: "oc start-build update-net2-loadbalancer-members --from-dir . -F -n {{ namespace }}"
+    args:
+      chdir: "./build"
+    register: net2LoadbalancerBuildStatus
+    until:
+      - "'Push successful' in net2LoadbalancerBuildStatus.stdout_lines"
+    retries: 5
+    delay: 60
+
+  - name: Delete BuildConfig
+    k8s:
+      state: absent
+      definition:
+        apiVersion: build.openshift.io/v1
+        kind: BuildConfig
+        metadata:
+          name: update-net2-loadbalancer-members
+          namespace: "{{ namespace }}"
+
+  - name: Create update-net2-loadbalancer-members CronJob
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'templates/cronjob-update-net2-loadbalancer-members.j2') }}"
+
+  - name: Create IngressController
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          namespace: openshift-ingress-operator
+          name: "{{ net2NetworkName }}"
+          labels:
+            ingress: "net2"
+        spec:
+          domain: "{{ net2NetworkName }}.{{ domainSuffix }}"
+          nodePlacement:
+            nodeSelector:
+              matchLabels:
+                network: "{{ net2NetworkName }}"
+          replicas: 0
+          routeSelector:
+            matchExpressions:
+            - key: network
+              operator: In
+              values:
+              - "{{ net2NetworkName }}"
+
+  - name: Ensure default IngressController does not pickup net2 routes
+    k8s:
+      state: present
+      definition:
+        apiVersion: operator.openshift.io/v1
+        kind: IngressController
+        metadata:
+          name: default
+          namespace: openshift-ingress-operator
+        spec:
+          routeSelector:
+            matchExpressions:
+            - key: network
+              operator: DoesNotExist

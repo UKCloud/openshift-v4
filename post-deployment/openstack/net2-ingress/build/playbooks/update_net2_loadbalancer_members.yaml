@@ -1,0 +1,95 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: 'Retrieve OpenStack secret'
+    community.kubernetes.k8s_info:
+      kind: Secret
+      name: openstack-credentials
+      namespace: kube-system
+    register: openstackCredentialRaw
+
+  - name: 'Extract OpenStack credential'
+    ansible.builtin.set_fact:
+      openstackCredential: "{{ openstackCredentialRaw | to_json | from_json | json_query(openstackCredentialQuery) }}"
+    vars:
+      openstackCredentialQuery: 'resources[0].data."clouds.yaml"'
+
+  - name: 'Write OpenStack credential to file'
+    ansible.builtin.copy:
+      dest: /etc/openstack/clouds.yaml
+      content: "{{ openstackCredential | b64decode }}"
+
+  - name: 'Get net2 nodes'
+    community.kubernetes.k8s_info:
+      kind: Node
+      label_selectors:
+        - node-role.kubernetes.io/net2 =
+    register: net2Nodes
+
+  - name: 'Extract net2 node IPs'
+    ansible.builtin.set_fact:
+      net2MembersRaw: "{{ net2Nodes | to_json | from_json | json_query(net2MembersRawQuery) }}"
+    vars:
+      net2MembersRawQuery: "resources[*].status.addresses[?type=='InternalIP'].address"
+
+  - name: 'Build net2 node IP dict'
+    ansible.builtin.set_fact:
+      net2Members: "{{ net2Members | default([]) + [ item ] }}"
+    with_items: "{{ net2MembersRaw }}"
+
+  - name: 'Get loadbalancer pools'
+    ansible.builtin.shell: openstack loadbalancer pool list -c name -f value | grep -- -net2-
+    register: loadbalancerPoolsRaw
+
+  - name: 'Sanitise loadbalancer pools'
+    ansible.builtin.set_fact:
+      loadbalancerPools: "{{ loadbalancerPoolsRaw.stdout_lines }}"
+
+  - name: 'Get loadbalancer pool members'
+    ansible.builtin.command: openstack loadbalancer member list "{{ loadbalancerPools | first }}" -c address -f value
+    register: loadbalancerMembersRaw
+
+  - name: 'Sanitise loadbalancer pool members'
+    ansible.builtin.set_fact:
+      loadbalancerMembers: "{{ loadbalancerMembersRaw.stdout_lines }}"
+
+  - name: 'Determine members to be added'
+    ansible.builtin.set_fact:
+      loadbalancerMembersToAdd: "{{ loadbalancerMembersToAdd | default([]) + [ item ] }}"
+    with_items: "{{ net2Members }}"
+    when: 
+      - net2Members is defined
+      - item not in loadbalancerMembers
+
+  - name: 'Determine members to be deleted'
+    ansible.builtin.set_fact:
+      loadbalancerMembersToDelete: "{{ loadbalancerMembersToDelete | default([]) + [ item ] }}"
+    with_items: "{{ loadbalancerMembers }}"
+    when: 
+      - net2Members is defined
+      - item not in net2Members
+
+  - name: 'Add loadbalancer members'
+    openstack.cloud.lb_member:
+      name: "{{ item[1] }}"
+      address: "{{ item[1] }}"
+      pool: "{{ item[0] }}"
+      protocol_port: "{{ 443 if '-HTTPS-' in item[0] else 80 }}"
+      state: present
+    with_nested:
+      - "{{ loadbalancerPools }}"
+      - "{{ loadbalancerMembersToAdd }}"
+    when: loadbalancerMembersToAdd is defined
+
+  - name: 'Delete loadbalancer members'
+    openstack.cloud.lb_member:
+      name: "{{ item[1] }}"
+      pool: "{{ item[0] }}"
+      state: absent
+    with_nested:
+      - "{{ loadbalancerPools }}"
+      - "{{ loadbalancerMembersToDelete }}"
+    when: loadbalancerMembersToDelete is defined
