@@ -68,7 +68,7 @@
 
   - name: Apply allowed CIDR to each listener
     ansible.builtin.shell:
-      openstack loadbalancer listener set '{{ item.0.nodeport }}' --allowed-cidr "{{ item.1 }}"
+      openstack loadbalancer listener set '{{ item.0.nodeport }}' --allowed-cidr "{{ item.1 }}" --wait
     with_subelements:
       - "{{ data }}"
       - allowed_ips
