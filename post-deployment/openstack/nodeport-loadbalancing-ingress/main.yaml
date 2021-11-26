@@ -8,15 +8,6 @@
     namespace: "ukc-ingress"
 
   tasks:
-  - name: Create "{{ namespace }}" namespace
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: namespace
-        metadata:
-          name: "{{ namespace }}"
-
   - name: Create ConfigMap
     k8s:
       state: present

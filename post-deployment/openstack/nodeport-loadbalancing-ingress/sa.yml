@@ -75,6 +75,15 @@
             - list
             - watch
 
+  - name: Ensure "ukc-ingress" namespace exists
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: namespace
+        metadata:
+          name: "ukc-ingress"
+
   - name: Create configmap-reader Role
     k8s:
       state: present
