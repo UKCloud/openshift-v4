@@ -1,4 +1,8 @@
-ansible>=2.9,<3
-jmespath>=0.10
-openshift>=0.11
-PyYAML>=5.3
+ansible>=4.7
+openstacksdk>=0.59.0
+python-openstackclient>=5.6.0
+python-octaviaclient>=2.4.0
+jmespath>=0.10.0
+openshift~=0.12.1
+PyYAML>=5.3.1
+lxml>=2.3.0
