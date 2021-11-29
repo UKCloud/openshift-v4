@@ -35,9 +35,9 @@
     vars:
       dataquery: "resources[0].data.openstack"
 
-  - name: print
-    ansible.builtin.debug:
-      var: data
+  - name: NodePort list
+    ansible.builtin.set_fact:
+      nodeport_list: "{{ data | map(attribute='nodeport') | list }}"
 
   - name: Get NodePort loadbalancer
     ansible.builtin.shell: openstack loadbalancer list -c name -f value | grep -- -nodeport-
@@ -187,3 +187,13 @@
     when:
       - nodePortLoadbalancerPool.stdout_lines is defined
       - item not in workerNodeNames
+
+  - name: Remove member from each pool on loadbalancer
+    openstack.cloud.lb_member:
+      state: absent
+      name: "{{ item[0] }}"
+      pool: "{{ item[1] }}"
+    with_nested:
+      - "{{ loadbalancerMembersToRemove }}"
+      - "{{ nodeport_list }}"
+    when: loadbalancerMembersToRemove is defined
