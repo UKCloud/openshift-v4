@@ -14,7 +14,7 @@ def Vars():
         api: API address of openshift cluster.
     '''
     with open('vars.yml') as f:
-        data = yaml.load(f)
+        data = yaml.safe_load(f)
 
     if 'domainSuffix' in data:
         domain = data['domainSuffix']
