@@ -64,7 +64,8 @@
       protocol_port: "{{ item.listener }}"
       loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
     loop: "{{ data }}"
-    when: item.nodeport is not none
+    when: 
+      - item.nodeport is not none
 
   - name: Apply allowed CIDR to each listener
     ansible.builtin.shell:
@@ -86,7 +87,8 @@
       lb_algorithm: ROUND_ROBIN
       protocol: TCP
     loop: "{{ data }}"
-    when: item.nodeport is not none
+    when: 
+      - item.nodeport is not none
 
   - name: Create pool list
     ansible.builtin.set_fact:
@@ -118,17 +120,38 @@
   - name: Grab nodeports from configmap
     ansible.builtin.set_fact:
       nodeports: "{{ data | map(attribute='nodeport') | map('string') | list }}"
-    when: data[0].nodeport is not none
+    when:
+      - data[0].nodeport is not none
+      - data[0].nodeport is defined
 
   - name: Get NodePort loadbalancer listeners
     ansible.builtin.shell: openstack loadbalancer listener list -c name -f value
     register: nodePortLoadbalancerListener
-    when: data[0].nodeport is not none
 
   - name: Get NodePort loadbalancer pools
     ansible.builtin.shell: openstack loadbalancer pool list -c name -f value
     register: nodePortLoadbalancerPool
-    when: data[0].nodeport is not none
+
+
+  - name: Remove all listeners on the loadbalancer if ConfigMap is empty
+    openstack.cloud.lb_listener:
+      name: "{{ item }}"
+      state: absent
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    loop: "{{ nodePortLoadbalancerListener.stdout_lines }}"
+    when:
+      - data[0].nodeport is none
+      - nodePortLoadbalancer.stdout != ""
+
+  - name: Remove all pools on the loadbalancer if ConfigMap is empty
+    openstack.cloud.lb_pool:
+      name: "{{ item }}"
+      state: absent
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    loop: "{{ nodePortLoadbalancerPool.stdout_lines }}"
+    when:
+      - data[0].nodeport is none
+      - nodePortLoadbalancer.stdout != "" 
 
   - name: Determine what listeners to delete
     ansible.builtin.set_fact:
