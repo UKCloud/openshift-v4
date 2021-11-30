@@ -39,8 +39,21 @@
     ansible.builtin.set_fact:
       nodeport_list: "{{ data | map(attribute='nodeport') | list }}"
 
+  - name: "Retrieve Cluster info"
+    community.kubernetes.k8s_info:
+      kind: Infrastructure
+      name: cluster
+    register: infrastructureRaw
+
+  - name: 'Extract ClusterID'
+    ansible.builtin.set_fact:
+      ClusterID: "{{ infrastructureRaw | to_json | from_json | json_query(clusterIDQuery) }}"
+    vars:
+      clusterIDQuery: 'resources[0].status.infrastructureName'
+
+
   - name: Get NodePort loadbalancer
-    ansible.builtin.shell: openstack loadbalancer list -c name -f value | grep -- -nodeport-
+    ansible.builtin.shell: "openstack loadbalancer list -c name -f value | grep -- {{ ClusterID }}-nodeport-"
     register: nodePortLoadbalancer
 
   - name: Get OpenShift worker nodes
