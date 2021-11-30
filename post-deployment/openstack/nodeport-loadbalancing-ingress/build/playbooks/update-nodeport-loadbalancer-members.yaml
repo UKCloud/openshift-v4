@@ -63,15 +63,16 @@
       protocol: TCP
       protocol_port: "{{ item.listener }}"
       loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
-    loop: "{{ data }}"
+    loop: "{{ data if data is iterable and data is not string else [] }}"
     when: 
+      - data[0].nodeport is defined
       - item.nodeport is not none
 
   - name: Apply allowed CIDR to each listener
     ansible.builtin.shell:
       openstack loadbalancer listener set '{{ item.0.nodeport }}' --allowed-cidr "{{ item.1 }}" --wait
     with_subelements:
-      - "{{ data }}"
+      - "{{ data if data is iterable and data is not string else [] }}"
       - allowed_ips
       - skip_missing: True
     register: output
@@ -86,14 +87,17 @@
       listener: "{{ item.nodeport }}"
       lb_algorithm: ROUND_ROBIN
       protocol: TCP
-    loop: "{{ data }}"
-    when: 
+    loop: "{{ data if data is iterable and data is not string else [] }}"
+    when:
+      - data[0].nodeport is defined
       - item.nodeport is not none
 
   - name: Create pool list
     ansible.builtin.set_fact:
       pool_list: "{{ data | product(workerNodeNames) | list  }}"
-    when: data[0].nodeport is not none
+    when:
+      - data[0].nodeport is defined
+      - data[0].nodeport is not none
 
   - name: Add members to each pool on loadbalancer
     openstack.cloud.lb_member:
@@ -102,7 +106,7 @@
       address: "{{ item.1 }}"
       pool: "{{ item.0.nodeport }}"
       protocol_port: "{{ item.0.nodeport }}"
-    loop: "{{ pool_list }}"
+    loop: "{{ pool_list if pool_list is defined and pool_list is iterable and pool_list is not string else [] }}"
     when: item is defined
 
   - name: Add health monitors to each members in each pool on loadbalancer
@@ -114,7 +118,7 @@
       max_retries: 3
       resp_timeout: 5
       delay: 10
-    loop: "{{ data }}"
+    loop: "{{ data if data is iterable and data is not string else [] }}"
     when: item.nodeport is not none
 
   - name: Grab nodeports from configmap
@@ -140,7 +144,7 @@
       loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
     loop: "{{ nodePortLoadbalancerListener.stdout_lines }}"
     when:
-      - data[0].nodeport is none
+      - (data[0].nodeport is none) or (data is not iterable) or (data is string) 
       - nodePortLoadbalancer.stdout != ""
 
   - name: Remove all pools on the loadbalancer if ConfigMap is empty
@@ -150,7 +154,7 @@
       loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
     loop: "{{ nodePortLoadbalancerPool.stdout_lines }}"
     when:
-      - data[0].nodeport is none
+      - (data[0].nodeport is none) or (data is not iterable) or (data is string)
       - nodePortLoadbalancer.stdout != "" 
 
   - name: Determine what listeners to delete
