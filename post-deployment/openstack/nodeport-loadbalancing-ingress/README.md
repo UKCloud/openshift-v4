@@ -11,6 +11,11 @@ nodeport-loadbalance-ingress.yaml
 
 The can be found in https://github.com/UKCloud/openshift-upi-ansible/tree/nodeport-loadbalancing
 
+# Note for v4.6
+
+For OpenShift v4.6, it will be necessary to edit `cronjob-update-nodeport-loadbalancer.j2` to be `apiVersion: batch/v1beta1` before post-deploy is ran - this change is incompatible with v4.7+
+
+
 # Method (for testing only)
 
 1. Fill vars.yml with the information are you would normally.
