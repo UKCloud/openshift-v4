@@ -39,8 +39,21 @@
     ansible.builtin.set_fact:
       nodeport_list: "{{ data | map(attribute='nodeport') | list }}"
 
+  - name: "Retrieve Cluster info"
+    community.kubernetes.k8s_info:
+      kind: Infrastructure
+      name: cluster
+    register: infrastructureRaw
+
+  - name: 'Extract ClusterID'
+    ansible.builtin.set_fact:
+      ClusterID: "{{ infrastructureRaw | to_json | from_json | json_query(clusterIDQuery) }}"
+    vars:
+      clusterIDQuery: 'resources[0].status.infrastructureName'
+
+
   - name: Get NodePort loadbalancer
-    ansible.builtin.shell: openstack loadbalancer list -c name -f value | grep -- -nodeport-
+    ansible.builtin.shell: "openstack loadbalancer list -c name -f value | grep -- {{ ClusterID }}-nodeport-"
     register: nodePortLoadbalancer
 
   - name: Get OpenShift worker nodes
@@ -63,14 +76,16 @@
       protocol: TCP
       protocol_port: "{{ item.listener }}"
       loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
-    loop: "{{ data }}"
-    when: item.nodeport is not none
+    loop: "{{ data if data is iterable and data is not string else [] }}"
+    when: 
+      - data[0].nodeport is defined
+      - item.nodeport is not none
 
   - name: Apply allowed CIDR to each listener
     ansible.builtin.shell:
       openstack loadbalancer listener set '{{ item.0.nodeport }}' --allowed-cidr "{{ item.1 }}" --wait
     with_subelements:
-      - "{{ data }}"
+      - "{{ data if data is iterable and data is not string else [] }}"
       - allowed_ips
       - skip_missing: True
     register: output
@@ -85,13 +100,17 @@
       listener: "{{ item.nodeport }}"
       lb_algorithm: ROUND_ROBIN
       protocol: TCP
-    loop: "{{ data }}"
-    when: item.nodeport is not none
+    loop: "{{ data if data is iterable and data is not string else [] }}"
+    when:
+      - data[0].nodeport is defined
+      - item.nodeport is not none
 
   - name: Create pool list
     ansible.builtin.set_fact:
       pool_list: "{{ data | product(workerNodeNames) | list  }}"
-    when: data[0].nodeport is not none
+    when:
+      - data[0].nodeport is defined
+      - data[0].nodeport is not none
 
   - name: Add members to each pool on loadbalancer
     openstack.cloud.lb_member:
@@ -100,7 +119,7 @@
       address: "{{ item.1 }}"
       pool: "{{ item.0.nodeport }}"
       protocol_port: "{{ item.0.nodeport }}"
-    loop: "{{ pool_list }}"
+    loop: "{{ pool_list if pool_list is defined and pool_list is iterable and pool_list is not string else [] }}"
     when: item is defined
 
   - name: Add health monitors to each members in each pool on loadbalancer
@@ -112,23 +131,44 @@
       max_retries: 3
       resp_timeout: 5
       delay: 10
-    loop: "{{ data }}"
+    loop: "{{ data if data is iterable and data is not string else [] }}"
     when: item.nodeport is not none
 
   - name: Grab nodeports from configmap
     ansible.builtin.set_fact:
       nodeports: "{{ data | map(attribute='nodeport') | map('string') | list }}"
-    when: data[0].nodeport is not none
+    when:
+      - data[0].nodeport is not none
+      - data[0].nodeport is defined
 
   - name: Get NodePort loadbalancer listeners
     ansible.builtin.shell: openstack loadbalancer listener list -c name -f value
     register: nodePortLoadbalancerListener
-    when: data[0].nodeport is not none
 
   - name: Get NodePort loadbalancer pools
     ansible.builtin.shell: openstack loadbalancer pool list -c name -f value
     register: nodePortLoadbalancerPool
-    when: data[0].nodeport is not none
+
+
+  - name: Remove all listeners on the loadbalancer if ConfigMap is empty
+    openstack.cloud.lb_listener:
+      name: "{{ item }}"
+      state: absent
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    loop: "{{ nodePortLoadbalancerListener.stdout_lines }}"
+    when:
+      - (data[0].nodeport is none) or (data is not iterable) or (data is string) 
+      - nodePortLoadbalancer.stdout != ""
+
+  - name: Remove all pools on the loadbalancer if ConfigMap is empty
+    openstack.cloud.lb_pool:
+      name: "{{ item }}"
+      state: absent
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    loop: "{{ nodePortLoadbalancerPool.stdout_lines }}"
+    when:
+      - (data[0].nodeport is none) or (data is not iterable) or (data is string)
+      - nodePortLoadbalancer.stdout != "" 
 
   - name: Determine what listeners to delete
     ansible.builtin.set_fact:
