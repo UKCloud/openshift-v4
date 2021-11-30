@@ -2,6 +2,8 @@
 
 This features enables customers to expose their NodePorts via a single public IP using OpenStack Octavia Loadbalancer.
 
+**WARNING**: This is not supported for OpenStack Projects with multiple clusters.
+
 ## Prerequisite
 
 Before you run this, you must first have a loadbalancer deployed in your OpenStack Environment. This can be done by running the following playbooks in order:
