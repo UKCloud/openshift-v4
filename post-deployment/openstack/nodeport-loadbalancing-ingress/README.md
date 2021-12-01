@@ -1,6 +1,6 @@
 # NodePort loadbalancing using OpenStack Octavia
 
-This features enables customers to expose their NodePorts via a single public IP using OpenStack Octavia Loadbalancer.
+This feature enables customers to expose their NodePorts via a single public IP using OpenStack Octavia Loadbalancer.
 
 **WARNING**: This is not supported for OpenStack Projects with multiple clusters.
 
