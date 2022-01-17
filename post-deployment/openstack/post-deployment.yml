@@ -39,3 +39,5 @@
   when: extraGateway | default(false) | bool
 - import_playbook: ingress/letsencrypt.yml
   when: useLetsEncryptCert | default(true) | bool
+- import_playbook: nodeport-loadbalancing-ingress/main.yaml
+  when: nodePortLb | default(false) | bool

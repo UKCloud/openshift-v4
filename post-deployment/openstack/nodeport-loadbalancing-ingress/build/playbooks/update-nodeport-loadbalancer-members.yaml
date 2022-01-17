@@ -1,0 +1,226 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: 'Retrieve OpenStack secret'
+    community.kubernetes.k8s_info:
+      kind: Secret
+      name: openstack-credentials
+      namespace: kube-system
+    register: openstackCredentialRaw
+
+  - name: 'Extract OpenStack credential'
+    ansible.builtin.set_fact:
+      openstackCredential: "{{ openstackCredentialRaw | to_json | from_json | json_query(openstackCredentialQuery) }}"
+    vars:
+      openstackCredentialQuery: 'resources[0].data."clouds.yaml"'
+
+  - name: 'Write OpenStack credential to file'
+    ansible.builtin.copy:
+      dest: /etc/openstack/clouds.yaml
+      content: "{{ openstackCredential | b64decode }}"
+
+  - name: Get configmap
+    community.kubernetes.k8s_info:
+      kind: ConfigMap
+      namespace: ukc-ingress
+      name: ukcloud-openstack-loadbalancer
+    register: configmap
+
+  - name: Grab data from configmap
+    ansible.builtin.set_fact:
+      data: "{{ configmap | to_json | from_json | json_query(dataquery) | from_yaml }}"
+    vars:
+      dataquery: "resources[0].data.openstack"
+
+  - name: NodePort list
+    ansible.builtin.set_fact:
+      nodeport_list: "{{ data | map(attribute='nodeport') | list }}"
+
+  - name: Get NodePort loadbalancer
+    ansible.builtin.shell: "openstack loadbalancer list -c name -f value | grep -- -nodeport-"
+    register: nodePortLoadbalancer
+
+  - name: Get OpenShift worker nodes
+    community.kubernetes.k8s_info:
+      kind: Node
+      label_selectors: 
+        - node-role.kubernetes.io/app = 
+    register: workerNodes
+
+  - name: Get node names
+    ansible.builtin.set_fact:
+      workerNodeNames: "{{ workerNodes | to_json | from_json | json_query(workerNodeQuery) | flatten }}"
+    vars:
+      workerNodeQuery: "resources[*].status.addresses[?type=='InternalIP'].address"
+
+  - name: Create listeners on the loadbalancer
+    openstack.cloud.lb_listener:
+      state: present
+      name: "{{ item.nodeport }}"
+      protocol: TCP
+      protocol_port: "{{ item.listener }}"
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    loop: "{{ data if data is iterable and data is not string else [] }}"
+    when: 
+      - data[0].nodeport is defined
+      - item.nodeport is not none
+
+  - name: Apply allowed CIDR to each listener
+    ansible.builtin.shell:
+      openstack loadbalancer listener set '{{ item.0.nodeport }}' --allowed-cidr "{{ item.1 }}" --wait
+    with_subelements:
+      - "{{ data if data is iterable and data is not string else [] }}"
+      - allowed_ips
+      - skip_missing: True
+    register: output
+    retries: 3
+    delay: 5
+    until: output.rc == 0
+      
+  - name: Create pools on the loadbalancer
+    openstack.cloud.lb_pool:
+      state: present
+      name: "{{ item.nodeport }}"
+      listener: "{{ item.nodeport }}"
+      lb_algorithm: ROUND_ROBIN
+      protocol: TCP
+    loop: "{{ data if data is iterable and data is not string else [] }}"
+    when:
+      - data[0].nodeport is defined
+      - item.nodeport is not none
+
+  - name: Create pool list
+    ansible.builtin.set_fact:
+      pool_list: "{{ data | product(workerNodeNames) | list  }}"
+    when:
+      - data[0].nodeport is defined
+      - data[0].nodeport is not none
+
+  - name: Add members to each pool on loadbalancer
+    openstack.cloud.lb_member:
+      state: present
+      name: "{{ item.1 }}"
+      address: "{{ item.1 }}"
+      pool: "{{ item.0.nodeport }}"
+      protocol_port: "{{ item.0.nodeport }}"
+    loop: "{{ pool_list if pool_list is defined and pool_list is iterable and pool_list is not string else [] }}"
+    when: item is defined
+
+  - name: Add health monitors to each members in each pool on loadbalancer
+    openstack.cloud.lb_health_monitor:
+      wait: true
+      type: TCP
+      name: "{{ item.nodeport }}"
+      pool: "{{ item.nodeport }}"
+      max_retries: 3
+      resp_timeout: 5
+      delay: 10
+    loop: "{{ data if data is iterable and data is not string else [] }}"
+    when: item.nodeport is not none
+
+  - name: Grab nodeports from configmap
+    ansible.builtin.set_fact:
+      nodeports: "{{ data | map(attribute='nodeport') | map('string') | list }}"
+    when:
+      - data[0].nodeport is not none
+      - data[0].nodeport is defined
+
+  - name: Get NodePort loadbalancer listeners
+    ansible.builtin.shell: openstack loadbalancer listener list -c name -f value
+    register: nodePortLoadbalancerListener
+
+  - name: Get NodePort loadbalancer pools
+    ansible.builtin.shell: openstack loadbalancer pool list -c name -f value
+    register: nodePortLoadbalancerPool
+
+
+  - name: Remove all listeners on the loadbalancer if ConfigMap is empty
+    openstack.cloud.lb_listener:
+      name: "{{ item }}"
+      state: absent
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    loop: "{{ nodePortLoadbalancerListener.stdout_lines }}"
+    when:
+      - (data[0].nodeport is none) or (data is not iterable) or (data is string) 
+      - nodePortLoadbalancer.stdout != ""
+
+  - name: Remove all pools on the loadbalancer if ConfigMap is empty
+    openstack.cloud.lb_pool:
+      name: "{{ item }}"
+      state: absent
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    loop: "{{ nodePortLoadbalancerPool.stdout_lines }}"
+    when:
+      - (data[0].nodeport is none) or (data is not iterable) or (data is string)
+      - nodePortLoadbalancer.stdout != "" 
+
+  - name: Determine what listeners to delete
+    ansible.builtin.set_fact:
+      loadbalancerListenersToDelete: "{{ loadbalancerListenersToDelete | default([]) + [ item ] }}"
+    loop: "{{ nodePortLoadbalancerListener.stdout_lines }}"
+    when:
+      - nodeports is defined
+      - item not in nodeports
+
+  - name: Determine what pools to delete
+    ansible.builtin.set_fact:
+      loadbalancerPoolsToDelete: "{{ loadbalancerPoolsToDelete | default([]) + [ item ] }}"
+    with_items: "{{ nodePortLoadbalancerPool.stdout_lines }}"
+    when:
+      - nodeports is defined
+      - item not in nodeports
+
+  - name: Remove listensers from openstack
+    openstack.cloud.lb_listener:
+      state: absent
+      name: "{{ item }}"
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    with_items: "{{ loadbalancerListenersToDelete }}"
+    when: loadbalancerListenersToDelete is defined
+
+  - name: Remove pools openstack
+    openstack.cloud.lb_pool:
+      state: absent
+      name: "{{ item }}"
+      loadbalancer: "{{ nodePortLoadbalancer.stdout }}"
+    with_items: "{{ loadbalancerPoolsToDelete }}"
+    when: loadbalancerPoolsToDelete is defined
+
+  - name: Get NodePort loadbalancer pools after pool deletions
+    ansible.builtin.shell: openstack loadbalancer pool list -c name -f value
+    register: nodePortLoadbalancerPool
+    when: data[0].nodeport is not none
+
+  - name: Get NodePort loadbalancer members per pool
+    ansible.builtin.shell: openstack loadbalancer member list "{{ item }}" -c name -f value
+    with_items: "{{ nodePortLoadbalancerPool.stdout_lines }}"
+    register: nodePortLoadbalancerMember
+    when: data[0].nodeport is not none
+
+  - name: Sanitise members list
+    ansible.builtin.set_fact:
+      loadbalancerMembersList: "{{ nodePortLoadbalancerMember | to_json | from_json | json_query(membersQuery) }}"
+    vars:
+      membersQuery: 'results[0].stdout_lines'
+    when: data[0].nodeport is not none
+
+  - name: Determine what members to remove for each pool
+    ansible.builtin.set_fact:
+      loadbalancerMembersToRemove: "{{ loadbalancerMembersToRemove | default([]) + [ item ] }}"
+    with_items: "{{ loadbalancerMembersList }}"
+    when:
+      - nodePortLoadbalancerPool.stdout_lines is defined
+      - item not in workerNodeNames
+
+  - name: Remove member from each pool on loadbalancer
+    openstack.cloud.lb_member:
+      state: absent
+      name: "{{ item[0] }}"
+      pool: "{{ item[1] }}"
+    with_nested:
+      - "{{ loadbalancerMembersToRemove }}"
+      - "{{ nodeport_list }}"
+    when: loadbalancerMembersToRemove is defined
