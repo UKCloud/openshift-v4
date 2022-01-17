@@ -11,7 +11,7 @@ Before you run this, you must first have a loadbalancer deployed in your OpenSta
 nodeport-loadbalance-network.yaml
 nodeport-loadbalance-ingress.yaml
 
-The can be found in https://github.com/UKCloud/openshift-upi-ansible/tree/nodeport-loadbalancing
+The can be found in https://github.com/UKCloud/openshift-upi-ansible
 
 # Note for v4.6
 
