@@ -16,7 +16,7 @@
     retries: 60
     delay: 10
 
-  - name: Schedule default ingresscontroller pods to infra nodes
+  - name: Schedule default ingresscontroller pods to infra nodes and enable logging
     k8s:
       state: present
       definition:
@@ -26,6 +26,10 @@
           name: default
           namespace: openshift-ingress-operator
         spec:
+          logging:
+            access:
+              destination:
+                type: Container
           nodePlacement:
             nodeSelector:
               matchLabels:

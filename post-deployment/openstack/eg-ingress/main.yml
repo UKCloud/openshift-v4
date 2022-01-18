@@ -88,6 +88,10 @@
           endpointPublishingStrategy:
             type: NodePortService
           replicas: 0
+          logging:
+            access:
+              destination:
+                type: Container
           routeSelector:
             matchExpressions:
             - key: network
