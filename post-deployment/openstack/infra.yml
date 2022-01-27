@@ -64,6 +64,7 @@
             prometheusK8s:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              retention: 7d
             prometheusOperator:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
@@ -95,3 +96,25 @@
         spec:
           defaultNodeSelector: node-role.kubernetes.io/app=
           mastersSchedulable: false
+
+  - name: Create user-workload-monitoring configmap
+    k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: user-workload-monitoring-config
+          namespace: openshift-user-workload-monitoring
+        data:
+          config.yaml: |
+            prometheusOperator:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+            prometheus:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
+              retention: 7d
+            thanosRuler:
+              nodeSelector:
+                node-role.kubernetes.io/infra: ""
