@@ -1,0 +1,38 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+  - name: Template /etc/chrony.conf
+    set_fact: 
+      chronyconf: | 
+        {% for ntpserver in ntpServers %}server {{ ntpserver }} iburst
+        {% endfor %}
+        driftfile /var/lib/chrony/drift
+        makestep 1.0 3
+        rtcsync
+        logdir /var/log/chrony  
+
+  - name: Create NTP MachineConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfig
+        metadata:
+          labels:
+            machineconfiguration.openshift.io/role: worker
+            machineconfiguration.openshift.io/role: master
+          name: 03-ntp
+        spec:
+          config:
+            ignition:
+              version: 3.2.0
+            storage:
+              files:
+              - path: /etc/chrony.conf
+                mode: 0644
+                overwrite: true
+                contents:
+                  source: "data:,{{ chronyconf | urlencode }}"  
+

@@ -23,7 +23,7 @@
         metadata:
           labels:
             machineconfiguration.openshift.io/role: net2
-          name: 03-net2-ntp
+          name: 09-net2-ntp
         spec:
           config:
             ignition:

@@ -2,6 +2,9 @@ rhcosImage: <image present in project> # <Name of image to use for deploying inf
 domainSuffix: <domain suffix> # Can also be specified in two params "custID" and "baseDomain"
 workerFlavor: <flavor> # OpenStack flavor for the primary app worker MachineSet
 additionalFlavors: [] # List of other flavors to create worker MachineSets for
+
+#ntpServers: ["1.2.3.4","6.7.8.9"]    # NTP to configure on non-net2 nodes, rhel.pool.ntp.org used by default
+
 # SSO parameters
 ssoSecret: <secret>
 ssoClientID: <client ID>
