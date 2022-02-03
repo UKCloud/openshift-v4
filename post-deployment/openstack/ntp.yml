@@ -13,7 +13,7 @@
         rtcsync
         logdir /var/log/chrony  
 
-  - name: Create NTP MachineConfig
+  - name: Create master NTP MachineConfig
     k8s:
       state: present
       definition:
@@ -21,9 +21,8 @@
         kind: MachineConfig
         metadata:
           labels:
-            machineconfiguration.openshift.io/role: worker
             machineconfiguration.openshift.io/role: master
-          name: 03-ntp
+          name: 03-master-ntp
         spec:
           config:
             ignition:
@@ -36,3 +35,24 @@
                 contents:
                   source: "data:,{{ chronyconf | urlencode }}"  
 
+  - name: Create worker NTP MachineConfig
+    k8s:
+      state: present
+      definition:
+        apiVersion: machineconfiguration.openshift.io/v1
+        kind: MachineConfig
+        metadata:
+          labels:
+            machineconfiguration.openshift.io/role: worker
+          name: 03-worker-ntp
+        spec:
+          config:
+            ignition:
+              version: 3.2.0
+            storage:
+              files:
+              - path: /etc/chrony.conf
+                mode: 0644
+                overwrite: true
+                contents:
+                  source: "data:,{{ chronyconf | urlencode }}"  
