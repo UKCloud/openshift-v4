@@ -6,15 +6,14 @@
   - name: Template /etc/chrony.conf
     set_fact: 
       chronyconf: | 
-        {% for ntpserver in net2NTPServers %}server {{ ntpserver }} iburst
+        {% for ntpserver in ntpServers %}server {{ ntpserver }} iburst
         {% endfor %}
         driftfile /var/lib/chrony/drift
         makestep 1.0 3
         rtcsync
         logdir /var/log/chrony  
-    when: net2NTPServers is defined
 
-  - name: Create Net2 NTP MachineConfig
+  - name: Create master NTP MachineConfig
     k8s:
       state: present
       definition:
@@ -22,8 +21,8 @@
         kind: MachineConfig
         metadata:
           labels:
-            machineconfiguration.openshift.io/role: net2
-          name: 09-net2-ntp
+            machineconfiguration.openshift.io/role: master
+          name: 03-master-ntp
         spec:
           config:
             ignition:
@@ -35,22 +34,25 @@
                 overwrite: true
                 contents:
                   source: "data:,{{ chronyconf | urlencode }}"  
-    when: net2NTPServers is defined
 
-  - name: Create Net2 MachineConfigPool
+  - name: Create worker NTP MachineConfig
     k8s:
       state: present
       definition:
         apiVersion: machineconfiguration.openshift.io/v1
-        kind: MachineConfigPool
+        kind: MachineConfig
         metadata:
-          name: net2
+          labels:
+            machineconfiguration.openshift.io/role: worker
+          name: 03-worker-ntp
         spec:
-          machineConfigSelector:
-            matchExpressions:
-              - { key: machineconfiguration.openshift.io/role, operator: In, values: [ worker, net2 ] }
-          nodeSelector:
-            matchLabels:
-              node-role.kubernetes.io/net2: ""
-    when: net2NTPServers is defined
-
+          config:
+            ignition:
+              version: 3.2.0
+            storage:
+              files:
+              - path: /etc/chrony.conf
+                mode: 0644
+                overwrite: true
+                contents:
+                  source: "data:,{{ chronyconf | urlencode }}"  
