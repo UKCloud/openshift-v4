@@ -50,7 +50,7 @@
           name: "elasticsearch-operator"
           namespace: "openshift-operators-redhat"
         spec:
-          channel: "{{ 'stable' if openshiftVersion >= '4.7' else openshiftVersion }}"
+          channel: "stable"
           installPlanApproval: "Automatic"
           source: "redhat-operators"
           sourceNamespace: "openshift-marketplace"
@@ -132,7 +132,7 @@
           name: cluster-logging
           namespace: openshift-logging
         spec:
-          channel: "{{ 'stable' if openshiftVersion >= '4.7' else openshiftVersion }}"
+          channel: "stable"
           name: cluster-logging
           source: redhat-operators
           sourceNamespace: openshift-marketplace
