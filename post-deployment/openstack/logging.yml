@@ -1,21 +1,6 @@
 ---
 - hosts: localhost
   tasks:
-  - name: Retrieve OpenShift version
-    k8s_info:
-      kind: ClusterVersion
-    register: clusterVersion
-  
-  - name: Extract channel
-    set_fact:
-      openshiftChannel: "{{ clusterVersion | to_json | from_json | json_query(openshiftChannelQuery) }}"
-    vars:
-      openshiftChannelQuery: "resources[0].spec.channel"
-  
-  - name: Extract version from channel
-    set_fact:
-      openshiftVersion: "{{ openshiftChannel.split('-')[1] }}"
-
   - name: Create operator Namespace
     k8s:
      state: present
