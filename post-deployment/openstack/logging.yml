@@ -177,9 +177,9 @@
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
               tolerations:
-                - effect: NoSchedule
-                  key: node-role.kubernetes.io/infra
-                  operator: Exists
+              - effect: NoSchedule
+                key: node-role.kubernetes.io/infra
+                operator: Exists
               schedule: 0 1 * * *
           logStore:
             type: "elasticsearch"
@@ -195,9 +195,9 @@
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
               tolerations:
-                - effect: NoSchedule
-                  key: node-role.kubernetes.io/infra
-                  operator: Exists
+              - effect: NoSchedule
+                key: node-role.kubernetes.io/infra
+                operator: Exists
               redundancyPolicy: "ZeroRedundancy"
               storage:
                 size: "200G"
@@ -215,7 +215,7 @@
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
               tolerations:
-                - effect: NoSchedule
-                  key: node-role.kubernetes.io/infra
-                  operator: Exists
+              - effect: NoSchedule
+                key: node-role.kubernetes.io/infra
+                operator: Exists
               replicas: 1
