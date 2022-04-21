@@ -1,5 +1,5 @@
 # FROM ansible-runner:latest
-FROM docker.io/ansible/ansible-runner@sha256:4c6034798b5e724c5a59466f5438e14480c53bc4adac5cc9db5e3997a286a0e4
+FROM quay.io/ansible/ansible-runner:stable-2.9-latest
 
 WORKDIR /usr/local/
 
