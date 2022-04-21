@@ -166,7 +166,11 @@
           collection:
             logs:
               type: "fluentd"
-              fluentd: {}
+              fluentd:
+                tolerations:
+                - effect: NoSchedule
+                  key: node-role.kubernetes.io/infra
+                  operator: Exists
           curation:
             type: "curator"
             curator:
