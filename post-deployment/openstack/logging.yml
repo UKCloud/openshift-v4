@@ -176,7 +176,7 @@
                 - effect: NoSchedule
                   key: node-role.kubernetes.io/infra
                   operator: Exists
-              schedula: 0 1 * * *
+              schedule: 0 1 * * *
           logStore:
             type: "elasticsearch"
             retentionPolicy:
