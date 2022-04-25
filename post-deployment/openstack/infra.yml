@@ -31,6 +31,10 @@
               destination:
                 type: Container
           nodePlacement:
+            tolerations:
+              - effect: NoSchedule 
+                key: node-role.kubernetes.io/infra 
+                operator: Exists
             nodeSelector:
               matchLabels:
                 node-role.kubernetes.io/infra: ""
@@ -46,6 +50,10 @@
         spec:
           nodeSelector:
             node-role.kubernetes.io/infra: ""
+          tolerations:
+            - effect: NoSchedule 
+              key: node-role.kubernetes.io/infra 
+              operator: Exists
 
   - name: Create cluster-monitoring configmap
     k8s:
@@ -61,41 +69,61 @@
             alertmanagerMain:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             prometheusK8s:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
               retention: 7d
             prometheusOperator:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             grafana:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             k8sPrometheusAdapter:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             kubeStateMetrics:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             telemeterClient:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             openshiftStateMetrics:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             enableUserWorkload: true
-
-  - name: Create default nodeSelector to target workers
-    k8s:
-      state: present
-      definition:
-        apiVersion: config.openshift.io/v1
-        kind: Scheduler
-        metadata:
-          name: cluster
-        spec:
-          defaultNodeSelector: node-role.kubernetes.io/app=
-          mastersSchedulable: false
 
   - name: Create user-workload-monitoring configmap
     k8s:
@@ -111,10 +139,22 @@
             prometheusOperator:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
             prometheus:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists
               retention: 7d
             thanosRuler:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule 
+                  key: node-role.kubernetes.io/infra 
+                  operator: Exists

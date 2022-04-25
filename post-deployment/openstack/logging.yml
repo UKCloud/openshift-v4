@@ -166,16 +166,24 @@
           collection:
             logs:
               type: "fluentd"
-              fluentd: {}
+              fluentd:
+                tolerations:
+                  - effect: NoSchedule
+                    key: node-role.kubernetes.io/infra
+                    operator: Exists
           curation:
             type: "curator"
             curator:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule
+                  key: node-role.kubernetes.io/infra
+                  operator: Exists
               schedule: 0 1 * * *
           logStore:
             type: "elasticsearch"
-            retentionPolicy: 
+            retentionPolicy:
               application:
                 maxAge: 7d
               infra:
@@ -186,6 +194,10 @@
               nodeCount: 1
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule
+                  key: node-role.kubernetes.io/infra
+                  operator: Exists
               redundancyPolicy: "ZeroRedundancy"
               storage:
                 size: "200G"
@@ -202,4 +214,8 @@
             kibana:
               nodeSelector:
                 node-role.kubernetes.io/infra: ""
+              tolerations:
+                - effect: NoSchedule
+                  key: node-role.kubernetes.io/infra
+                  operator: Exists
               replicas: 1
